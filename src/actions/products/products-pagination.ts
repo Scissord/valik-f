@@ -1,5 +1,4 @@
-import { prisma } from "@/lib/prisma";
-import { Gender } from "@prisma/client";
+import { prisma, Gender, Product, ProductImage } from "@/lib";
 
 interface PaginationOptions {
   page?: number;
@@ -19,7 +18,6 @@ export const getPaginatedProductWithImages = async ({
     const products = await prisma.product.findMany({
       take: take,
       skip: (page - 1) * take,
-
       include: {
         ProductImage: {
           take: 2,
@@ -28,27 +26,28 @@ export const getPaginatedProductWithImages = async ({
           },
         },
       },
-      where: {
+      where: gender ? {
         gender: gender as Gender,
-      },
+      } : undefined,
     });
 
-    //obtener total de productos
+    // Получаем общее количество продуктов
     const totalCount = await prisma.product.count({
-      where: {
+      where: gender ? {
         gender: gender as Gender,
-      },
+      } : undefined,
     });
+
     return {
       currentPage: page,
       totalPages: Math.ceil(totalCount / take),
-      products: products.map((product) => ({
+      products: products.map((product: Product) => ({
         ...product,
-        images: product.ProductImage.map((image) => image.url),
+        images: product.ProductImage.map((image: ProductImage) => image.url),
       })),
     };
   } catch (error) {
     console.log(error);
-    throw new Error("Ocurrio un problema");
+    throw new Error("Произошла ошибка при получении продуктов");
   }
 };

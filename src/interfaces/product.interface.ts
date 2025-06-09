@@ -9,6 +9,7 @@ export interface Product {
   tags: string[];
   title: string;
   gender: Category;
+  category_id?: number;
 }
 
 export interface CartProduct{

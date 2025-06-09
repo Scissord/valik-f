@@ -20,12 +20,12 @@ export const ProductImage = ({
   onMouseEnter,
   onMouseLeave
 }: Props) => {
-  //Todo ИЗМЕНИТЬ ВО ВСЕХ ФАЙЛАХ ЧЕЛ ГОВОРИТ
+  // Определяем источник изображения
   const localSrc = url && url !== "undefined" && url !== "null"
-  ? url.startsWith("http")
-      ? url
-      : `/products/${url}`
-  : "/imgs/placeholder.png";
+    ? url.startsWith("http") || url.startsWith("/products/")
+        ? url
+        : `/products/${url}`
+    : "/imgs/placeholder.png";
 
   return (
     <Image

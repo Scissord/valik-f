@@ -35,29 +35,40 @@ export default async function ProductPage({
 
   return (
     <>
-      <div className="flex items-start gap-7">
-        <ProductBreadcrumbs
-          product_categories={categories}
-          className="relative"
-        />
-        <div>
+      <div className="flex flex-col md:flex-row items-start gap-7">
+        <div className="w-full md:w-auto mb-4 md:mb-0">
+          <ProductBreadcrumbs
+            product_categories={categories}
+            className="w-full md:w-auto"
+          />
+        </div>
+        <div className="flex-1">
           <Title
             title={"Категории"}
-            subtitle={category?.title || "Продукты"}
+            subtitle={category?.name || "Продукты"}
             total={total}
           />
+          
+          {children_categories?.length > 0 && (
+            <div className="mb-6">
+              <h3 className="font-medium text-sm mb-3 text-gray-600">Подкатегории</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {children_categories?.map((category) => (
+                  <Link
+                    key={category.id}
+                    className="p-3 flex items-center justify-center border border-gray-100 rounded
+                              bg-white hover:bg-orange-50 hover:border-orange-100
+                              text-gray-700 hover:text-gray-700 transition-all duration-200 ease-in-out cursor-pointer"
+                    href={`/categories/${category.id}`}
+                  >
+                    <span className="text-sm">{category.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <ProductGrid products={products} />
-          <div className="grid grid-cols-6 gap-3">
-            {children_categories?.length > 0 && children_categories?.map((category) => (
-              <Link
-                key={category.id}
-                className="text-xs p-6 flex items-center justify-center border rounded shadow-lg hover:opacity-50 transition-all duration-300 ease-in-out cursor-pointer"
-                href={`/categories/${category.id}`}
-              >
-                {category.title}
-              </Link>
-            ))}
-          </div>
           <Pagination totalPages={totalPages} />
         </div>
       </div>

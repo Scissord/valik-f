@@ -14,4 +14,10 @@ export interface ProductItem {
   created_at: number;
   updated_at: number;
   deleted_at: number;
+  images: string[];
+  slug: string;
+  inStock: number;
+  sizes: string[];
+  tags: string[];
+  gender: string;
 }

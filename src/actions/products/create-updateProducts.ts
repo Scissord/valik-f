@@ -1,6 +1,5 @@
 "use server";
-import { prisma } from "@/lib/prisma";
-import { Gender, Product, Size } from "@prisma/client";
+import { prisma, Gender, Product, Size } from "@/lib";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { v2 as cloudinary } from "cloudinary";
@@ -35,21 +34,22 @@ export const createUpdateProduct = async (formData: FormData) => {
   }
 
   const productP = productParsed.data;
-  productP.slug = productP.slug.toLowerCase().replace(/ /g, "-").trim();
+  const slug = productP.slug.toLowerCase().replace(/ /g, "-").trim();
   const { id, ...rest } = productP;
   try {
     const prismaTx = await prisma.$transaction(async () => {
       let product: Product;
-      const tagsArray = rest.tags
+      const tagsArray = (rest.tags as string)
         .split(",")
-        .map((tag) => tag.trim().toLowerCase()); //convierto para que quede como en la bd
+        .map((tag: string) => tag.trim().toLowerCase()); // Преобразуем теги
 
       if (id) {
-        //Actualizo
+        // Обновляем существующий продукт
         product = await prisma.product.update({
           where: { id },
           data: {
             ...rest,
+            slug,
             sizes: {
               set: rest.sizes as Size[],
             },
@@ -57,12 +57,13 @@ export const createUpdateProduct = async (formData: FormData) => {
               set: tagsArray,
             },
           },
-        });
+        }) as Product;
       } else {
-        //Nuevo
+        // Создаем новый продукт
         product = await prisma.product.create({
           data: {
             ...rest,
+            slug,
             sizes: {
               set: rest.sizes as Size[],
             },
@@ -70,13 +71,13 @@ export const createUpdateProduct = async (formData: FormData) => {
               set: tagsArray,
             },
           },
-        });
+        }) as Product;
       }
 
       if (formData.getAll("images")) {
         const images = await uploadImages(formData.getAll("images") as File[]);
         if (!images) {
-          throw new Error("No se pudo cargar las imagenes");
+          throw new Error("Не удалось загрузить изображения");
         }
         await prisma.productImage.createMany({
           data: images.map((image) => ({
@@ -90,8 +91,8 @@ export const createUpdateProduct = async (formData: FormData) => {
     });
 
     revalidatePath("/admin/products");
-    revalidatePath(`/admin/products/${productP.slug}`);
-    revalidatePath(`/products/${productP.slug}`);
+    revalidatePath(`/admin/products/${slug}`);
+    revalidatePath(`/products/${slug}`);
 
     return {
       ok: true,
@@ -100,7 +101,7 @@ export const createUpdateProduct = async (formData: FormData) => {
   } catch (error) {
     return {
       ok: false,
-      message: `Revisar los logs, no se puedo actualizar/crear ${error}`,
+      message: `Ошибка при создании/обновлении продукта: ${error}`,
     };
   }
 };

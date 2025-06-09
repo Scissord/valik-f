@@ -6,7 +6,7 @@ import "swiper/css/pagination";
 import "swiper/css/thumbs";
 import "./slideShow.css";
 import { Autoplay, FreeMode, Pagination } from "swiper/modules";
-import Image from "next/image";
+import { ProductImage } from "@/components";
 
 interface Props {
   images: string[];
@@ -23,7 +23,7 @@ export const ProductMobileSlidesShow = ({
     <div className={className}>
       <Swiper
         style={{
-          width: "100vw",
+          width: "100%",
           height: "500px",
         }}
         pagination
@@ -33,12 +33,12 @@ export const ProductMobileSlidesShow = ({
       >
         {images.map((image) => (
           <SwiperSlide key={image}>
-            <Image
-              className=" object-fill"
-              src={`/products/${image}`}
+            <ProductImage
+              className="object-fill"
+              url={image}
               width={500}
               height={600}
-              alt={title}
+              title={title}
             />
           </SwiperSlide>
         ))}

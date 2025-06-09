@@ -2,7 +2,26 @@ import NextAuth, { type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
 import { z } from "zod";
-import { prisma } from "./lib/prisma";
+
+// Временные фиктивные данные для демонстрации
+const mockUsers = [
+  {
+    id: "1",
+    name: "Администратор",
+    email: "admin@example.com",
+    password: "$2a$10$Qka1.EtdnQGnQTCVvlAFUOu.7ByBcSpqpP/Xjc3KaGHQ9h7LIkp9m", // password: 123456
+    role: "admin",
+    emailVerified: new Date(),
+  },
+  {
+    id: "2",
+    name: "Пользователь",
+    email: "user@example.com",
+    password: "$2a$10$Qka1.EtdnQGnQTCVvlAFUOu.7ByBcSpqpP/Xjc3KaGHQ9h7LIkp9m", // password: 123456
+    role: "user",
+    emailVerified: new Date(),
+  },
+];
 
 export const authConfig: NextAuthConfig = {
   pages: {
@@ -34,16 +53,18 @@ export const authConfig: NextAuthConfig = {
 
         const { email, password } = parsedCredentials.data;
 
-        // Buscar el correo
-        const user = await prisma.user.findUnique({
-          where: { email: email.toLowerCase() },
-        });
+        // Поиск пользователя в фиктивных данных
+        // В будущем здесь будет запрос к API бэкенда
+        const user = mockUsers.find(
+          (user) => user.email.toLowerCase() === email.toLowerCase()
+        );
+        
         if (!user) return null;
 
-        // Comparar las contraseñas
+        // Сравнение паролей
         if (!bcryptjs.compareSync(password, user.password)) return null;
 
-        // Regresar el usuario sin el password
+        // Возврат пользователя без пароля
         const { password: _, ...rest } = user;
 
         return rest;

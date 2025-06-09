@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib";
 
 export const getCategories = async () => {
   try {
@@ -14,10 +14,11 @@ export const getCategories = async () => {
       categories,
     };
   } catch (error) {
-    console.log(error)
+    console.error("Ошибка при получении категорий:", error);
     return {
       ok: false,
       categories:[],
+      message: "Ошибка при получении списка категорий"
     };
   }
 };
