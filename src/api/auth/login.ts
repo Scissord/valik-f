@@ -1,6 +1,13 @@
 import { UserLogin } from "@/interfaces";
 
-export const login = async (data: UserLogin) => {
+interface LoginResult {
+  success: boolean;
+  user: any | null;
+  accessToken: string | null;
+  errors: { msg: string }[] | null;
+}
+
+export const login = async (data: UserLogin): Promise<LoginResult> => {
   try {
     const response = await fetch('http://localhost:8080/auth/login', {
       method: 'POST',

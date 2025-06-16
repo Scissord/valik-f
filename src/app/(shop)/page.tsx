@@ -1,7 +1,4 @@
-// import { getPaginatedProductWithImages } from "@/actions";
 import { Pagination, ProductGrid, Title, ProductBreadcrumbs } from "@/components";
-// import { redirect } from "next/navigation";
-// import { getGoodCategories } from "@/actions";
 import { getProductsForMainPage, getCategories } from '@/api'
 
 type SearchParams = Promise<{ [page: string]: string | string[] | undefined }>;
@@ -9,15 +6,6 @@ type SearchParams = Promise<{ [page: string]: string | string[] | undefined }>;
 export default async function Home(props: { searchParams: SearchParams }) {
   const params = await props.searchParams;
   const page = params.page ? Number(params.page) : 1;
-  // const { products, totalPages } = await getPaginatedProductWithImages({
-  //   page,
-  // });
-  // if (products.length === 0) {
-  //   redirect("/");
-  // }
-
-  // const { good_categories } = await getGoodCategories();
-  // console.log(good_categories);
 
   const categories = await getCategories();
   const {
@@ -28,7 +16,7 @@ export default async function Home(props: { searchParams: SearchParams }) {
     page,
     limit: 9,
   });
-  
+
   // Отладочная информация
   console.log('Home Page Debug:', {
     page,
@@ -52,7 +40,7 @@ export default async function Home(props: { searchParams: SearchParams }) {
             subtitle="Все продукты"
             total={total}
           />
-          
+
           {/* Отладочная информация (только в режиме разработки) */}
           {process.env.NODE_ENV === 'development' && (
             <div className="mb-4 p-2 bg-gray-100 text-xs text-gray-600 rounded">
@@ -63,7 +51,7 @@ export default async function Home(props: { searchParams: SearchParams }) {
               <p>Total Pages: {totalPages}</p>
             </div>
           )}
-          
+
           <ProductGrid products={products} />
           <Pagination totalPages={totalPages} />
         </div>
