@@ -1,10 +1,20 @@
 export interface User {
   id: string;
-  name: string;
-  email: string;
-  emailVerified: Date | null;
+  login: string;
   password: string;
-  role: string;
-  image?: string | null;
-  date?:Date
-}
+  email: string;
+  full_name: string;
+  phone: string;
+  birth_date: number;
+  gender: number;
+  address: number;
+  created_at: number;
+  updated_at: number;
+  deleted_at: number | null;
+};
+
+export interface UserLogin {
+  login: string;
+  password: string
+};
+

@@ -6,15 +6,15 @@ import { useState } from "react";
 import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string().min(1, "El nombre es obligatorio"),
+  name: z.string().min(6, "Минимум 6 символов"),
   email: z
     .string()
-    .min(1, "El correo es obligatorio")
+    .length(6, "Минимум 6 символов")
     .regex(
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      "Formato de correo inválido"
+      "Неверный формат почты"
     ),
-  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  password: z.string().min(6, "Минимум 6 символов"),
 });
 
 export const AccountForm = () => {
@@ -59,14 +59,12 @@ export const AccountForm = () => {
     if (resp2){
         window.location.replace("/")
     }
-    // Si no hay errores, enviar datos
     console.log("Datos enviados:", formData);
     setErrors({});
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col">
-      {/* Nombre */}
       <label htmlFor="name">ФИО</label>
       <input
         id="name"
@@ -83,7 +81,6 @@ export const AccountForm = () => {
         <span className="text-red-500 text-sm">{errors.name}</span>
       )}
 
-      {/* Email */}
       <label htmlFor="email">Почта</label>
       <input
         id="email"
@@ -100,7 +97,6 @@ export const AccountForm = () => {
         <span className="text-red-500 text-sm">{errors.email}</span>
       )}
 
-      {/* Contraseña */}
       <label htmlFor="password">Пароль</label>
       <input
         id="password"
@@ -118,7 +114,6 @@ export const AccountForm = () => {
         <span className="text-red-500 text-sm">{errors.password}</span>
       )}
       {errorDb}
-      {/* Botón de envío */}
       <button type="submit" className="btn-primary">
         Зарегестрироваться
       </button>

@@ -10,7 +10,7 @@ export const ItemUser = () => {
         className="flex p-2 items-center mt-8 hover:bg-gray-100 rounded transition-all"
       >
         <IoPersonOutline size={25} />
-        <span className="ml-3 text-xl"> Perfil</span>
+        <span className="ml-3 text-xl"> Профиль</span>
       </Link>
 
       <Link
@@ -18,7 +18,7 @@ export const ItemUser = () => {
         className="flex p-2 items-center mt-8 hover:bg-gray-100 rounded transition-all"
       >
         <IoTicketOutline size={25} />
-        <span className="ml-3 text-xl"> Ordenes</span>
+        <span className="ml-3 text-xl"> Заказы</span>
       </Link>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
-import { useUIStore } from "@/store";
+import { useUIStore, useUserStore } from "@/store";
 import clsx from "clsx";
 import { IoCloseOutline, IoSearchOutline } from "react-icons/io5";
 import { ItemUser } from "./itemUser";
@@ -11,9 +11,7 @@ import { ItemSiginOut } from "./itemSiginOut";
 export const SideBar = () => {
   const isSideMenuOpen = useUIStore((state) => state.isSideMenuOpen);
   const closeMenu = useUIStore((state) => state.closeSideMenu);
-  const { data: session } = useSession();
-  const isAuthenticated = !!session?.user;
-  const roleUser = session?.user.role;
+  const user = useUserStore((state) => state.user);
 
   return (
     <div>
@@ -55,12 +53,12 @@ export const SideBar = () => {
         </div>
 
         {/*Resto de items */}
-        {isAuthenticated && roleUser === "user" && <ItemUser />}
+        {user && <ItemUser />}
 
-        {isAuthenticated && roleUser === "admin" && <ItemAdmin />}
+        {/* {user && <ItemAdmin />} */}
 
         {/*Item login/ logout*/}
-        {!isAuthenticated && (
+        {!user && (
           <ItemSiginOut
             text={"Войти"}
             method={closeMenu}
@@ -68,9 +66,9 @@ export const SideBar = () => {
             login={false}
           />
         )}
-        {isAuthenticated && (
+        {user && (
           <ItemSiginOut
-            text={"Salir"}
+            text={"Выход"}
             method={() => signOut()}
             url={"/"}
             login={false}

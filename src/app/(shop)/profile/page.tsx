@@ -8,11 +8,11 @@ export default async function profilePage() {
     redirect("/")
   return (
     <div>
-      <Title title="Perfil"></Title>
+      <Title title="Профиль"></Title>
       <pre>
-      {
-        JSON.stringify(session)
-      }
+        {
+          JSON.stringify(session)
+        }
       </pre>
     </div>
   );

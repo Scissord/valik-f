@@ -26,7 +26,7 @@ const mockUsers = [
 export const authConfig: NextAuthConfig = {
   pages: {
     signIn: "/auth/login",
-    newUser: "/auth/new-account",
+    newUser: "/auth/register",
   },
 
   callbacks: {
@@ -42,6 +42,7 @@ export const authConfig: NextAuthConfig = {
       return session;
     },
   },
+
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -58,7 +59,7 @@ export const authConfig: NextAuthConfig = {
         const user = mockUsers.find(
           (user) => user.email.toLowerCase() === email.toLowerCase()
         );
-        
+
         if (!user) return null;
 
         // Сравнение паролей
