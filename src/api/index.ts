@@ -5,3 +5,4 @@ export * from "./products/get_product";
 export * from "./orders/create_order";
 export * from "./orders/find_order";
 export * from "./auth/login";
+export * from "./auth/registration";

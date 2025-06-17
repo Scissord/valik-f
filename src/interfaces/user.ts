@@ -15,6 +15,14 @@ export interface User {
 
 export interface UserLogin {
   login: string;
-  password: string
+  password: string;
 };
 
+export interface UserRegistration {
+  login: string;
+  password: string;
+  email: string;
+  full_name: string;
+  phone: number;
+  gender: string;
+};

@@ -5,14 +5,14 @@ import clsx from 'clsx';
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { login } from "@/api";
-import { UserLogin } from "@/interfaces";
+import { registration } from "@/api";
+import { UserRegistration } from "@/interfaces";
 import { IoInformationOutline } from "react-icons/io5";
 import { useUserStore } from "@/store";
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
   const router = useRouter();
-  const [responseErrors, setResponseErrors] = useState([]);
+  const [responseErrors, setResponseErrors] = useState<{ msg: string }[] | null>([]);
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
 
@@ -22,15 +22,17 @@ export const LoginForm = () => {
     }
   }, [user]);
 
-  const onSubmit = async (data: UserLogin) => {
+  const onSubmit = async (data: UserRegistration) => {
     setResponseErrors([]);
-    const { success, user, accessToken, errors } = await login(data);
-    if (success) {
+    const { user, accessToken, errors } = await registration(data);
+    if (user && accessToken) {
       setUser(user, accessToken);
       router.push(`/`);
     } else {
-      setResponseErrors(errors);
-      reset();
+      if(errors && errors.length > 0) {
+        setResponseErrors(errors);
+        reset();
+      }
     };
   };
 
@@ -39,14 +41,14 @@ export const LoginForm = () => {
     register,
     formState: { errors, isValid },
     reset,
-  } = useForm<UserLogin>();
+  } = useForm<UserRegistration>();
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col"
     >
-      <div className='flex flex-col mb-2'>
+      <div className='flex flex-col'>
         <label htmlFor="login">Логин</label>
         <input
           className="p-2 border border-slate-300 rounded-md mt-2"
@@ -72,13 +74,68 @@ export const LoginForm = () => {
         )}
       </div>
 
+      <div className='flex flex-col'>
+        <label htmlFor="full_name">
+          ФИО
+        </label>
+        <input
+          className="p-2 border border-slate-300 rounded-md mt-2 "
+          type="text"
+          {...register("full_name", { required: "Укажите ваше ФИО!" })}
+        />
+        {errors.full_name && (
+          <p className="text-red-500 text-sm">{errors.full_name.message}</p>
+        )}
+      </div>
+
+      <div className='flex flex-col'>
+        <label htmlFor="full_name">
+          Почта
+        </label>
+        <input
+          className="p-2 border border-slate-300 rounded-md mt-2 "
+          type="email"
+          {...register("email", { required: "Укажите вашу почту!" })}
+        />
+        {errors.email && (
+          <p className="text-red-500 text-sm">{errors.email.message}</p>
+        )}
+      </div>
+
+      <div className='flex flex-col'>
+        <label htmlFor="phone">
+          Телефон
+        </label>
+        <input
+          className="p-2 border border-slate-300 rounded-md mt-2 "
+          type="text"
+          {...register("phone", { required: "Укажите ваш  телефон!" })}
+        />
+        {errors.phone && (
+          <p className="text-red-500 text-sm">{errors.phone.message}</p>
+        )}
+      </div>
+
+      <div className='flex flex-col'>
+        <label htmlFor="gender">
+          Пол
+        </label>
+        <input
+          className="p-2 border border-slate-300 rounded-md mt-2 "
+          type="text"
+          {...register("gender", { required: "Укажите ваш  пол!" })}
+        />
+        {errors.gender && (
+          <p className="text-red-500 text-sm">{errors.gender.message}</p>
+        )}
+      </div>
 
       <div
         className="flex h-8 items-end space-x-1"
         aria-live="polite"
         aria-atomic="true"
       >
-        {responseErrors.length > 0 && (
+        {responseErrors && responseErrors.length > 0 && (
           <div className="flex flex-row mb-2">
             <IoInformationOutline className="h-5 w-5 text-red-500" />
             <p className="text-sm text-red-500">
@@ -96,7 +153,7 @@ export const LoginForm = () => {
         })}
         disabled={!isValid}
       >
-        Войти
+        Зарегистрироваться
       </button>
 
       <div className="flex items-center my-5">
@@ -106,7 +163,7 @@ export const LoginForm = () => {
       </div>
 
       <Link href="/auth/register" className="btn-secondary text-center">
-        Создать новую учетную запись
+        Войти в учетную запись
       </Link>
     </form>
   );

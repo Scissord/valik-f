@@ -1,14 +1,14 @@
-import { User, UserLogin } from "@/interfaces";
+import { User, UserRegistration } from "@/interfaces";
 
-interface LoginResult {
+interface RegistrationResult {
   user: User | null;
   accessToken: string | null;
   errors: { msg: string }[] | null;
 }
 
-export const login = async (data: UserLogin): Promise<LoginResult> => {
+export const registration = async (data: UserRegistration): Promise<RegistrationResult> => {
   try {
-    const response = await fetch('http://localhost:8080/auth/login', {
+    const response = await fetch('http://localhost:8080/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
