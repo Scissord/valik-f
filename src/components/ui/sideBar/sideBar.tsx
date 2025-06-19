@@ -1,5 +1,4 @@
 "use client";
-import { signOut } from "next-auth/react";
 
 import { useUIStore, useUserStore } from "@/store";
 import clsx from "clsx";
@@ -69,7 +68,7 @@ export const SideBar = () => {
         {user && (
           <ItemSiginOut
             text={"Выход"}
-            method={() => signOut()}
+            method={() => null}
             url={"/"}
             login={false}
           />

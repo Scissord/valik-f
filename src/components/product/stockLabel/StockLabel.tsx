@@ -1,6 +1,5 @@
 "use client";
 
-import { getStockBySlug } from "@/actions";
 import { titleFont } from "@/config/fonts";
 import { useEffect, useState } from "react";
 
@@ -17,10 +16,10 @@ export const StockLabel = ({ slug }: Props) => {
   });
 
   const getStockActual = async () => {
-    const inStock = await getStockBySlug(slug);
-    setStock(inStock);
-    setLoading(false);
-    return inStock;
+    // const inStock = await getStockBySlug(slug);
+    // setStock(inStock);
+    // setLoading(false);
+    // return inStock;
   };
 
   if (stock < 1 && !isLoading) {

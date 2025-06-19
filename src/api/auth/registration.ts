@@ -8,7 +8,7 @@ interface RegistrationResult {
 
 export const registration = async (data: UserRegistration): Promise<RegistrationResult> => {
   try {
-    const response = await fetch('http://localhost:8080/auth/register', {
+    const response = await fetch('http://localhost:8080/auth/registration', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

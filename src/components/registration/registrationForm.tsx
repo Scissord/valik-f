@@ -70,7 +70,9 @@ export const RegisterForm = () => {
           {...register("password", { required: "Укажите ваш пароль!" })}
         />
         {errors.password && (
-          <p className="text-red-500 text-sm">{errors.password.message}</p>
+          <p className="text-red-500 text-sm">
+            {errors.password.message}
+          </p>
         )}
       </div>
 
@@ -84,7 +86,9 @@ export const RegisterForm = () => {
           {...register("full_name", { required: "Укажите ваше ФИО!" })}
         />
         {errors.full_name && (
-          <p className="text-red-500 text-sm">{errors.full_name.message}</p>
+          <p className="text-red-500 text-sm">
+            {errors.full_name.message}
+          </p>
         )}
       </div>
 
@@ -98,7 +102,9 @@ export const RegisterForm = () => {
           {...register("email", { required: "Укажите вашу почту!" })}
         />
         {errors.email && (
-          <p className="text-red-500 text-sm">{errors.email.message}</p>
+          <p className="text-red-500 text-sm">
+            {errors.email.message}
+          </p>
         )}
       </div>
 
@@ -112,7 +118,9 @@ export const RegisterForm = () => {
           {...register("phone", { required: "Укажите ваш  телефон!" })}
         />
         {errors.phone && (
-          <p className="text-red-500 text-sm">{errors.phone.message}</p>
+          <p className="text-red-500 text-sm">
+            {errors.phone.message}
+          </p>
         )}
       </div>
 
@@ -126,7 +134,9 @@ export const RegisterForm = () => {
           {...register("gender", { required: "Укажите ваш  пол!" })}
         />
         {errors.gender && (
-          <p className="text-red-500 text-sm">{errors.gender.message}</p>
+          <p className="text-red-500 text-sm">
+            {errors.gender.message}
+          </p>
         )}
       </div>
 
@@ -162,7 +172,7 @@ export const RegisterForm = () => {
         <div className="flex-1 bg-slate-300 h-0.5 rounded " />
       </div>
 
-      <Link href="/auth/register" className="btn-secondary text-center">
+      <Link href="/auth/registration" className="btn-secondary text-center">
         Войти в учетную запись
       </Link>
     </form>
