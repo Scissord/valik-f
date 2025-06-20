@@ -161,9 +161,6 @@ export const getProduct = async ({
     // Имитация задержки сети
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    // Отладочная информация
-    console.log('API Debug - getProduct:', { id });
-
     // Поиск продукта по slug или ID
     const product = mockProducts.find(p => p.slug === id || p.id === id);
     

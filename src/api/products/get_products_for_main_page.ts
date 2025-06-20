@@ -155,17 +155,6 @@ export const getProductsForMainPage = async ({
     const total = mockProducts.length;
     const totalPages = Math.ceil(total / limit);
 
-    // Отладочная информация
-    console.log('API Debug - getProductsForMainPage:', { 
-      page, 
-      limit, 
-      startIndex, 
-      endIndex,
-      totalProducts: mockProducts.length,
-      paginatedCount: paginatedProducts.length,
-      totalPages
-    });
-
     return {
       products: paginatedProducts,
       total,

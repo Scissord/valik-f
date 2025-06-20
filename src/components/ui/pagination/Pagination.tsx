@@ -32,18 +32,8 @@ export const Pagination = ({ totalPages }: Props) => {
   
   const numberOfPages = generatePagination(currentPage, totalPages);
 
-  // Добавляем отладочную информацию
-  console.log('Pagination Debug:', { totalPages, currentPage, numberOfPages });
-
   return (
     <div className="flex flex-col items-center justify-center mt-10 mb-32">
-      {/* Отладочная информация (видна только в режиме разработки) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mb-4 text-xs text-gray-500">
-          totalPages: {totalPages}, currentPage: {currentPage}
-        </div>
-      )}
-      
       <nav aria-label="Навигация по страницам">
         <ul className="flex items-center gap-1 md:gap-2">
           {/* Кнопка "Назад" */}

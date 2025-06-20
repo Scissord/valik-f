@@ -7,11 +7,15 @@ export default function ShopLayout({
 }) {
 
   return (
-    <main className="min-h-screen px-1 sm:px-10">
+    <>
       <Header />
-      <SideBar/>
-      {children}
-      <Footer/>
-    </main>
+      <SideBar />
+      <div className="min-h-screen pt-28 md:pt-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <main className="flex-1">
+          {children}
+        </main>
+      </div>
+      <Footer />
+    </>
   );
 }

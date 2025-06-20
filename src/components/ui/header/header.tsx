@@ -2,61 +2,102 @@
 import { useCartStore, useUIStore } from "@/store";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { IoCartOutline } from "react-icons/io5";
+import { IoCartOutline, IoSearchOutline, IoMenuOutline, IoPersonOutline } from "react-icons/io5";
 import Logo from "./logo";
-import Search from "./search";
 
 export const Header = () => {
-  const totalITems = useCartStore((state) => state.getTotalItems());
+  const totalItems = useCartStore((state) => state.getTotalItems());
   const openMenu = useUIStore((state) => state.openSideMenu);
   const [loaded, setLoaded] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
-  },[]);
+    
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="h-[10vh] hidden lg:flex justify-between items-center w-full py-12">
-      <Logo/>
-      <nav>
-        {/* <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
-          href="/gender/men"
-        >
-          Мужское
-        </Link>
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
-          href="/gender/women"
-        >
-          Женское
-        </Link>
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
-          href="/gender/kid"
-        >
-          Детское
-        </Link> */}
-        <Search/>
-      </nav>
-      <p className="text-xl font-bold">+7-(777)-(777)-77-77</p>
-      <div className="flex items-center">
-        <Link href={totalITems===0 && loaded?"/empty":"/cart"} className="mx-2">
-          <div className="relative">
-            {loaded && totalITems > 0 && (
-              <span className="fade-in absolute text-xs rounded-full px-1 font-bold -top-3 -right-2  text-white bg-[#fc640c]">
-                {totalITems}
-              </span>
-            )}
-            <IoCartOutline className="w-6 h-6" />
+    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-2' : 'bg-white/80 backdrop-blur-md py-4'}`}>
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="flex items-center justify-between">
+          {/* Логотип */}
+          <div className="flex-shrink-0">
+            <Logo />
           </div>
-        </Link>
-        <button
-          onClick={openMenu}
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
-        >
-          Меню
-        </button>
+          
+          {/* Навигация - скрыта на мобильных */}
+          <nav className="hidden md:flex items-center space-x-1">
+            <Link
+              className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
+              href="/categories/tools"
+            >
+              Инструменты
+            </Link>
+            <Link
+              className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
+              href="/categories/materials"
+            >
+              Материалы
+            </Link>
+            <Link
+              className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
+              href="/categories/fasteners"
+            >
+              Крепёж
+            </Link>
+            <Link
+              className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
+              href="/categories/plumbing"
+            >
+              Сантехника
+            </Link>
+          </nav>
+          
+          {/* Телефон - скрыт на мобильных */}
+          <div className="hidden lg:block">
+            <p className="text-lg font-medium text-gray-800">+7-(777)-(777)-77-77</p>
+          </div>
+          
+          {/* Правая часть */}
+          <div className="flex items-center space-x-4">
+            {/* Поиск */}
+            <button className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+              <IoSearchOutline className="w-5 h-5 text-gray-700" />
+            </button>
+            
+            {/* Корзина */}
+            <Link href={totalItems === 0 && loaded ? "/empty" : "/cart"} className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+              <div className="relative">
+                {loaded && totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs rounded-full bg-[#fc640c] text-white font-medium">
+                    {totalItems}
+                  </span>
+                )}
+                <IoCartOutline className="w-5 h-5 text-gray-700" />
+              </div>
+            </Link>
+            
+            {/* Профиль */}
+            <Link href="/profile" className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+              <IoPersonOutline className="w-5 h-5 text-gray-700" />
+            </Link>
+            
+            {/* Меню - для мобильных */}
+            <button
+              onClick={openMenu}
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+              aria-label="Открыть меню"
+            >
+              <IoMenuOutline className="w-6 h-6 text-gray-700" />
+            </button>
+          </div>
+        </div>
       </div>
     </header>
   );

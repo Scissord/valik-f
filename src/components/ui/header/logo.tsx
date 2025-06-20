@@ -1,16 +1,12 @@
-import Image from "next/image";
+import { titleFont } from "@/config/fonts";
 import Link from "next/link";
 
 const Logo = () => {
   return (
-    <Link href={"/"}>
-      <Image
-        src={'/logo.svg'}
-        className=""
-        alt={"logo"}
-        width={120}
-        height={100}
-      />
+    <Link href="/" className="flex items-center">
+      <span className={`${titleFont.className} text-xl font-bold text-orange-500`}>
+        Valik.kz
+      </span>
     </Link>
   )
 }
