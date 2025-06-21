@@ -8,6 +8,7 @@ import Logo from "./logo";
 export const Header = () => {
   const totalItems = useCartStore((state) => state.getTotalItems());
   const openMenu = useUIStore((state) => state.openSideMenu);
+  const isSideMenuOpen = useUIStore((state) => state.isSideMenuOpen);
   const [loaded, setLoaded] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -23,7 +24,10 @@ export const Header = () => {
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-2' : 'bg-white/80 backdrop-blur-md py-4'}`}>
+    <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 
+      ${isScrolled ? 'bg-white shadow-md py-2' : 'bg-white/80 backdrop-blur-md py-4'} 
+      ${isSideMenuOpen ? 'pointer-events-none opacity-50' : 'opacity-100'}`}
+    >
       <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className="flex items-center justify-between">
           {/* Логотип */}
@@ -35,44 +39,39 @@ export const Header = () => {
           <nav className="hidden md:flex items-center space-x-1">
             <Link
               className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
-              href="/categories/tools"
+              href="/products"
             >
-              Инструменты
+              Магазин
             </Link>
             <Link
               className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
-              href="/categories/materials"
+              href="/about"
             >
-              Материалы
+              О сервисе
             </Link>
             <Link
               className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
-              href="/categories/fasteners"
+              href="/news"
             >
-              Крепёж
+              Новости
             </Link>
             <Link
               className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
-              href="/categories/plumbing"
+              href="/contacts"
             >
-              Сантехника
+              Контакты
             </Link>
           </nav>
-          
-          {/* Телефон - скрыт на мобильных */}
-          <div className="hidden lg:block">
-            <p className="text-lg font-medium text-gray-800">+7-(777)-(777)-77-77</p>
-          </div>
           
           {/* Правая часть */}
           <div className="flex items-center space-x-4">
             {/* Поиск */}
-            <button className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+            <button className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200" disabled={isSideMenuOpen}>
               <IoSearchOutline className="w-5 h-5 text-gray-700" />
             </button>
             
             {/* Корзина */}
-            <Link href={totalItems === 0 && loaded ? "/empty" : "/cart"} className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+            <Link href={totalItems === 0 && loaded ? "/empty" : "/cart"} className={`p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}>
               <div className="relative">
                 {loaded && totalItems > 0 && (
                   <span className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs rounded-full bg-[#fc640c] text-white font-medium">
@@ -84,7 +83,7 @@ export const Header = () => {
             </Link>
             
             {/* Профиль */}
-            <Link href="/profile" className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+            <Link href="/profile" className={`p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}>
               <IoPersonOutline className="w-5 h-5 text-gray-700" />
             </Link>
             
@@ -93,6 +92,7 @@ export const Header = () => {
               onClick={openMenu}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
               aria-label="Открыть меню"
+              disabled={isSideMenuOpen}
             >
               <IoMenuOutline className="w-6 h-6 text-gray-700" />
             </button>

@@ -28,7 +28,7 @@ export const ProductItem = ({ product }: Props) => {
         <Link className="hover:text-blue-600" href={`/product/${product.slug}`}>
           {product.title}
         </Link>
-        <span className="font-bold">${product.price.toLocaleString('ru-RU')}</span>
+        <span className="font-bold">{product.price.toLocaleString('ru-RU')} ₸</span>
       </div>
     </div>
   );

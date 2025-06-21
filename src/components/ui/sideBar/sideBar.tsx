@@ -164,14 +164,14 @@ export const SideBar = () => {
       {isSideMenuOpen && (
         <div 
           onClick={closeMenu}
-          className="fixed top-0 left-0 w-screen h-screen z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 fade-in"
+          className="fixed top-0 left-0 w-screen h-screen z-55 bg-black/50 backdrop-blur-sm transition-opacity duration-300 fade-in"
         />
       )}
 
       {/* Боковое меню */}
       <aside
         className={clsx(
-          "fixed top-0 right-0 h-screen w-[300px] md:w-[350px] bg-white z-50 shadow-xl transition-transform duration-300 ease-in-out transform",
+          "fixed top-0 right-0 h-screen w-[300px] md:w-[350px] bg-white z-60 shadow-xl transition-transform duration-300 ease-in-out transform",
           {
             "translate-x-0": isSideMenuOpen,
             "translate-x-full": !isSideMenuOpen,
@@ -205,28 +205,28 @@ export const SideBar = () => {
         {/* Содержимое прокручиваемой области */}
         <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 270px)' }}>
           {/* Основная навигация */}
-          <nav className="px-3 py-4">
-            <div className="space-y-1">
+        <nav className="px-3 py-4">
+          <div className="space-y-1">
               {mainSections.map((section) => (
-                <Link
+              <Link
                   key={section.name}
                   href={section.href}
-                  onClick={closeMenu}
+                onClick={closeMenu}
                   className={`
                     flex items-center px-3 py-3 rounded-lg transition-colors group
                     ${pathname === section.href ? 'bg-gray-50 text-[#fc640c]' : 'text-gray-700 hover:bg-gray-50'}
                   `}
-                >
+              >
                   <span className={`transition-colors mr-4 ${pathname === section.href ? 'text-[#fc640c]' : 'text-gray-500 group-hover:text-[#fc640c]'}`}>
                     {section.icon}
-                  </span>
+                </span>
                   <span className={`font-medium ${pathname === section.href ? 'text-[#fc640c]' : 'group-hover:text-[#fc640c]'}`}>
                     {section.name}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </nav>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </nav>
 
           {/* Разделитель */}
           <div className="px-5 py-2">
@@ -259,86 +259,86 @@ export const SideBar = () => {
             </div>
           </div>
 
-          {/* Разделитель */}
-          <div className="px-5 py-2">
-            <div className="h-px bg-gray-200"></div>
-          </div>
+        {/* Разделитель */}
+        <div className="px-5 py-2">
+          <div className="h-px bg-gray-200"></div>
+        </div>
 
-          {/* Пользовательские ссылки */}
-          <div className="px-3 py-4">
-            <div className="space-y-1">
-              {user && (
-                <>
-                  <Link
-                    href="/profile"
-                    onClick={closeMenu}
-                    className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
-                  >
-                    <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
-                      <IoPersonOutline className="w-5 h-5" />
-                    </span>
-                    <span className="font-medium group-hover:text-[#fc640c] transition-colors">
-                      Мой профиль
-                    </span>
-                  </Link>
-                  
-                  <Link
-                    href="/orders"
-                    onClick={closeMenu}
-                    className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
-                  >
-                    <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
-                      <IoCartOutline className="w-5 h-5" />
-                    </span>
-                    <span className="font-medium group-hover:text-[#fc640c] transition-colors">
-                      Мои заказы
-                    </span>
-                  </Link>
-                  
-                  {user.role === "admin" && (
-                    <Link
-                      href="/admin"
-                      onClick={closeMenu}
-                      className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
-                    >
-                      <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
-                        <IoMenuOutline className="w-5 h-5" />
-                      </span>
-                      <span className="font-medium group-hover:text-[#fc640c] transition-colors">
-                        Админ-панель
-                      </span>
-                    </Link>
-                  )}
-                </>
-              )}
-
-              {/* Кнопка входа/выхода */}
-              {!user ? (
+        {/* Пользовательские ссылки */}
+        <div className="px-3 py-4">
+          <div className="space-y-1">
+            {user && (
+              <>
                 <Link
-                  href="/auth/login"
+                  href="/profile"
                   onClick={closeMenu}
                   className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
                 >
                   <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
-                    <IoLogInOutline className="w-5 h-5" />
+                    <IoPersonOutline className="w-5 h-5" />
                   </span>
                   <span className="font-medium group-hover:text-[#fc640c] transition-colors">
-                    Войти
+                    Мой профиль
                   </span>
                 </Link>
-              ) : (
-                <button
-                  onClick={() => signOut()}
-                  className="w-full flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
+                
+                <Link
+                  href="/orders"
+                  onClick={closeMenu}
+                  className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
                 >
-                  <span className="text-gray-500 group-hover:text-red-500 transition-colors mr-4">
-                    <IoLogOutOutline className="w-5 h-5" />
+                  <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
+                    <IoCartOutline className="w-5 h-5" />
                   </span>
-                  <span className="font-medium text-left group-hover:text-red-500 transition-colors">
-                    Выйти
+                  <span className="font-medium group-hover:text-[#fc640c] transition-colors">
+                    Мои заказы
                   </span>
-                </button>
-              )}
+                </Link>
+                
+                {user.role === "admin" && (
+                  <Link
+                    href="/admin"
+                    onClick={closeMenu}
+                    className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
+                  >
+                    <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
+                      <IoMenuOutline className="w-5 h-5" />
+                    </span>
+                    <span className="font-medium group-hover:text-[#fc640c] transition-colors">
+                      Админ-панель
+                    </span>
+                  </Link>
+                )}
+              </>
+            )}
+
+            {/* Кнопка входа/выхода */}
+            {!user ? (
+              <Link
+                href="/auth/login"
+                onClick={closeMenu}
+                className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
+              >
+                <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
+                  <IoLogInOutline className="w-5 h-5" />
+                </span>
+                <span className="font-medium group-hover:text-[#fc640c] transition-colors">
+                  Войти
+                </span>
+              </Link>
+            ) : (
+              <button
+                onClick={() => signOut()}
+                className="w-full flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
+              >
+                <span className="text-gray-500 group-hover:text-red-500 transition-colors mr-4">
+                  <IoLogOutOutline className="w-5 h-5" />
+                </span>
+                <span className="font-medium text-left group-hover:text-red-500 transition-colors">
+                  Выйти
+                </span>
+              </button>
+            )}
             </div>
           </div>
         </div>

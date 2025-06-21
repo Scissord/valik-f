@@ -1,6 +1,7 @@
 import { titleFont } from "@/config/fonts";
 import Link from "next/link";
 import { FaInstagram, FaFacebook, FaTwitter, FaTelegram } from "react-icons/fa";
+import Image from "next/image";
 
 export const Footer = () => {
   return (
@@ -10,9 +11,13 @@ export const Footer = () => {
           {/* Логотип и описание */}
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="inline-block">
-              <span className={`${titleFont.className} text-xl antialiased font-bold text-orange-500`}>
-                Valik.kz
-              </span>
+              <Image 
+                src="/logo.svg"
+                alt="Valik.kz"
+                width={120}
+                height={40}
+                priority
+              />
             </Link>
             <p className="mt-4 text-sm text-gray-600">
               Ваш надежный партнер в строительстве и ремонте. Качественные материалы и инструменты с доставкой по всей России.
