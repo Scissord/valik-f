@@ -129,36 +129,36 @@ export default async function Home() {
 
       {/* Секция категорий */}
       <section className="py-16">
-        <div className="flex flex-col md:flex-row justify-between items-baseline mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Категории товаров</h2>
-          <Link 
-            href="/categories" 
-            className="text-orange-500 hover:text-orange-600 flex items-center gap-1 transition-colors font-medium"
-          >
-            Все категории
-            <IoArrowForwardOutline className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.slice(0, 6).map((category) => (
+          <div className="flex flex-col md:flex-row justify-between items-baseline mb-8">
+            <h2 className="text-3xl font-bold text-gray-900">Категории товаров</h2>
             <Link 
-              key={category.id} 
-              href={`/categories/${category.slug}`}
-              className="group bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 transition-all hover:shadow-md hover:border-orange-200"
+              href="/categories" 
+              className="text-orange-500 hover:text-orange-600 flex items-center gap-1 transition-colors font-medium"
             >
+              Все категории
+              <IoArrowForwardOutline className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.slice(0, 6).map((category) => (
+              <Link 
+                key={category.id} 
+                href={`/categories/${category.slug}`}
+              className="group bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 transition-all hover:shadow-md hover:border-orange-200"
+              >
               <div className="relative h-32 overflow-hidden bg-gradient-to-r from-orange-500 to-orange-400 flex items-center justify-center">
                 <div className="absolute top-0 left-0 w-24 h-24 bg-white/10 rounded-full -translate-x-12 -translate-y-12"></div>
                 <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-12 translate-y-12"></div>
                 <h3 className="font-bold text-2xl text-white text-center relative z-10 px-4">
-                  {category.name}
-                </h3>
+                    {category.name}
+                  </h3>
               </div>
               <div className="p-6">
                 <p className="text-gray-700">{category.description}</p>
-              </div>
-            </Link>
-          ))}
+                </div>
+              </Link>
+            ))}
         </div>
       </section>
 
@@ -192,30 +192,30 @@ export default async function Home() {
 
       {/* Секция с информацией */}
       <section className="py-16">
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-          <div className="grid md:grid-cols-2">
-            <div className="p-8 md:p-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Инструменты для профессионалов</h2>
-              <p className="text-gray-600 mb-6">
-                Наш магазин предлагает широкий выбор профессиональных инструментов от ведущих производителей.
-                Все товары сертифицированы и имеют гарантию качества.
-              </p>
-              <Link 
-                href="/categories/tools" 
-                className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-              >
-                Перейти в каталог
-                <IoArrowForwardOutline className="w-5 h-5" />
-              </Link>
-            </div>
-            <div className="relative h-60 md:h-auto bg-gray-200">
-              {/* Здесь будет изображение, когда оно будет доступно */}
-              {/* <Image 
-                src="/banners/tools-banner.jpg"
-                alt="Профессиональные инструменты"
-                fill
-                style={{ objectFit: 'cover' }}
-              /> */}
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+            <div className="grid md:grid-cols-2">
+              <div className="p-8 md:p-12">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">Инструменты для профессионалов</h2>
+                <p className="text-gray-600 mb-6">
+                  Наш магазин предлагает широкий выбор профессиональных инструментов от ведущих производителей.
+                  Все товары сертифицированы и имеют гарантию качества.
+                </p>
+                <Link 
+                  href="/categories/tools" 
+                  className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  Перейти в каталог
+                  <IoArrowForwardOutline className="w-5 h-5" />
+                </Link>
+              </div>
+              <div className="relative h-60 md:h-auto bg-gray-200">
+                {/* Здесь будет изображение, когда оно будет доступно */}
+                {/* <Image 
+                  src="/banners/tools-banner.jpg"
+                  alt="Профессиональные инструменты"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                /> */}
             </div>
           </div>
         </div>

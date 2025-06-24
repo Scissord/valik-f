@@ -83,7 +83,7 @@ export const Header = () => {
             </Link>
             
             {/* Профиль */}
-            <Link href="/profile" className={`p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}>
+            <Link href="/auth/login" className={`p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}>
               <IoPersonOutline className="w-5 h-5 text-gray-700" />
             </Link>
             
