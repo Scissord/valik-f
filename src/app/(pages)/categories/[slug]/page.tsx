@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getProductsForCategory, getCategories } from '@/api'
 
 type Props = {
-  params: Promise<{ slug: number }>;
+  params: Promise<{ slug: string }>;
   searchParams: { page?: string };
 };
 
@@ -26,7 +26,7 @@ export default async function ProductPage({
   } = await getProductsForCategory({
     page,
     limit: 9,
-    category_id: +slug,
+    category_id: slug,
   });
 
   // if (!product) {
@@ -45,7 +45,7 @@ export default async function ProductPage({
         <div className="flex-1">
           <Title
             title={"Категории"}
-            subtitle={category?.name || "Продукты"}
+            subtitle={category?.title || "Продукты"}
             total={total}
           />
           
@@ -61,7 +61,7 @@ export default async function ProductPage({
                               text-gray-700 hover:text-gray-700 transition-all duration-200 ease-in-out cursor-pointer"
                     href={`/categories/${category.id}`}
                   >
-                    <span className="text-sm">{category.name}</span>
+                    <span className="text-sm">{category.title}</span>
                   </Link>
                 ))}
               </div>

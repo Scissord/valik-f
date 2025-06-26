@@ -1,29 +1,28 @@
 "use client";
-import { signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
-import { useUIStore, useUserStore } from "@/store";
+import { useUIStore } from "@/store";
 import { GoodCategory } from "@/interfaces";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IoCloseOutline, IoSearchOutline, IoHomeOutline, IoPersonOutline, IoShirtOutline, IoWomanOutline, IoLogOutOutline, IoLogInOutline, IoCartOutline, IoMenuOutline, IoChevronDownOutline, IoGridOutline } from "react-icons/io5";
-import { FaChild } from "react-icons/fa";
+import { IoCloseOutline, IoChevronDownOutline, IoGridOutline, IoCartOutline } from "react-icons/io5";
 import { getCategories } from '@/api';
 
 export const SideBar = () => {
   const isSideMenuOpen = useUIStore((state) => state.isSideMenuOpen);
   const closeMenu = useUIStore((state) => state.closeSideMenu);
-  const user = useUserStore((state) => state.user);
   const pathname = usePathname();
   const [categories, setCategories] = useState<GoodCategory[]>([]);
-  const [expandedCategories, setExpandedCategories] = useState<number[]>([]);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Загрузка категорий
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        console.log('Запрос категорий из компонента SideBar');
         const categoriesData = await getCategories();
+        console.log('Категории получены в компоненте:', categoriesData);
         setCategories(categoriesData);
       } catch (error) {
         console.error('Ошибка загрузки категорий:', error);
@@ -36,17 +35,17 @@ export const SideBar = () => {
   }, []);
 
   // Функция для получения ID категории из URL
-  const getCurrentCategoryId = (): number | null => {
-    const match = pathname.match(/\/categories\/(\d+)/);
-    return match ? parseInt(match[1]) : null;
+  const getCurrentCategoryId = (): string | null => {
+    const match = pathname.match(/\/categories\/(\w+)/);
+    return match ? match[1] : null;
   };
   
   // Функция для поиска родительских категорий
   const findParentCategories = (
     categories: GoodCategory[], 
-    targetId: number, 
-    path: number[] = []
-  ): number[] | null => {
+    targetId: string, 
+    path: string[] = []
+  ): string[] | null => {
     for (const category of categories) {
       if (category.id === targetId) {
         return [...path, category.id];
@@ -76,7 +75,7 @@ export const SideBar = () => {
     }
   }, [pathname, categories]);
 
-  const toggleCategory = (categoryId: number) => {
+  const toggleCategory = (categoryId: string) => {
     if (expandedCategories.includes(categoryId)) {
       setExpandedCategories(expandedCategories.filter(id => id !== categoryId));
     } else {
@@ -118,7 +117,7 @@ export const SideBar = () => {
             
             <div className="flex flex-col">
               <span className={`text-sm ${isActive ? 'text-[#fc640c]' : 'text-gray-700'}`}>
-                {category.name}
+                {category.title}
               </span>
               {level === 0 && (
                 <span className="text-xs text-gray-400 mt-0.5">
@@ -149,14 +148,6 @@ export const SideBar = () => {
       </div>
     );
   };
-
-  // Основные разделы
-  const mainSections = [
-    { name: "Главная", icon: <IoHomeOutline className="w-5 h-5" />, href: "/" },
-    { name: "Инструменты", icon: <IoShirtOutline className="w-5 h-5" />, href: "/categories/tools" },
-    { name: "Материалы", icon: <IoWomanOutline className="w-5 h-5" />, href: "/categories/materials" },
-    { name: "Сантехника", icon: <FaChild className="w-5 h-5" />, href: "/categories/plumbing" },
-  ];
 
   return (
     <>
@@ -190,49 +181,8 @@ export const SideBar = () => {
           </button>
         </div>
 
-        {/* Поиск */}
-        <div className="px-5 py-4">
-          <div className="relative">
-            <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Поиск товаров..."
-              className="w-full py-2 pl-10 pr-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#fc640c] focus:border-transparent"
-            />
-          </div>
-        </div>
-
         {/* Содержимое прокручиваемой области */}
-        <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 270px)' }}>
-          {/* Основная навигация */}
-        <nav className="px-3 py-4">
-          <div className="space-y-1">
-              {mainSections.map((section) => (
-              <Link
-                  key={section.name}
-                  href={section.href}
-                onClick={closeMenu}
-                  className={`
-                    flex items-center px-3 py-3 rounded-lg transition-colors group
-                    ${pathname === section.href ? 'bg-gray-50 text-[#fc640c]' : 'text-gray-700 hover:bg-gray-50'}
-                  `}
-              >
-                  <span className={`transition-colors mr-4 ${pathname === section.href ? 'text-[#fc640c]' : 'text-gray-500 group-hover:text-[#fc640c]'}`}>
-                    {section.icon}
-                </span>
-                  <span className={`font-medium ${pathname === section.href ? 'text-[#fc640c]' : 'group-hover:text-[#fc640c]'}`}>
-                    {section.name}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </nav>
-
-          {/* Разделитель */}
-          <div className="px-5 py-2">
-            <div className="h-px bg-gray-200"></div>
-          </div>
-
+        <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 180px)' }}>
           {/* Категории товаров */}
           <div className="px-3 py-4">
             <div className="flex items-center px-3 mb-2">
@@ -258,95 +208,6 @@ export const SideBar = () => {
               )}
             </div>
           </div>
-
-        {/* Разделитель */}
-        <div className="px-5 py-2">
-          <div className="h-px bg-gray-200"></div>
-        </div>
-
-        {/* Пользовательские ссылки */}
-        <div className="px-3 py-4">
-          <div className="space-y-1">
-            {user && (
-              <>
-                <Link
-                  href="/profile"
-                  onClick={closeMenu}
-                  className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
-                >
-                  <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
-                    <IoPersonOutline className="w-5 h-5" />
-                  </span>
-                  <span className="font-medium group-hover:text-[#fc640c] transition-colors">
-                    Мой профиль
-                  </span>
-                </Link>
-                
-                <Link
-                  href="/orders"
-                  onClick={closeMenu}
-                  className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
-                >
-                  <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
-                    <IoCartOutline className="w-5 h-5" />
-                  </span>
-                  <span className="font-medium group-hover:text-[#fc640c] transition-colors">
-                    Мои заказы
-                  </span>
-                </Link>
-                
-                {user.role === "admin" && (
-                  <Link
-                    href="/admin"
-                    onClick={closeMenu}
-                    className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
-                  >
-                    <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
-                      <IoMenuOutline className="w-5 h-5" />
-                    </span>
-                    <span className="font-medium group-hover:text-[#fc640c] transition-colors">
-                      Админ-панель
-                    </span>
-                  </Link>
-                )}
-              </>
-            )}
-
-            {/* Кнопка входа/выхода */}
-            {!user ? (
-              <Link
-                href="/auth/login"
-                onClick={closeMenu}
-                className="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
-              >
-                <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-4">
-                  <IoLogInOutline className="w-5 h-5" />
-                </span>
-                <span className="font-medium group-hover:text-[#fc640c] transition-colors">
-                  Войти
-                </span>
-              </Link>
-            ) : (
-              <button
-                onClick={() => signOut()}
-                className="w-full flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors group"
-              >
-                <span className="text-gray-500 group-hover:text-red-500 transition-colors mr-4">
-                  <IoLogOutOutline className="w-5 h-5" />
-                </span>
-                <span className="font-medium text-left group-hover:text-red-500 transition-colors">
-                  Выйти
-                </span>
-              </button>
-            )}
-            </div>
-          </div>
-        </div>
-
-        {/* Контактная информация */}
-        <div className="sticky bottom-0 left-0 right-0 px-5 py-6 border-t bg-gray-50">
-          <p className="text-sm text-gray-500">Нужна помощь?</p>
-          <p className="text-lg font-medium text-gray-800">+7-(777)-(777)-77-77</p>
         </div>
       </aside>
     </>

@@ -9,7 +9,11 @@ interface Props {
 }
 
 export const ProductItem = ({ product }: Props) => {
-  const [displayImage, setDisplayImage] = useState(product.images[0]);
+  // Проверяем наличие массива изображений или создаем пустой массив
+  const images = Array.isArray(product.images) ? product.images : [];
+  const defaultImage = images.length > 0 ? images[0] : '/placeholder.jpg';
+  
+  const [displayImage, setDisplayImage] = useState(defaultImage);
 
   return (
     <div className="rounded-md overflow-hidden fade-in">
@@ -20,15 +24,15 @@ export const ProductItem = ({ product }: Props) => {
           className="w-full object-cover rounded"
           width={500}
           height={500}
-          onMouseEnter={() => product.images.length > 1 && setDisplayImage(product.images[1])}
-          onMouseLeave={() => setDisplayImage(product.images[0])}
+          onMouseEnter={() => images.length > 1 && setDisplayImage(images[1])}
+          onMouseLeave={() => setDisplayImage(defaultImage)}
         />
       </Link>
       <div className="p-4 flex flex-col">
         <Link className="hover:text-blue-600" href={`/product/${product.id}`}>
           {product.title}
         </Link>
-        <span className="font-bold">{product.price.toLocaleString('ru-RU')} ₸</span>
+        <span className="font-bold">{typeof product.price === 'number' ? product.price.toLocaleString('ru-RU') : '0'} ₸</span>
       </div>
     </div>
   );

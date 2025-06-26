@@ -1,10 +1,14 @@
 export interface GoodCategory {
-  id: number;
-  name: string;
-  parent_id: number | null;
+  id: string;
+  title: string;
+  slug: string;
+  parent_id: string | null;
   children?: GoodCategory[];
   totalProductCount?: number;
-  _count: {
+  created_at: string;
+  updated_at: string;
+  deleted_at: null | string;
+  _count?: {
     goods: number;
   };
 }
