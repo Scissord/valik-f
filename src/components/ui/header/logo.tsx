@@ -3,13 +3,13 @@ import Link from "next/link";
 
 const Logo = () => {
   return (
-    <Link href={"/"}>
-      <Image
-        src={'/logo.svg'}
-        className=""
-        alt={"logo"}
+    <Link href="/" className="flex items-center">
+      <Image 
+        src="/logo.svg"
+        alt="Valik.kz"
         width={120}
-        height={100}
+        height={40}
+        priority
       />
     </Link>
   )

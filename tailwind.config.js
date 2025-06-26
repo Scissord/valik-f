@@ -25,6 +25,10 @@ module.exports = {
           '100%': { opacity: 1, transform: 'translateY(0)' },
         },
       },
+      zIndex: {
+        '55': '55',
+        '60': '60',
+      }
     },
   },
   plugins: [],

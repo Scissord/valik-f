@@ -4,176 +4,67 @@ interface Params {
   id: string; // В данном случае id используется как slug
 }
 
-// Временные данные для заглушки API
-const mockProducts: ProductItem[] = [
-  {
-    id: "1",
-    title: "Футболка базовая",
-    description: "Базовая футболка из хлопка",
-    price: 1999,
-    images: ["/products/1473809-00-A_1_2000.jpg", "/products/1473809-00-A_alt.jpg"],
-    slug: "basic-tshirt",
-    inStock: 10,
-    brand: "BrandName",
-    brand_id: 1,
-    unit: "шт",
-    unit_id: 1,
-    category: "Футболки",
-    category_id: 1,
-    rating: 4.5,
-    article: 10001,
-    created_at: Date.now(),
-    updated_at: Date.now(),
-    deleted_at: 0,
-    sizes: ["S", "M", "L", "XL"],
-    tags: ["футболка", "базовая", "хлопок"],
-    gender: "unisex"
-  },
-  {
-    id: "2",
-    title: "Джинсы классические",
-    description: "Классические джинсы прямого кроя",
-    price: 3999,
-    images: ["/products/1740176-00-A_0_2000.jpg", "/products/1740176-00-A_1.jpg"],
-    slug: "classic-jeans",
-    inStock: 5,
-    brand: "BrandName",
-    brand_id: 1,
-    unit: "шт",
-    unit_id: 1,
-    category: "Брюки",
-    category_id: 2,
-    rating: 4.2,
-    article: 10002,
-    created_at: Date.now(),
-    updated_at: Date.now(),
-    deleted_at: 0,
-    sizes: ["S", "M", "L", "XL"],
-    tags: ["джинсы", "классические", "деним"],
-    gender: "men"
-  },
-  {
-    id: "3",
-    title: "Кроссовки спортивные",
-    description: "Легкие спортивные кроссовки",
-    price: 5999,
-    images: ["/products/1549268-00-A_0_2000.jpg", "/products/1549268-00-A_2.jpg"],
-    slug: "sport-shoes",
-    inStock: 8,
-    brand: "BrandName",
-    brand_id: 1,
-    unit: "пара",
-    unit_id: 2,
-    category: "Обувь",
-    category_id: 3,
-    rating: 4.7,
-    article: 10003,
-    created_at: Date.now(),
-    updated_at: Date.now(),
-    deleted_at: 0,
-    sizes: ["S", "M", "L", "XL"],
-    tags: ["обувь", "кроссовки", "спорт"],
-    gender: "unisex"
-  },
-  {
-    id: "4",
-    title: "Шапка зимняя",
-    description: "Теплая зимняя шапка",
-    price: 1499,
-    images: ["/products/1657915-00-A_0_2000.jpg", "/products/1657915-00-A_1.jpg"],
-    slug: "winter-hat",
-    inStock: 15,
-    brand: "BrandName",
-    brand_id: 1,
-    unit: "шт",
-    unit_id: 1,
-    category: "Аксессуары",
-    category_id: 4,
-    rating: 4.3,
-    article: 10004,
-    created_at: Date.now(),
-    updated_at: Date.now(),
-    deleted_at: 0,
-    sizes: ["S", "M", "L"],
-    tags: ["шапка", "зимняя", "аксессуары"],
-    gender: "unisex"
-  },
-  {
-    id: "5",
-    title: "Футболка с принтом",
-    description: "Хлопковая футболка с оригинальным принтом",
-    price: 2499,
-    images: ["/products/1473814-00-A_1_2000.jpg", "/products/1473814-00-A_alt.jpg"],
-    slug: "print-tshirt",
-    inStock: 7,
-    brand: "BrandName",
-    brand_id: 1,
-    unit: "шт",
-    unit_id: 1,
-    category: "Футболки",
-    category_id: 1,
-    rating: 4.6,
-    article: 10005,
-    created_at: Date.now(),
-    updated_at: Date.now(),
-    deleted_at: 0,
-    sizes: ["S", "M", "L", "XL"],
-    tags: ["футболка", "принт", "хлопок"],
-    gender: "unisex"
-  },
-  {
-    id: "6",
-    title: "Брюки чиносы",
-    description: "Повседневные брюки чиносы",
-    price: 3499,
-    images: ["/products/1740211-00-A_0_2000.jpg", "/products/1740211-00-A_1.jpg"],
-    slug: "chinos",
-    inStock: 12,
-    brand: "BrandName",
-    brand_id: 1,
-    unit: "шт",
-    unit_id: 1,
-    category: "Брюки",
-    category_id: 2,
-    rating: 4.4,
-    article: 10006,
-    created_at: Date.now(),
-    updated_at: Date.now(),
-    deleted_at: 0,
-    sizes: ["S", "M", "L", "XL"],
-    tags: ["брюки", "чиносы", "повседневные"],
-    gender: "men"
-  }
-];
-
 export const getProduct = async ({
   id,
 }: Params) => {
+  // Проверка на undefined или пустое значение
+  if (!id) {
+    console.error('[API] Ошибка: ID продукта не определен');
+    throw new Error("ID продукта не определен");
+  }
+  
+  const url = `http://localhost:8080/products/${id}`;
+  console.log(`[API] Запрос информации о продукте: ${url}`);
+  
   try {
-    // Заглушка API - возвращаем фиктивные данные
-    // В реальном приложении здесь будет запрос к API
-    // const response = await fetch(`http://localhost:8080/products/${id}`);
-    // if (!response.ok) {
-    //   throw new Error(`Ошибка HTTP: ${response.status}`);
-    // }
-    // const product = await response.json();
-
-    // Имитация задержки сети
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    // Отладочная информация
-    console.log('API Debug - getProduct:', { id });
-
-    // Поиск продукта по slug или ID
-    const product = mockProducts.find(p => p.slug === id || p.id === id);
+    // Реальный запрос к API
+    const response = await fetch(url, {
+      cache: 'no-store', // Отключаем кеширование для получения актуальных данных
+    });
     
+    if (!response.ok) {
+      console.error(`[API] Ошибка при запросе продукта ${id}: ${response.status}`);
+      throw new Error(`Ошибка HTTP: ${response.status}`);
+    }
+    
+    const product = await response.json();
+
     if (!product) {
+      console.error(`[API] Продукт с ID ${id} не найден`);
       throw new Error(`Продукт с ID ${id} не найден`);
+    }
+    
+    console.log(`[API] Получена информация о продукте: ${product.title || id}`);
+    
+    // Детальное логирование структуры продукта
+    console.log('[API] Полная структура продукта:');
+    console.log(JSON.stringify(product, null, 2));
+    
+    // Выводим ключи всех полей продукта
+    const productKeys = Object.keys(product);
+    console.log('[API] Все поля продукта:', productKeys.join(', '));
+    
+    // Проверяем соответствие интерфейсу ProductItem
+    const productItemFields = [
+      'id', 'title', 'description', 'brand', 'brand_id', 'unit', 'unit_id', 
+      'category', 'category_id', 'rating', 'article', 'price', 'created_at', 
+      'updated_at', 'deleted_at', 'images', 'slug', 'inStock', 'sizes', 
+      'tags', 'gender'
+    ];
+    
+    const missingFields = productItemFields.filter(field => !productKeys.includes(field));
+    if (missingFields.length > 0) {
+      console.warn('[API] Отсутствуют поля из интерфейса ProductItem:', missingFields.join(', '));
+    }
+    
+    const additionalFields = productKeys.filter(key => !productItemFields.includes(key));
+    if (additionalFields.length > 0) {
+      console.log('[API] Дополнительные поля продукта:', additionalFields.join(', '));
     }
 
     return product;
   } catch (error) {
-    console.error(error);
+    console.error('[API] Ошибка при загрузке продукта:', error);
     throw new Error("Ошибка при получении информации о продукте!");
   }
 };

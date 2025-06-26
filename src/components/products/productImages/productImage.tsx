@@ -36,6 +36,12 @@ export const ProductImage = ({
       height={height}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      unoptimized={true}
+      onError={(e) => {
+        const target = e.target as HTMLImageElement;
+        target.onerror = null;
+        target.src = "/imgs/placeholder.png";
+      }}
     />
   );
 };

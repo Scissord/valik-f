@@ -13,7 +13,7 @@ export const ProductItem = ({ product }: Props) => {
 
   return (
     <div className="rounded-md overflow-hidden fade-in">
-      <Link href={`/product/${product.slug}`}>
+      <Link href={`/product/${product.id}`}>
         <ProductImage
           url={displayImage}
           title={product.title}
@@ -25,10 +25,10 @@ export const ProductItem = ({ product }: Props) => {
         />
       </Link>
       <div className="p-4 flex flex-col">
-        <Link className="hover:text-blue-600" href={`/product/${product.slug}`}>
+        <Link className="hover:text-blue-600" href={`/product/${product.id}`}>
           {product.title}
         </Link>
-        <span className="font-bold">${product.price.toLocaleString('ru-RU')}</span>
+        <span className="font-bold">{product.price.toLocaleString('ru-RU')} ₸</span>
       </div>
     </div>
   );
