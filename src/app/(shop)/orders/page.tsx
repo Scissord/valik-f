@@ -1,18 +1,10 @@
-import { getOderByUser } from "@/actions";
 import { Title } from "@/components";
-
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { IoCardOutline } from "react-icons/io5";
 
 export default async function OrderPage() {
-  const { ok, orders } = await getOderByUser();
 
-  if (!ok) {
-    redirect("/");
-  } else if (!orders) {
-    return <div>Cargando...</div>;
-  }
+
 
   return (
     <>
@@ -48,7 +40,7 @@ export default async function OrderPage() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {/* {orders.map((order) => (
               <tr
                 key={order.id}
                 className="bg-white border-b border-gray-300 transition duration-300 ease-in-out hover:bg-gray-100"
@@ -82,7 +74,7 @@ export default async function OrderPage() {
                   </Link>
                 </td>
               </tr>
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>
