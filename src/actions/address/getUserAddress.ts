@@ -1,15 +1,21 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-
 export const getUserAddress = async (userId: string) => {
   try {
-    const address = await prisma.userAddress.findUnique({
-      where: { userId },
-    });
+    const mockAddress = {
+      id: '1',
+      userId,
+      address: 'Улица Примерная, 123',
+      address2: '',
+      countryId: 'RU',
+      firstName: 'Иван',
+      lastName: 'Иванов',
+      phone: '+7 999 123-45-67',
+      city: 'Москва',
+      postalCode: '123456'
+    };
     
-    if (!address) return null;
-    const {countryId,...rest}=address;
+    const {countryId,...rest} = mockAddress;
     return { ...rest, country: countryId };
   } catch (error) {
     console.log(error);

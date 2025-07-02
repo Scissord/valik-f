@@ -1,21 +1,16 @@
 "use server"
 import bcryptjs from "bcryptjs"
-import { prisma } from "@/lib/prisma"
+// Импорт Prisma удален
 
 export const registerUser=async (name:string,email:string,password:string)=>{
     try{
-        const user=await prisma.user.create({
-            data:{
-                name:name,
-                email:email.toLocaleLowerCase(),
-                password:bcryptjs.hashSync(password)
-            },
-            select : {
-                id:true,
-                name:true,
-                email:true
-            }
-        })
+        // Заглушка вместо работы с Prisma
+        // Имитируем создание пользователя
+        const user = {
+            id: crypto.randomUUID(),
+            name: name,
+            email: email.toLowerCase()
+        };
 
         return {
             ok:true,

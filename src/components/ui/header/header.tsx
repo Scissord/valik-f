@@ -1,28 +1,48 @@
 "use client";
 import { useCartStore, useUIStore } from "@/store";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { IoCartOutline, IoMenuOutline, IoPersonOutline } from "react-icons/io5";
 import Logo from "./logo";
 import Search from "./search";
+import { useShallow } from 'zustand/react/shallow';
+
+// Функция для debounce
+const debounce = (fn: Function, ms = 100) => {
+  let timeoutId: NodeJS.Timeout;
+  return function(...args: any[]) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), ms);
+  };
+};
 
 export const Header = () => {
-  const totalItems = useCartStore((state) => state.getTotalItems());
-  const openMenu = useUIStore((state) => state.openSideMenu);
-  const isSideMenuOpen = useUIStore((state) => state.isSideMenuOpen);
+  // Используем useShallow для предотвращения лишних ререндеров
+  const totalItems = useCartStore(state => state.getTotalItems());
+  const { openMenu, isSideMenuOpen } = useUIStore(
+    useShallow(state => ({
+      openMenu: state.openSideMenu,
+      isSideMenuOpen: state.isSideMenuOpen
+    }))
+  );
+  
   const [loaded, setLoaded] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // Мемоизируем обработчик прокрутки с debounce
+  const handleScroll = useCallback(
+    debounce(() => {
+      setIsScrolled(window.scrollY > 10);
+    }, 50),
+    []
+  );
 
   useEffect(() => {
     setLoaded(true);
     
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [handleScroll]);
 
   return (
     <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 
@@ -49,12 +69,6 @@ export const Header = () => {
               href="/about"
             >
               О сервисе
-            </Link>
-            <Link
-              className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
-              href="/news"
-            >
-              Новости
             </Link>
             <Link
               className="px-3 py-2 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"

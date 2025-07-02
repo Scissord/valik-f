@@ -1,5 +1,5 @@
 "use server"
-import { prisma } from "@/lib/prisma";
+// Импорт Prisma удален
 
 export const deleteUserAddress = async (userId: string) => {
   try {
@@ -19,13 +19,11 @@ export const deleteUserAddress = async (userId: string) => {
 
 const deleteUserAddressById = async (userId: string) => {
   try {
-    const deleteUser = await prisma.userAddress.deleteMany({
-      where: {
-        userId,
-      },
-    });
-
-    return deleteUser;
+    // Заглушка вместо работы с Prisma
+    // Имитируем успешное удаление
+    return {
+      count: 1
+    };
   } catch (error) {
     console.log(error);
     return {

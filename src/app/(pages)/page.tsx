@@ -6,10 +6,18 @@ import { IoHammerOutline, IoArrowForwardOutline, IoConstructOutline, IoLayersOut
 import { FaToolbox, FaScrewdriver, FaPaintRoller } from "react-icons/fa";
 
 export default async function Home() {
-  const { products } = await getProductsForMainPage({
-    page: 1,
-    limit: 8,
-  });
+  // Добавляем обработку ошибок при получении продуктов
+  let products = [];
+  try {
+    const result = await getProductsForMainPage({
+      page: 1,
+      limit: 8,
+    });
+    products = result.products || [];
+  } catch (error) {
+    console.error("Ошибка при загрузке продуктов:", error);
+    // В случае ошибки products останется пустым массивом
+  }
 
   // Определяем основные категории для строительного магазина
   const categories = [
@@ -177,16 +185,6 @@ export default async function Home() {
           </div>
 
           <ProductGrid products={products} />
-          
-          <div className="mt-8 text-center">
-            <Link 
-              href="/products" 
-              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-            >
-              Смотреть все товары
-              <IoArrowForwardOutline className="w-5 h-5" />
-            </Link>
-          </div>
         </div>
       </section>
 
