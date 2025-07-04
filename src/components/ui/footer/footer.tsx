@@ -20,22 +20,9 @@ export const Footer = () => {
               />
             </Link>
             <p className="mt-4 text-sm text-gray-600">
-              Ваш надежный партнер в строительстве и ремонте. Качественные материалы и инструменты с доставкой по всей России.
+              Доставка по всему Казахстану. Качественные материалы и инструменты для строительства и ремонта.
             </p>
-            <div className="mt-6 flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-[#fc640c] transition-colors">
-                <FaInstagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#fc640c] transition-colors">
-                <FaFacebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#fc640c] transition-colors">
-                <FaTwitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#fc640c] transition-colors">
-                <FaTelegram className="h-5 w-5" />
-              </a>
-            </div>
+            {/* Социальные сети убраны по запросу */}
           </div>
 
           {/* Категории */}
@@ -124,10 +111,7 @@ export const Footer = () => {
                 Email: <a href="mailto:info@valik.kz" className="hover:text-[#fc640c]">info@valik.kz</a>
               </li>
               <li className="text-sm text-gray-600">
-                Адрес: г. Москва, ул. Строительная, д. 123
-              </li>
-              <li className="text-sm text-gray-600">
-                Время работы: 8:00 - 20:00 (без выходных)
+                Адрес: Астана, Казахстан
               </li>
             </ul>
           </div>

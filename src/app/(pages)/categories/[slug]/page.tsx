@@ -35,14 +35,7 @@ export default async function ProductPage({
 
   return (
     <>
-      <div className="flex flex-col md:flex-row items-start gap-7">
-        <div className="w-full md:w-auto mb-4 md:mb-0">
-          <ProductBreadcrumbs
-            product_categories={categories}
-            className="w-full md:w-auto"
-          />
-        </div>
-        <div className="flex-1">
+      <div className="w-full">
           <Title
             title={"Категории"}
             subtitle={category?.title || "Продукты"}
@@ -70,7 +63,6 @@ export default async function ProductPage({
           
           <ProductGrid products={products} />
           <Pagination totalPages={totalPages} />
-        </div>
       </div>
     </>
   );

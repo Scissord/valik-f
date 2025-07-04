@@ -4,32 +4,85 @@ import { Title } from "@/components";
 import { useCartStore } from "@/store";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { FaRegTrashCan, FaArrowLeft } from "react-icons/fa6";
+import { IoSyncOutline } from "react-icons/io5";
 import { IoCartOutline, IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import { currencyFormat } from "@/util";
 import { useShallow } from 'zustand/react/shallow';
 
 export default function CartPage() {
   const [loaded, setLoaded] = useState(false);
+  const [isUpdatingPrices, setIsUpdatingPrices] = useState(false);
   
-  // Используем shallow для предотвращения лишних ререндеров
-  const { cart, updateProductQuantity, deleteProduct, summary } = useCartStore(
+  // Используем useShallow для предотвращения лишних ререндеров
+  const { cart, updateProductQuantity, deleteProduct } = useCartStore(
     useShallow((state) => ({
       cart: state.cart,
       updateProductQuantity: state.updateProductQuantity,
-      deleteProduct: state.deleteProduct,
-      summary: state.getSummaryInformation()
+      deleteProduct: state.deleteProduct
     }))
   );
   
-  // Деструктурируем summary только когда он нужен
-  const { total, count } = summary;
+  // Вычисляем summary только когда корзина загружена и только при изменении cart
+  const summary = loaded ? {
+    total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    count: cart.reduce((count, item) => count + item.quantity, 0)
+  } : { total: 0, count: 0 };
 
+  // Функция для обновления цен товаров из бэкенда
+  const updatePricesFromBackend = async () => {
+    if (isUpdatingPrices || cart.length === 0) return;
+    
+    setIsUpdatingPrices(true);
+    try {
+      // Получаем актуальные цены для всех товаров в корзине
+      const updatedCart = await Promise.all(
+        cart.map(async (item) => {
+          try {
+            // Запрос к бэкенду для получения актуальной цены
+            const response = await fetch(`http://localhost:8080/products/${item.id}`);
+            if (!response.ok) return item;
+            
+            const productData = await response.json();
+            // Если цена изменилась, обновляем её
+            if (productData.price !== item.price) {
+              return { ...item, price: productData.price };
+            }
+            return item;
+          } catch (error) {
+            console.error(`Ошибка при обновлении цены товара ${item.id}:`, error);
+            return item;
+          }
+        })
+      );
+      
+      // Обновляем корзину с актуальными ценами
+      updatedCart.forEach(item => {
+        if (item.price !== cart.find(cartItem => cartItem.id === item.id)?.price) {
+          updateProductQuantity(item, item.quantity);
+        }
+      });
+    } catch (error) {
+      console.error('Ошибка при обновлении цен:', error);
+    } finally {
+      setIsUpdatingPrices(false);
+    }
+  };
+
+  // Загружаем данные из localStorage только один раз при монтировании
   useEffect(() => {
-    setLoaded(true);
+    // Небольшая задержка для гарантии гидратации
+    const timer = setTimeout(() => {
+      setLoaded(true);
+      // После загрузки корзины обновляем цены с бэкенда
+      updatePricesFromBackend();
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
+  // Показываем загрузку, пока не получим данные из localStorage
   if (!loaded) {
     return (
       <div className="container mx-auto px-4 py-16 flex justify-center items-center min-h-[60vh]">
@@ -40,6 +93,7 @@ export default function CartPage() {
     );
   }
 
+  // Показываем пустую корзину
   if (!cart || cart.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16 flex flex-col justify-center items-center min-h-[60vh]">
@@ -70,11 +124,21 @@ export default function CartPage() {
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">Товары в корзине ({count})</h2>
-              <Link href="/products" className="text-orange-500 hover:text-orange-600 flex items-center gap-1">
-                <FaArrowLeft className="w-4 h-4" />
-                Продолжить покупки
-              </Link>
+              <h2 className="text-xl font-semibold text-gray-800">Товары в корзине ({summary.count})</h2>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={updatePricesFromBackend} 
+                  disabled={isUpdatingPrices}
+                  className="text-gray-500 hover:text-orange-500 flex items-center gap-1"
+                >
+                  <IoSyncOutline className={`w-4 h-4 ${isUpdatingPrices ? 'animate-spin' : ''}`} />
+                  <span className="text-sm">Обновить цены</span>
+                </button>
+                <Link href="/products" className="text-orange-500 hover:text-orange-600 flex items-center gap-1">
+                  <FaArrowLeft className="w-4 h-4" />
+                  Продолжить покупки
+                </Link>
+              </div>
             </div>
             
             <div className="divide-y divide-gray-100">
@@ -101,7 +165,7 @@ export default function CartPage() {
                       <div className="flex items-center gap-4">
                         <div className="flex items-center border border-gray-200 rounded-lg">
                           <button 
-                            onClick={() => updateProductQuantity(product, product.quantity - 1)}
+                            onClick={() => updateProductQuantity(product, Math.max(1, product.quantity - 1))}
                             className="p-2 text-gray-500 hover:text-orange-500"
                             disabled={product.quantity <= 1}
                           >
@@ -123,7 +187,12 @@ export default function CartPage() {
                         </button>
                       </div>
                       <div className="font-semibold text-lg">
-                        {currencyFormat(product.price * product.quantity)}
+                        <div className="text-right">
+                          {currencyFormat(product.price * product.quantity)}
+                        </div>
+                        <div className="text-xs text-gray-500 text-right">
+                          {currencyFormat(product.price)} за шт.
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -140,8 +209,8 @@ export default function CartPage() {
             
             <div className="space-y-3 mb-6">
               <div className="flex justify-between">
-                <span className="text-gray-600">Товары ({count})</span>
-                <span>{currencyFormat(total)}</span>
+                <span className="text-gray-600">Товары ({summary.count})</span>
+                <span>{currencyFormat(summary.total)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Доставка</span>
@@ -152,7 +221,7 @@ export default function CartPage() {
             <div className="border-t border-gray-100 pt-4 mb-6">
               <div className="flex justify-between items-center">
                 <span className="text-lg font-semibold">Итого</span>
-                <span className="text-xl font-bold">{currencyFormat(total)}</span>
+                <span className="text-xl font-bold">{currencyFormat(summary.total)}</span>
               </div>
             </div>
             
