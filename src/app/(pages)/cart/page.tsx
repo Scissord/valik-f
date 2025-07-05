@@ -74,7 +74,7 @@ export default function CartPage() {
   useEffect(() => {
     // Небольшая задержка для гарантии гидратации
     const timer = setTimeout(() => {
-      setLoaded(true);
+    setLoaded(true);
       // После загрузки корзины обновляем цены с бэкенда
       updatePricesFromBackend();
     }, 100);
@@ -134,10 +134,10 @@ export default function CartPage() {
                   <IoSyncOutline className={`w-4 h-4 ${isUpdatingPrices ? 'animate-spin' : ''}`} />
                   <span className="text-sm">Обновить цены</span>
                 </button>
-                <Link href="/products" className="text-orange-500 hover:text-orange-600 flex items-center gap-1">
-                  <FaArrowLeft className="w-4 h-4" />
-                  Продолжить покупки
-                </Link>
+              <Link href="/products" className="text-orange-500 hover:text-orange-600 flex items-center gap-1">
+                <FaArrowLeft className="w-4 h-4" />
+                Продолжить покупки
+              </Link>
               </div>
             </div>
             
@@ -188,7 +188,7 @@ export default function CartPage() {
                       </div>
                       <div className="font-semibold text-lg">
                         <div className="text-right">
-                          {currencyFormat(product.price * product.quantity)}
+                        {currencyFormat(product.price * product.quantity)}
                         </div>
                         <div className="text-xs text-gray-500 text-right">
                           {currencyFormat(product.price)} за шт.
