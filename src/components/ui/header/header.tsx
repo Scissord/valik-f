@@ -2,7 +2,7 @@
 import { useCartStore, useUIStore, useUserStore } from "@/store";
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
-import { IoCartOutline, IoMenuOutline, IoPersonOutline } from "react-icons/io5";
+import { IoCartOutline, IoMenuOutline, IoPersonOutline, IoSearchOutline } from "react-icons/io5";
 import Logo from "./logo";
 import Search from "./search";
 import { useShallow } from 'zustand/react/shallow';
@@ -88,7 +88,7 @@ export const Header = () => {
             
             {/* Поиск (мобильный) */}
             <Link href="/search" className={`md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}>
-              <IoPersonOutline className="w-5 h-5 text-gray-700" />
+              <IoSearchOutline className="w-5 h-5 text-gray-700" />
             </Link>
             
             {/* Корзина */}

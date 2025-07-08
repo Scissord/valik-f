@@ -20,3 +20,6 @@ export * from "./products/productImages/productImage"
 export * from "./product_breadcrumbs/product_breadcrumbs"
 export * from "./ai-assistant"
 export * from "./ui/RefreshButton"
+
+// Mobile
+export * from './mobile/navbar';
