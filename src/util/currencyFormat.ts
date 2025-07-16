@@ -1,8 +1,8 @@
 export const currencyFormat =(value:number)=>{
-    return new Intl.NumberFormat('en-US',{
+    return new Intl.NumberFormat('ru-KZ',{
         style:"currency",
-        currency:"USD",
-        minimumFractionDigits:2,
-        maximumFractionDigits:2,
+        currency:"KZT",
+        minimumFractionDigits:0,
+        maximumFractionDigits:0,
     }).format(value);
 };

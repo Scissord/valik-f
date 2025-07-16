@@ -15,4 +15,5 @@ export interface CartItem {
   updated_at: number;
   deleted_at: number;
   quantity: number;
+  image?: string;
 }

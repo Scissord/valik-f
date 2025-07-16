@@ -14,9 +14,20 @@ export interface User {
 };
 
 export interface UserLogin {
-  login: string;
-  password: string;
-};
+    login?: string;
+    password?: string;
+}
+
+export interface UserRegister {
+    login: string;
+    password?: string;
+    email: string;
+    full_name: string;
+    phone?: string;
+    birth_date?: number;
+    gender?: 'male' | 'female';
+    address?: string;
+}
 
 export interface UserRegistration {
   login: string;

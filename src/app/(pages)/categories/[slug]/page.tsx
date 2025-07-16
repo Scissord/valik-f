@@ -49,7 +49,7 @@ export default async function ProductPage({
             subtitle={category?.title || "Продукты"}
             total={total}
           />
-          
+
           {children_categories?.length > 0 && (
             <div className="mb-6">
               <h3 className="font-medium text-sm mb-3 text-gray-600">Подкатегории</h3>
@@ -68,7 +68,7 @@ export default async function ProductPage({
               </div>
             </div>
           )}
-          
+
           <ProductGrid products={products} />
           <Pagination totalPages={totalPages} />
         </div>
