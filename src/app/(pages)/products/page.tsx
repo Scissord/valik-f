@@ -6,9 +6,10 @@ type SearchParams = { [page: string]: string | string[] | undefined };
 export default async function ProductsPage({
   searchParams
 }: {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
-  const page = searchParams.page ? Number(searchParams.page) : 1;
+  const localSearchParams = await searchParams;
+  const page = localSearchParams.page ? Number(localSearchParams.page) : 1;
 
   const {
     products,

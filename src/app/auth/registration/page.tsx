@@ -1,4 +1,4 @@
-import { RegisterForm } from "@/components";
+import { RegistrationForm } from "@/components";
 import { titleFont } from "@/config/fonts";
 
 export default function RegisterPage() {
@@ -9,7 +9,7 @@ export default function RegisterPage() {
           Регистрация
         </h1>
         <div className="w-full bg-slate-300 h-0.5 rounded mb-4" />
-        <RegisterForm />
+        <RegistrationForm />
       </div>
     </div>
   );

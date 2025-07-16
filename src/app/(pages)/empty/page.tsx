@@ -1,19 +1,19 @@
 "use client";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import { IoCartOutline } from "react-icons/io5";
 
 export default function EmptyPage() {
-  const {  status } = useSession();
-  console.log(status)
+  // const {  status } = useSession();
+  // console.log(status)
   
-  if (status === "loading") {
-    return <p>Cargando...</p>;
-  }
-  if (status === "unauthenticated") {
-    redirect("/auth/login"); // Redirigir si no tiene sesión
-  }
+  // if (status === "loading") {
+  //   return <p>Cargando...</p>;
+  // }
+  // if (status === "unauthenticated") {
+  //   redirect("/auth/login"); // Redirigir si no tiene sesión
+  // }
 
   return (
     <div className="flex justify-center items-center h-[800px]">

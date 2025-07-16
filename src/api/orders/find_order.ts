@@ -1,3 +1,5 @@
+import { IOrder } from "@/interfaces";
+
 interface Params {
   order_id: string;
 }

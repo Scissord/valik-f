@@ -10,7 +10,7 @@ import { UserRegistration } from "@/interfaces";
 import { IoInformationOutline } from "react-icons/io5";
 import { useUserStore } from "@/store";
 
-export const RegisterForm = () => {
+export const RegistrationForm = () => {
   const router = useRouter();
   const [responseErrors, setResponseErrors] = useState<{ msg: string }[] | null>([]);
   const user = useUserStore((state) => state.user);

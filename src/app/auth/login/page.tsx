@@ -1,6 +1,6 @@
 import { LoginForm } from "@/components";
 import { titleFont } from "@/config/fonts";
-import Image from "next/image";
+// import Image from "next/image";
 
 export default function LoginPage() {
   return (

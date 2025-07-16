@@ -72,7 +72,7 @@ export const AIAssistant = () => {
     if (isOpen) {
       getChats();
     }
-  }, [isOpen]);
+  }, [isOpen, getChats]);
 
   /**
    * Текущий заголовок чата

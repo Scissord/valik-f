@@ -2,8 +2,9 @@
 import { useCartStore, useUIStore } from "@/store";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { IoCartOutline, IoSearchOutline, IoMenuOutline, IoPersonOutline } from "react-icons/io5";
+import { IoCartOutline, IoMenuOutline, IoPersonOutline } from "react-icons/io5";
 import Logo from "./logo";
+import Search from "./search";
 
 export const Header = () => {
   const totalItems = useCartStore((state) => state.getTotalItems());
@@ -66,9 +67,14 @@ export const Header = () => {
           {/* Правая часть */}
           <div className="flex items-center space-x-4">
             {/* Поиск */}
-            <button className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200" disabled={isSideMenuOpen}>
-              <IoSearchOutline className="w-5 h-5 text-gray-700" />
-            </button>
+            <div className="hidden md:block mr-2">
+              <Search />
+            </div>
+            
+            {/* Поиск (мобильный) */}
+            <Link href="/search" className={`md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}>
+              <IoPersonOutline className="w-5 h-5 text-gray-700" />
+            </Link>
             
             {/* Корзина */}
             <Link href={totalItems === 0 && loaded ? "/empty" : "/cart"} className={`p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}>

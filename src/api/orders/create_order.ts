@@ -1,7 +1,7 @@
-import { ProductItem } from "@/interfaces";
+import { CartItem } from "@/interfaces";
 
 interface Params {
-  cart: (ProductItem & { quantity: number })[];
+  cart: CartItem[];
   phone: string;
   name: string;
 }

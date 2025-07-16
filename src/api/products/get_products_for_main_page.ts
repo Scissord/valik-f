@@ -1,4 +1,4 @@
-import { Product } from "@/interfaces";
+// import { Product } from "@/interfaces";
 
 interface PaginationOptions {
   page?: number;
@@ -18,7 +18,9 @@ export const getProductsForMainPage = async ({
   try {
     // Реальный запрос к API
     const response = await fetch(url, {
-      cache: 'no-store', // Отключаем кеширование для получения актуальных данных
+      next: {
+        revalidate: 60
+      } // Отключаем кеширование для получения актуальных данных
     });
     
     if (!response.ok) {

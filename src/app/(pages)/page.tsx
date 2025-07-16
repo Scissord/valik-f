@@ -1,7 +1,7 @@
 import { ProductGrid } from "@/components";
 import { getProductsForMainPage } from '@/api';
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { IoHammerOutline, IoArrowForwardOutline, IoConstructOutline, IoLayersOutline, IoHomeOutline, IoColorPaletteOutline } from "react-icons/io5";
 import { FaToolbox, FaScrewdriver, FaPaintRoller } from "react-icons/fa";
 

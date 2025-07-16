@@ -1,15 +1,15 @@
 "use client";
 import { Title } from "@/components";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ProductsConfirm } from "./ui/ProductsConfirm";
 import { PlaceOrden } from "./ui/PlaceOrden";
 
 export default function CheckoutPage() {
-  const { data: session } = useSession();
-  const isAuthenticated = !!session?.user;
-  if (!isAuthenticated) redirect("/");
+  // const { data: session } = useSession();
+  // const isAuthenticated = !!session?.user;
+  // if (!isAuthenticated) redirect("/");
 
   return (
     <div className="flex justify-center items-center mb-72 px-10 sm:px-0">

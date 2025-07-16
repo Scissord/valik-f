@@ -1,4 +1,4 @@
-import { AccountForm } from "@/components";
+import { RegistrationForm } from "@/components";
 import { titleFont } from "@/config/fonts";
 
 export default function NewAccountPage() {
@@ -21,7 +21,7 @@ export default function NewAccountPage() {
         </div>
         
         <div className="p-8">
-          <AccountForm />
+          <RegistrationForm />
         </div>
       </div>
     </div>

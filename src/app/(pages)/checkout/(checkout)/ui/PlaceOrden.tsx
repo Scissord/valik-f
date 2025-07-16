@@ -1,4 +1,4 @@
-import { placeOrder } from "@/actions";
+// import { placeOrder } from "@/actions";
 import { useAddresStore, useCartStore } from "@/store";
 import { currencyFormat } from "@/util";
 import clsx from "clsx";
@@ -23,25 +23,25 @@ export const PlaceOrden = () => {
     const productsToOrder = cart.map((product) => ({
       productId: product.id,
       quantity: product.quantity,
-      size: product.size,
+      // size: product.size,
     }));
 
-    const resp=await placeOrder(productsToOrder,address);
-    if(!resp.ok){
-      setIsPlacingOrder(false);
-      setErrorMessage(resp.message??"");
-    }
+    // const resp=await placeOrder(productsToOrder,address);
+    // if(!resp.ok){
+    //   setIsPlacingOrder(false);
+    //   setErrorMessage(resp.message??"");
+    // }
     clearCart();
-    router.replace("/orders/"+resp.order?.id)
+    // router.replace("/orders/"+resp.order?.id)
   };
 
   useEffect(() => {
     setloaded(true);
   }, []);
 
-  const { subTotal, tax, total, itemsInCart } = useCartStore(
-    useShallow((state) => state.getSummaryInformation())
-  );
+  // const { subTotal, tax, total, itemsInCart } = useCartStore(
+  //   useShallow((state) => state.getSummaryInformation())
+  // );
 
 
   if (!loaded) {
@@ -68,16 +68,16 @@ export const PlaceOrden = () => {
       <div className="grid grid-cols-2">
         <span>No. Productos</span>
         <span className=" text-right">
-          {itemsInCart == 1 ? "1 Artículo" : `${itemsInCart} Artículos`}
+          {/* {itemsInCart == 1 ? "1 Artículo" : `${itemsInCart} Artículos`} */}
         </span>
         <span>Sub total</span>
-        <span className=" text-right"> {currencyFormat(subTotal)}</span>
+        {/* <span className=" text-right"> {currencyFormat(subTotal)}</span> */}
         <span>Impuesto (15%)</span>
-        <span className=" text-right"> {currencyFormat(tax)}</span>
+        {/* <span className=" text-right"> {currencyFormat(tax)}</span> */}
         <span className="mt-5 text-2xl">Total:</span>
         <span className="mt-5 text-2xl text-right">
           {" "}
-          {currencyFormat(total)}
+          {/* {currencyFormat(total)} */}
         </span>
       </div>
 

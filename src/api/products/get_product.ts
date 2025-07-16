@@ -1,4 +1,3 @@
-import { ProductItem } from "@/interfaces/product";
 
 interface Params {
   id: string; // В данном случае id используется как slug

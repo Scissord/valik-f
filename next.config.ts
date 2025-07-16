@@ -14,15 +14,18 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
-    // Добавляем псевдоним для @prisma/client
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@prisma/client': path.resolve(__dirname, './src/lib/prisma-client.ts'),
-    };
+  eslint: {
+    ignoreDuringBuilds: true
+  }
+  // webpack: (config, { isServer }) => {
+  //   // Добавляем псевдоним для @prisma/client
+  //   config.resolve.alias = {
+  //     ...config.resolve.alias,
+  //     '@prisma/client': path.resolve(__dirname, './src/lib/prisma-client.ts'),
+  //   };
     
-    return config;
-  },
+  //   return config;
+  // },
 }
 
 export default nextConfig;

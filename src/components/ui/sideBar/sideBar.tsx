@@ -1,29 +1,29 @@
 "use client";
-import { useUIStore, useUserStore } from "@/store";
+import { useState, useEffect } from "react";
+import { useUIStore } from "@/store";
 import { GoodCategory } from "@/interfaces";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IoCloseOutline, IoSearchOutline, IoHomeOutline, IoPersonOutline, IoShirtOutline, IoWomanOutline, IoLogOutOutline, IoLogInOutline, IoCartOutline, IoMenuOutline, IoChevronDownOutline, IoGridOutline } from "react-icons/io5";
-import { FaChild } from "react-icons/fa";
+import { IoCloseOutline, IoChevronDownOutline, IoGridOutline, IoCartOutline } from "react-icons/io5";
 import { getCategories } from '@/api';
 import { ItemSiginOut } from "./itemSiginOut";
-import { useEffect, useState } from "react";
 
 export const SideBar = () => {
   const isSideMenuOpen = useUIStore((state) => state.isSideMenuOpen);
   const closeMenu = useUIStore((state) => state.closeSideMenu);
-  const user = useUserStore((state) => state.user);
   const pathname = usePathname();
   const [categories, setCategories] = useState<GoodCategory[]>([]);
-  const [expandedCategories, setExpandedCategories] = useState<number[]>([]);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Загрузка категорий
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        console.log('Запрос категорий из компонента SideBar');
         const categoriesData = await getCategories();
+        console.log('Категории получены в компоненте:', categoriesData);
         setCategories(categoriesData);
       } catch (error) {
         console.error('Ошибка загрузки категорий:', error);
@@ -36,17 +36,17 @@ export const SideBar = () => {
   }, []);
 
   // Функция для получения ID категории из URL
-  const getCurrentCategoryId = (): number | null => {
-    const match = pathname.match(/\/categories\/(\d+)/);
-    return match ? parseInt(match[1]) : null;
+  const getCurrentCategoryId = (): string | null => {
+    const match = pathname.match(/\/categories\/(\w+)/);
+    return match ? match[1] : null;
   };
 
   // Функция для поиска родительских категорий
   const findParentCategories = (
-    categories: GoodCategory[],
-    targetId: number,
-    path: number[] = []
-  ): number[] | null => {
+    categories: GoodCategory[], 
+    targetId: string, 
+    path: string[] = []
+  ): string[] | null => {
     for (const category of categories) {
       if (category.id === targetId) {
         return [...path, category.id];
@@ -76,7 +76,7 @@ export const SideBar = () => {
     }
   }, [pathname, categories]);
 
-  const toggleCategory = (categoryId: number) => {
+  const toggleCategory = (categoryId: string) => {
     if (expandedCategories.includes(categoryId)) {
       setExpandedCategories(expandedCategories.filter(id => id !== categoryId));
     } else {
@@ -118,7 +118,7 @@ export const SideBar = () => {
 
             <div className="flex flex-col">
               <span className={`text-sm ${isActive ? 'text-[#fc640c]' : 'text-gray-700'}`}>
-                {category.name}
+                {category.title}
               </span>
               {level === 0 && (
                 <span className="text-xs text-gray-400 mt-0.5">
@@ -149,14 +149,6 @@ export const SideBar = () => {
       </div>
     );
   };
-
-  // Основные разделы
-  const mainSections = [
-    { name: "Главная", icon: <IoHomeOutline className="w-5 h-5" />, href: "/" },
-    { name: "Инструменты", icon: <IoShirtOutline className="w-5 h-5" />, href: "/categories/tools" },
-    { name: "Материалы", icon: <IoWomanOutline className="w-5 h-5" />, href: "/categories/materials" },
-    { name: "Сантехника", icon: <FaChild className="w-5 h-5" />, href: "/categories/plumbing" },
-  ];
 
   return (
     <>
@@ -190,61 +182,33 @@ export const SideBar = () => {
           </button>
         </div>
 
-        {/* Поиск */}
-        <div className="px-5 py-4">
-          <div className="relative">
-            <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Поиск товаров..."
-              className="w-full py-2 pl-10 pr-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#fc640c] focus:border-transparent"
-            />
-          </div>
-        </div>
-
         {/* Содержимое прокручиваемой области */}
-        <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 270px)' }}>
-          {/* Основная навигация */}
-          <nav className="px-3 py-4">
-            <div className="space-y-1">
-              {mainSections.map((section) => (
-                <Link
-                  key={section.name}
-                  href={section.href}
-                  onClick={closeMenu}
-                  className={`
-                    flex items-center px-3 py-3 rounded-lg transition-colors group
-                    ${pathname === section.href ? 'bg-gray-50 text-[#fc640c]' : 'text-gray-700 hover:bg-gray-50'}
-                  `}
-                >
-                  <span className={`transition-colors mr-4 ${pathname === section.href ? 'text-[#fc640c]' : 'text-gray-500 group-hover:text-[#fc640c]'}`}>
-                    {section.icon}
-                  </span>
-                  <span className={`font-medium ${pathname === section.href ? 'text-[#fc640c]' : 'group-hover:text-[#fc640c]'}`}>
-                    {section.name}
-                  </span>
-                </Link>
-              ))}
+        <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 180px)' }}>
+          {/* Категории товаров */}
+          <div className="px-3 py-4">
+            <div className="flex items-center px-3 mb-2">
+              <span className="text-gray-500 mr-3">
+                <IoGridOutline className="w-5 h-5" />
+              </span>
+              <h3 className="font-medium text-gray-800">Категории</h3>
             </div>
-
-            {/*Item login/ logout*/}
-            {!user && (
-              <ItemSiginOut
-                text={"Войти"}
-                method={closeMenu}
-                url={"/auth/login"}
-                login={false}
-              />
-            )}
-            {user && (
-              <ItemSiginOut
-                text={"Выход"}
-                method={() => null}
-                url={"/"}
-                login={false}
-              />
-            )}
-          </nav>
+            
+            <div className="mt-2">
+              {loading ? (
+                <div className="flex justify-center items-center py-6">
+                  <div className="animate-pulse flex flex-col items-center">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div className="h-2 bg-gray-200 rounded w-1/3"></div>
+                  </div>
+                </div>
+              ) : categories.length > 0 ? (
+                categories.map(category => renderCategory(category))
+              ) : (
+                <p className="py-4 px-4 text-sm text-gray-500 text-center">Категории не найдены</p>
+              )}
+            </div>
+          </div>
         </div>
       </aside>
     </>
