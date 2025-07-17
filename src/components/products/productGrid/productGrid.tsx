@@ -1,13 +1,14 @@
 import { ProductItem } from "@/components";
 import { Product } from "@/interfaces";
-import { IoBagHandleOutline, IoCartOutline } from "react-icons/io5";
+import { IoCartOutline } from "react-icons/io5";
 import { RefreshButton } from "@/components";
+import { memo } from "react";
 
 interface Props {
   products: Product[];
 }
 
-export const ProductGrid=({ products }: Props)=> {
+export const ProductGrid = memo(({ products }: Props) => {
   // Проверяем, есть ли товары
   if (!products || products.length === 0) {
     return (
@@ -27,8 +28,10 @@ export const ProductGrid=({ products }: Props)=> {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 mb-10">
       {products.map((product) => (
-        <ProductItem key={product.id} product={product}/>
+        <ProductItem key={product.id} product={product} />
       ))}
     </div>
   );
-}
+});
+
+ProductGrid.displayName = "ProductGrid";

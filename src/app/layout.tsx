@@ -5,10 +5,10 @@ import { Provider } from "@/components";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Valik | Shop",
-    default: "Home - Valik | Shop",
+    template: "%s | Valik.kz",
+    default: "Valik.kz | Интернет-магазин строительных материалов",
   },
-  description: "Una tienda virtual de productos",
+  description: "Valik.kz — ваш надежный поставщик строительных материалов. Широкий ассортимент товаров для ремонта и строительства, от фундамента до отделки. Гарантия качества и быстрая доставка.",
 };
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

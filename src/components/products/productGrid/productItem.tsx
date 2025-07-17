@@ -2,18 +2,21 @@
 import { ProductImage } from "@/components";
 import { Product } from "@/interfaces";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, memo, useEffect } from "react";
 
 interface Props {
   product: Product;
 }
 
-export const ProductItem = ({ product }: Props) => {
-  // Проверяем наличие массива изображений или создаем пустой массив
-  const images = Array.isArray(product.images) ? product.images : [];
-  const defaultImage = images.length > 0 ? images[0] : '/placeholder.jpg';
-  
+export const ProductItem = memo(({ product }: Props) => {
+  const defaultImage = product.images?.[0] ?? "/placeholder.jpg";
+  const hoverImage = product.images?.[1] ?? defaultImage;
+
   const [displayImage, setDisplayImage] = useState(defaultImage);
+
+  useEffect(() => {
+    setDisplayImage(defaultImage);
+  }, [defaultImage]);
 
   return (
     <div className="rounded-md overflow-hidden fade-in">
@@ -24,7 +27,7 @@ export const ProductItem = ({ product }: Props) => {
           className="w-full object-cover rounded"
           width={500}
           height={500}
-          onMouseEnter={() => images.length > 1 && setDisplayImage(images[1])}
+          onMouseEnter={() => setDisplayImage(hoverImage)}
           onMouseLeave={() => setDisplayImage(defaultImage)}
         />
       </Link>
@@ -32,8 +35,15 @@ export const ProductItem = ({ product }: Props) => {
         <Link className="hover:text-blue-600" href={`/product/${product.id}`}>
           {product.title}
         </Link>
-        <span className="font-bold">{typeof product.price === 'number' ? product.price.toLocaleString('ru-RU') : '0'} ₸</span>
+        <span className="font-bold">
+          {typeof product.price === "number"
+            ? product.price.toLocaleString("ru-RU")
+            : "0"}{" "}
+          ₸
+        </span>
       </div>
     </div>
   );
-};
+});
+
+ProductItem.displayName = "ProductItem";

@@ -10,11 +10,9 @@ export default function ShopLayout({
     <>
       <Header />
       <SideBar />
-      <div className="min-h-screen pt-28 md:pt-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <main className="flex-1">
-            {children}
-          </main>
-      </div>
+      <main className="min-h-screen pt-20 md:pt-24">
+        {children}
+      </main>
       <Footer />
     </>
   );

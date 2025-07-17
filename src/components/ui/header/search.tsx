@@ -13,7 +13,7 @@ interface SearchResult {
 /**
  * Компонент поиска с функцией debounce
  */
-const Search = () => {
+const Search = ({ isMobile = false }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +22,73 @@ const Search = () => {
   const [indexCreated, setIndexCreated] = useState(false);
   const [indexError, setIndexError] = useState<string | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [placeholder, setPlaceholder] = useState("Найти на Valik.kz");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const animationState = useRef<{
+    timeoutId?: NodeJS.Timeout;
+    materialIndex: number;
+    charIndex: number;
+    isDeleting: boolean;
+  }>({
+    materialIndex: 0,
+    charIndex: 0,
+    isDeleting: false,
+  });
+
+  // Примеры строительных материалов для автоввода
+  const exampleMaterials = [
+    "Цемент",
+    "Штукатурка",
+    "Гипсокартон",
+    "Керамическая плитка",
+    "Ламинат",
+    "Краска фасадная",
+    "Утеплитель"
+  ];
+
+  // Функция для эффекта автоматического ввода текста
+  useEffect(() => {
+    const state = animationState.current;
+
+    const type = () => {
+      const currentMaterial = exampleMaterials[state.materialIndex];
+      let newPlaceholder = '';
+      let timeout = 150;
+
+      if (state.isDeleting) {
+        newPlaceholder = currentMaterial.substring(0, state.charIndex - 1);
+        state.charIndex--;
+        timeout = 50;
+      } else {
+        newPlaceholder = currentMaterial.substring(0, state.charIndex + 1);
+        state.charIndex++;
+      }
+
+      setPlaceholder(newPlaceholder);
+
+      if (!state.isDeleting && state.charIndex === currentMaterial.length) {
+        state.isDeleting = true;
+        timeout = 1500;
+      } else if (state.isDeleting && state.charIndex === 0) {
+        state.isDeleting = false;
+        state.materialIndex = (state.materialIndex + 1) % exampleMaterials.length;
+        timeout = 500;
+      }
+      
+      state.timeoutId = setTimeout(type, timeout);
+    };
+
+    if (isFocused || searchQuery) {
+      if (state.timeoutId) clearTimeout(state.timeoutId);
+      setPlaceholder('Найти на Valik.kz');
+    } else {
+      state.timeoutId = setTimeout(type, 1000);
+    }
+
+    return () => {
+      if (state.timeoutId) clearTimeout(state.timeoutId);
+    };
+  }, [isFocused, searchQuery]);
 
   // Функция debounce для задержки запросов
   const debounce = useCallback((callback: (value: string) => void, delay: number) => {
@@ -172,17 +239,17 @@ const Search = () => {
       rounded-full border
       ${isFocused ? 'border-[#ff8040] shadow-md' : 'border-[#fc640c]'} 
       transition-all duration-300 ease-in-out
-      ${isFocused ? 'w-[320px]' : 'w-[300px]'}
+      ${isMobile ? 'w-full' : isFocused ? 'w-[320px]' : 'w-[300px]'}
       z-50
     `,
     input: `
       border-none outline-none
       text-black text-sm
-      pl-4 py-3 w-full
+      pl-4 py-2 w-full
       placeholder:text-gray-400
     `,
     icon: `
-      absolute right-5 w-5 h-5
+      absolute right-4 w-5 h-5
       ${isFocused ? 'text-[#ff8040]' : 'text-gray-500'}
       transition-colors duration-300
       ${isLoading ? 'animate-spin' : ''}
@@ -222,14 +289,14 @@ const Search = () => {
   return (
     <div className={css.container} ref={searchRef}>
       <input
+        ref={inputRef}
         className={css.input}
-        placeholder="Найти на Valik"
+        placeholder={placeholder}
         type="text"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onFocus={() => {
           setIsFocused(true);
-          if (searchQuery.length >= 2) setShowResults(true);
         }}
         onBlur={() => setIsFocused(false)}
       />
