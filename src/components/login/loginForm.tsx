@@ -112,7 +112,7 @@ export const LoginForm = () => {
         <div className="flex-1 bg-gray-200 h-0.5 rounded" />
       </div>
 
-      <Link href="/auth/registration" className="btn-secondary text-center">
+      <Link href="/auth/register" className="btn-secondary text-center">
         Создать новую учетную запись
       </Link>
 

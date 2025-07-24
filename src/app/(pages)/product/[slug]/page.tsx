@@ -53,10 +53,16 @@ export default async function ProductPage({ params }: Props) {
       brand: product.brand || 'Не указан',
       category: product.category || 'Не указана',
       unit: product.unit || 'шт',
-      article: product.article || 'Не указан',
+      article: Number(product.article) || 0,
       rating: product.rating || 0,
       sizes: product.sizes || [],
-      tags: product.tags || []
+      tags: product.tags || [],
+      brand_id: 0, 
+      unit_id: 0, 
+      created_at: 0,
+      updated_at: 0,
+      deleted_at: 0,
+      category_id: product.category_id || 0,
     };
 
     return (

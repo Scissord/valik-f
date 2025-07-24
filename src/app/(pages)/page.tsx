@@ -7,6 +7,7 @@ import { IoArrowForwardOutline, IoConstructOutline, IoLayersOutline, IoHomeOutli
 import { FaToolbox, FaScrewdriver, FaPaintRoller, FaTruck, FaCreditCard, FaHeadset } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { motion, Variants } from "framer-motion";
+import { Product } from "@/interfaces";
 
 const categories = [
   {
@@ -78,7 +79,7 @@ const advantages = [
 ];
 
 export default function Home() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -257,7 +258,6 @@ export default function Home() {
                       variants={cardHoverVariants}
                     >
                       <div className="relative h-48 overflow-hidden bg-gradient-to-br from-orange-500 to-orange-600">
-                        <div className="absolute top-0 left-0 w-full h-full bg-[url('/patterns/dots.svg')] opacity-30"></div>
                         <motion.div 
                           className="absolute bottom-0 right-0 p-6 text-white"
                           variants={iconVariants}

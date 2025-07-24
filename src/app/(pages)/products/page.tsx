@@ -1,5 +1,6 @@
 import { Pagination, ProductGrid } from "@/components";
 import { getProductsForMainPage } from '@/api';
+import { Product } from "@/interfaces/product.interface";
 
 type SearchParams = { [page: string]: string | string[] | undefined };
 
@@ -12,7 +13,7 @@ export default async function ProductsPage({
   const page = params.page ? Number(params.page) : 1;
 
   // Добавляем обработку ошибок
-  let products = [];
+  let products: Product[] = [];
   let total = 0;
   let totalPages = 0;
 

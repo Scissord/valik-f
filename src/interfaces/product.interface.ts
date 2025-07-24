@@ -10,6 +10,11 @@ export interface Product {
   title: string;
   gender: Category;
   category_id?: number;
+  brand?: string;
+  category?: string;
+  unit?: string;
+  article?: string;
+  rating?: number;
 }
 
 export interface CartProduct{

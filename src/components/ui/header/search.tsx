@@ -229,7 +229,7 @@ const Search = ({ isMobile = false }) => {
     };
     
     // Вызываем функцию создания индексов
-    initSearchIndex();
+    // initSearchIndex(); // <--- ЭТОТ КОД ВЫЗЫВАЕТ ПРОБЛЕМУ
   }, []);
 
   const css = {

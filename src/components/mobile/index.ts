@@ -1,2 +1,2 @@
 export * from './navbar';
-export * from './categories-page'; 
+export * from './categories'; 

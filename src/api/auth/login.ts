@@ -1,3 +1,4 @@
+import api from "../axios";
 import { User, UserLogin } from "@/interfaces";
 
 interface LoginResult {
@@ -8,35 +9,18 @@ interface LoginResult {
 
 export const login = async (data: UserLogin): Promise<LoginResult> => {
   try {
-    const response = await fetch('http://localhost:8080/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-      credentials: "include",
-    });
-    const result = await response.json();
-
-    if (!response.ok) {
-      return {
-        user: null,
-        accessToken: null,
-        errors: result.errors || [{ msg: "Ошибка при авторизации!" }],
-      };
-    };
-
+    const response = await api.post('/auth/login', data);
+    
     return {
-      user: result.user,
-      accessToken: result.accessToken,
+      user: response.data.user,
+      accessToken: response.data.accessToken,
       errors: null,
     };
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
     return {
       user: null,
       accessToken: null,
-      errors: [{ msg: "Сетевая ошибка или ошибка сервера" }],
+      errors: error.response?.data?.errors || [{ msg: "Сетевая ошибка или ошибка сервера" }],
     };
   }
 };

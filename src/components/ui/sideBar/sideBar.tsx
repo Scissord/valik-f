@@ -5,9 +5,17 @@ import { GoodCategory } from "@/interfaces";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IoCloseOutline, IoChevronDownOutline, IoGridOutline, IoCartOutline } from "react-icons/io5";
+import { IoCloseOutline, IoChevronDownOutline, IoGridOutline, IoConstructOutline, IoHomeOutline, IoCarOutline } from "react-icons/io5";
 import { getCategories } from '@/api';
 import { ItemSiginOut } from "./itemSiginOut";
+import { FaTools, FaTractor, FaPaintRoller } from 'react-icons/fa';
+import { GiBrickWall, GiWoodBeam, GiHeatHaze } from 'react-icons/gi';
+import { 
+  MdWallpaper, MdOutlineLayers, MdOutlineDoorFront, MdChair,
+  MdOutlineFormatPaint, MdAgriculture, MdOutlineWater, MdHvac,
+  MdHomeRepairService, MdStyle, MdMicrowave, MdHardware,
+  MdElectricalServices, MdHandyman
+} from "react-icons/md";
 
 export const SideBar = () => {
   const isSideMenuOpen = useUIStore((state) => state.isSideMenuOpen);
@@ -21,9 +29,7 @@ export const SideBar = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        console.log('Запрос категорий из компонента SideBar');
         const categoriesData = await getCategories();
-        console.log('Категории получены в компоненте:', categoriesData);
         setCategories(categoriesData);
       } catch (error) {
         console.error('Ошибка загрузки категорий:', error);
@@ -84,55 +90,85 @@ export const SideBar = () => {
     }
   };
 
+  const getCategoryIcon = (categoryTitle: string) => {
+    const iconMap: Record<string, React.ReactNode> = {
+      'обои': <MdWallpaper className="h-5 w-5" />,
+      'сантехника': <MdOutlineWater className="h-5 w-5" />,
+      'покрытия для пола': <MdOutlineLayers className="h-5 w-5" />,
+      'кафель': <MdOutlineLayers className="h-5 w-5" />,
+      'двери': <MdOutlineDoorFront className="h-5 w-5" />,
+      'мебель': <MdChair className="h-5 w-5" />,
+      'лаки, краски, клей': <MdOutlineFormatPaint className="h-5 w-5" />,
+      'инструменты': <FaTools className="h-5 w-5" />,
+      'для дома, сада и огорода': <MdAgriculture className="h-5 w-5" />,
+      'водоснабжение, отопление и вентиляция': <MdHvac className="h-5 w-5" />,
+      'оборудование': <MdHomeRepairService className="h-5 w-5" />,
+      'декор': <MdStyle className="h-5 w-5" />,
+      'бытовая техника': <MdMicrowave className="h-5 w-5" />,
+      'крепёж': <MdHardware className="h-5 w-5" />,
+      'строительные материалы': <GiBrickWall className="h-5 w-5" />,
+      'электротовары': <MdElectricalServices className="h-5 w-5" />,
+      'автомобильные товары': <IoCarOutline className="h-5 w-5" />,
+      'ручной инструмент': <MdHandyman className="h-5 w-5" />,
+      // Резервные ключи
+      'отделка': <FaPaintRoller className="h-5 w-5" />,
+      'дерево': <GiWoodBeam className="h-5 w-5" />,
+      'отопление': <GiHeatHaze className="h-5 w-5" />,
+      'сад': <MdAgriculture className="h-5 w-5" />,
+      'техника': <FaTractor className="h-5 w-5" />,
+      'дом': <IoHomeOutline className="h-5 w-5" />,
+    };
+    
+    const title = categoryTitle.toLowerCase();
+    for (const [keyword, icon] of Object.entries(iconMap)) {
+      if (title.includes(keyword)) {
+        return icon;
+      }
+    }
+    
+    return <IoConstructOutline className="h-5 w-5" />;
+  };
+
   const renderCategory = (category: GoodCategory, level: number = 0) => {
     const isExpanded = expandedCategories.includes(category.id);
     const hasChildren = category.children && category.children.length > 0;
-    const productCount = category.totalProductCount || category._count?.goods || 0;
     const currentCategoryId = getCurrentCategoryId();
     const isActive = currentCategoryId === category.id;
+    const icon = getCategoryIcon(category.title);
 
     return (
       <div key={category.id} className="w-full">
         <div
           className={`
-            group relative flex items-center justify-between py-2 px-3
+            group relative flex items-center justify-between py-2.5 px-3 rounded-md
             ${level > 0 ? 'pl-' + (level * 4 + 3) : ''}
-            ${isActive ? 'bg-gray-50 text-[#fc640c] font-medium' : 'hover:bg-gray-50'}
+            ${isActive ? 'bg-orange-50 text-orange-500 font-medium' : 'hover:bg-gray-50'}
             cursor-pointer transition-all duration-200
           `}
           onClick={() => hasChildren && toggleCategory(category.id)}
         >
           <Link
             href={`/categories/${category.id}`}
-            className="flex-grow flex items-center gap-2"
+            className="flex-grow flex items-center gap-3"
             onClick={(e) => {
               e.stopPropagation();
               closeMenu();
             }}
           >
-            {level === 0 && (
-              <span className="text-gray-500 group-hover:text-[#fc640c] transition-colors mr-2">
-                <IoCartOutline className="w-5 h-5" />
-              </span>
-            )}
+            <span className={`text-gray-500 transition-colors group-hover:text-orange-500 ${isActive ? 'text-orange-500' : ''}`}>
+              {icon}
+            </span>
 
-            <div className="flex flex-col">
-              <span className={`text-sm ${isActive ? 'text-[#fc640c]' : 'text-gray-700'}`}>
-                {category.title}
-              </span>
-              {level === 0 && (
-                <span className="text-xs text-gray-400 mt-0.5">
-                  {productCount} товаров
-                </span>
-              )}
-            </div>
+            <span className={`text-sm ${isActive ? '' : 'text-gray-700'}`}>
+              {category.title}
+            </span>
           </Link>
 
           {hasChildren && (
             <div
               className={`
                 flex items-center justify-center w-5 h-5 rounded-full
-                ${isActive ? 'text-[#fc640c]' : 'text-gray-500'}
+                ${isActive ? 'text-orange-500' : 'text-gray-500'}
                 transition-transform ${isExpanded ? 'rotate-180' : ''}
               `}
             >
@@ -142,7 +178,7 @@ export const SideBar = () => {
         </div>
 
         {isExpanded && hasChildren && (
-          <div className="animate-slideDown">
+          <div className="mt-1 animate-slideDown">
             {category.children?.map(child => renderCategory(child, level + 1))}
           </div>
         )}
@@ -186,14 +222,18 @@ export const SideBar = () => {
         <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 180px)' }}>
           {/* Категории товаров */}
           <div className="px-3 py-4">
-            <div className="flex items-center px-3 mb-2">
-              <span className="text-gray-500 mr-3">
+            <Link 
+              href="/categories"
+              onClick={closeMenu}
+              className="flex items-center px-3 mb-3 group"
+            >
+              <span className="text-gray-500 mr-3 transition-colors group-hover:text-orange-500">
                 <IoGridOutline className="w-5 h-5" />
               </span>
-              <h3 className="font-medium text-gray-800">Категории</h3>
-            </div>
+              <h3 className="font-medium text-gray-800 transition-colors group-hover:text-orange-500">Все категории</h3>
+            </Link>
             
-            <div className="mt-2">
+            <div className="mt-2 space-y-1">
               {loading ? (
                 <div className="flex justify-center items-center py-6">
                   <div className="animate-pulse flex flex-col items-center">

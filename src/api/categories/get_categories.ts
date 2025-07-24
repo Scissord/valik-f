@@ -1,3 +1,4 @@
+import api from "../axios";
 import { GoodCategory } from "@/interfaces";
 
 // Временные данные для заглушки API - будут использованы только если API недоступен
@@ -96,22 +97,16 @@ const mockCategories: GoodCategory[] = [
 
 export const getCategories = async (): Promise<GoodCategory[]> => {
   try {
-    console.log('Начинаем запрос категорий с API');
-    const response = await fetch('http://localhost:8080/categories/tree');
+    console.log('Начинаем запрос категорий с API через axios');
+    const response = await api.get('/categories/tree');
     
-    if (!response.ok) {
-      console.error(`Ошибка HTTP: ${response.status}`);
-      throw new Error(`Ошибка HTTP: ${response.status}`);
-    }
+    console.log('Категории успешно получены:', response.data);
     
-    const categories = await response.json();
-    console.log('Категории успешно получены:', categories);
-    
-    return categories;
+    return response.data;
   } catch (error) {
     console.error('Ошибка при получении списка категорий:', error);
     console.log('Возвращаем тестовые данные категорий');
-    // В случае ошибки возвращаем тестовые данные
-    return mockCategories;
+    // В случае ошибки возвращаем пустой массив или тестовые данные
+    return [];
   }
 };
