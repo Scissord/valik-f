@@ -45,7 +45,7 @@ export const LoginForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col"
+      className="flex flex-col w-full"
     >
       <div className="mb-5">
         <div className="relative">
@@ -54,13 +54,13 @@ export const LoginForm = () => {
           </div>
           <input
             className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-            type="text"
-            placeholder="Логин"
-            {...register("login", { required: "Укажите ваш логин!" })}
+            type="email"
+            placeholder="Email"
+            {...register("email", { required: "Укажите ваш email!" })}
           />
         </div>
-        {errors.login && (
-          <p className="text-red-500 text-sm mt-1">{errors.login.message}</p>
+        {errors.email && (
+          <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
         )}
       </div>
 
@@ -90,7 +90,7 @@ export const LoginForm = () => {
         {responseErrors && responseErrors.length > 0 && (
           <div className="flex flex-row mb-2">
             <IoInformationOutline className="h-5 w-5 text-red-500" />
-            <p className="text-sm text-red-500">
+            <p className="text-sm text-red-500 ml-1">
               Неверно введенные данные!
             </p>
           </div>
@@ -112,11 +112,15 @@ export const LoginForm = () => {
         <div className="flex-1 bg-gray-200 h-0.5 rounded" />
       </div>
 
-      <Link href="/auth/register" className="btn-secondary text-center">
+      <Link 
+        href="/auth/register" 
+        className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors text-center"
+      >
         Создать новую учетную запись
       </Link>
 
-      <div className="mt-4 text-center">
+      {/* Кнопка "Вернуться на главную" только для десктопной версии */}
+      <div className="mt-4 text-center hidden lg:block">
         <Link href="/" className="text-orange-500 hover:text-orange-600 text-sm">
           Вернуться на главную
         </Link>

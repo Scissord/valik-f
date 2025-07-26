@@ -5,7 +5,7 @@ import { GoodCategory } from '@/interfaces';
 import { getCategories } from '@/api';
 import Link from 'next/link';
 import { 
-  IoConstructOutline, IoSearchOutline, IoHomeOutline, IoCarOutline
+  IoConstructOutline, IoHomeOutline, IoCarOutline
 } from 'react-icons/io5';
 import { FaTools, FaTractor, FaPaintRoller } from 'react-icons/fa';
 import { GiBrickWall, GiWoodBeam, GiHeatHaze } from 'react-icons/gi';
@@ -19,7 +19,6 @@ import {
 export const MobileCategoriesPage = () => {
   const [categories, setCategories] = useState<GoodCategory[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -35,12 +34,6 @@ export const MobileCategoriesPage = () => {
     
     fetchCategories();
   }, []);
-
-  const filteredCategories = searchQuery 
-    ? categories.filter(category => 
-        category.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : categories;
 
   const getCategoryIcon = (categoryTitle: string) => {
     const iconMap: Record<string, React.ReactNode> = {
@@ -107,18 +100,7 @@ export const MobileCategoriesPage = () => {
   return (
     <div className="bg-white min-h-screen pb-24">
       <div className="px-4 pt-6 pb-4 sticky top-0 bg-white z-10 shadow-sm">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Каталог</h1>
-        
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Поиск по каталогу"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-50 border-2 border-gray-200 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-colors"
-          />
-          <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-        </div>
+        <h1 className="text-2xl font-bold text-gray-800">Каталог</h1>
       </div>
       
       <div className="px-4 py-6">
@@ -126,19 +108,9 @@ export const MobileCategoriesPage = () => {
           <div className="grid grid-cols-3 gap-3">
             {renderSkeletons()}
           </div>
-        ) : filteredCategories.length > 0 ? (
-          <div className="grid grid-cols-3 gap-3">
-            {filteredCategories.map(category => renderCategoryCard(category))}
-          </div>
         ) : (
-          <div className="text-center py-10">
-            <div className="flex justify-center mb-4">
-              <div className="bg-gray-100 rounded-full p-5">
-                <IoSearchOutline className="h-10 w-10 text-gray-400" />
-              </div>
-            </div>
-            <p className="text-lg text-gray-600 font-medium">Ничего не найдено</p>
-            <p className="text-gray-500 text-sm mt-1">Попробуйте изменить ваш запрос</p>
+          <div className="grid grid-cols-3 gap-3">
+            {categories.map(category => renderCategoryCard(category))}
           </div>
         )}
       </div>

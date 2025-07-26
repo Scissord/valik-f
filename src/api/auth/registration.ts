@@ -1,13 +1,13 @@
 import api from "../axios";
-import { User, UserRegistration } from "@/interfaces";
+import { User, UserRegister } from "@/interfaces";
 
 interface RegistrationResult {
   user: User | null;
   accessToken: string | null;
-  errors: { msg:string }[] | null;
+  errors: { msg: string }[] | null;
 }
 
-export const registration = async (data: UserRegistration): Promise<RegistrationResult> => {
+export const registerUser = async (data: UserRegister): Promise<RegistrationResult> => {
   try {
     const response = await api.post('/auth/registration', data);
 

@@ -5,10 +5,10 @@ import clsx from 'clsx';
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { registration } from "@/api";
-import { UserRegistration } from "@/interfaces";
-import { IoInformationOutline } from "react-icons/io5";
+import { UserRegister } from "@/interfaces";
+import { IoInformationOutline, IoMailOutline, IoLockClosedOutline, IoPersonOutline } from "react-icons/io5";
 import { useUserStore } from "@/store";
+import { registerUser } from "@/api/auth/registration";
 
 export const RegistrationForm = () => {
   const router = useRouter();
@@ -22,9 +22,9 @@ export const RegistrationForm = () => {
     }
   }, [user]);
 
-  const onSubmit = async (data: UserRegistration) => {
+  const onSubmit = async (data: UserRegister) => {
     setResponseErrors([]);
-    const { user, accessToken, errors } = await registration(data);
+    const { user, accessToken, errors } = await registerUser(data);
     if (user && accessToken) {
       setUser(user, accessToken);
       router.push(`/`);
@@ -41,7 +41,7 @@ export const RegistrationForm = () => {
     register,
     formState: { errors, isValid },
     reset,
-  } = useForm<UserRegistration>();
+  } = useForm<UserRegister>();
 
   return (
     <form
@@ -77,17 +77,17 @@ export const RegistrationForm = () => {
       </div>
 
       <div className='flex flex-col'>
-        <label htmlFor="full_name">
+        <label htmlFor="name">
           ФИО
         </label>
         <input
           className="p-2 border border-slate-300 rounded-md mt-2 "
           type="text"
-          {...register("full_name", { required: "Укажите ваше ФИО!" })}
+          {...register("name", { required: "Укажите ваше ФИО!" })}
         />
-        {errors.full_name && (
+        {errors.name && (
           <p className="text-red-500 text-sm">
-            {errors.full_name.message}
+            {errors.name.message}
           </p>
         )}
       </div>
@@ -172,9 +172,16 @@ export const RegistrationForm = () => {
         <div className="flex-1 bg-slate-300 h-0.5 rounded " />
       </div>
 
-      <Link href="/auth/registration" className="btn-secondary text-center">
+      <Link href="/auth/login" className="btn-secondary text-center">
         Войти в учетную запись
       </Link>
+      
+      {/* Кнопка "Вернуться на главную" только для десктопной версии */}
+      <div className="mt-4 text-center hidden lg:block">
+        <Link href="/" className="text-orange-500 hover:text-orange-600 text-sm">
+          Вернуться на главную
+        </Link>
+      </div>
     </form>
   );
 };

@@ -1,6 +1,6 @@
 import { titleFont } from "@/config/fonts";
 import Link from "next/link";
-import { FaInstagram, FaFacebook, FaTwitter, FaTelegram } from "react-icons/fa";
+import { FaInstagram, FaTiktok } from "react-icons/fa6";
 import Image from "next/image";
 
 export const Footer = () => {
@@ -22,7 +22,14 @@ export const Footer = () => {
             <p className="mt-4 text-sm text-gray-600">
               Доставка по всему Казахстану. Качественные материалы и инструменты для строительства и ремонта.
             </p>
-            {/* Социальные сети убраны по запросу */}
+            <div className="mt-4 flex space-x-4">
+              <a href="https://www.instagram.com/valik_kazakhstan?igsh=MXh1cHp3NDg2eTNzcw==" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-orange-500">
+                <FaInstagram className="h-6 w-6" />
+              </a>
+              <a href="https://www.tiktok.com/@valik.kz?_t=ZM-8yLfIXHnYfe&_r=1" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-orange-500">
+                <FaTiktok className="h-6 w-6" />
+              </a>
+            </div>
           </div>
 
           {/* Категории */}
@@ -72,7 +79,12 @@ export const Footer = () => {
             <ul className="mt-4 space-y-2">
               <li>
                 <Link href="/about" className="text-sm text-gray-600 hover:text-[#fc640c]">
-                  О компании
+                  О сервисе
+                </Link>
+              </li>
+              <li>
+                <Link href="/contacts" className="text-sm text-gray-600 hover:text-[#fc640c]">
+                  Контакты
                 </Link>
               </li>
               <li>
@@ -105,13 +117,13 @@ export const Footer = () => {
             </h3>
             <ul className="mt-4 space-y-2">
               <li className="text-sm text-gray-600">
-                Телефон: <a href="tel:+77777777777" className="hover:text-[#fc640c]">+7 (777) 777-77-77</a>
+                Телефон: <a href="tel:+77758616810" className="hover:text-[#fc640c]">+7 (775) 861-68-10</a>
               </li>
               <li className="text-sm text-gray-600">
-                Email: <a href="mailto:info@valik.kz" className="hover:text-[#fc640c]">info@valik.kz</a>
+                Email: <a href="mailto:valik.kazakhstan@gmail.com" className="hover:text-[#fc640c]">valik.kazakhstan@gmail.com</a>
               </li>
               <li className="text-sm text-gray-600">
-                Адрес: Астана, Казахстан
+                Адрес: с. Айтеке Би, Туркестанская обл.
               </li>
             </ul>
           </div>

@@ -6,3 +6,4 @@ export * from "./orders/create_order";
 export * from "./orders/find_order";
 export * from "./auth/login";
 export * from "./auth/registration";
+export * from "./auth/getProfile";

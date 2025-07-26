@@ -62,11 +62,17 @@ export const Header = () => {
 
           <div className="flex-1 md:flex-none md:order-3">
             <div className="flex items-center justify-end space-x-2 md:space-x-4">
+              {/* Поиск для десктопа */}
               <div className="hidden md:block">
                 <Search />
               </div>
 
-              <Link href={totalItems === 0 && loaded ? "/empty" : "/cart"} className={`p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}>
+              {/* Поиск для мобильных устройств */}
+              <div className="md:hidden">
+                <Search isMobile={true} />
+              </div>
+
+              <Link href={totalItems === 0 && loaded ? "/empty" : "/cart"} className={`hidden md:block p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}>
                 <div className="relative">
                   {loaded && totalItems > 0 && (
                     <span className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs rounded-full bg-[#fc640c] text-white font-medium">
@@ -79,7 +85,7 @@ export const Header = () => {
 
               <Link
                 href={user ? "/profile" : "/auth/login"}
-                className={`p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}
+                className={`hidden md:block p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200 ${isSideMenuOpen ? 'pointer-events-none' : ''}`}
               >
                 <IoPersonOutline className="w-5 h-5 text-gray-700" />
               </Link>
@@ -96,10 +102,6 @@ export const Header = () => {
           </div>
           
           <div className="flex-1 flex justify-center px-4 md:flex-none md:order-2">
-            <div className="w-full max-w-sm md:hidden">
-              <Search isMobile={true} />
-            </div>
-
             <nav className="hidden md:flex items-center space-x-1">
               <Link
                 className="px-3 py-1 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"

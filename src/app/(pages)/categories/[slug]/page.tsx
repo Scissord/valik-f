@@ -1,5 +1,5 @@
 export const revalidate = 604800; //7 dias
-import { Pagination, ProductGrid, Title } from "@/components";
+import { Pagination, ProductGrid } from "@/components";
 // import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProductsForCategory, getCategories } from '@/api'
@@ -30,49 +30,31 @@ export default async function ProductPage({
     category_id: slug,
   });
 
-  // if (!product) {
-  //   notFound();
-  // }
-
   return (
-    <>
-      <div className="flex flex-col md:flex-row items-start gap-7">
-        <div className="w-full md:w-auto mb-4 md:mb-0">
-          {/* <ProductBreadcrumbs
-            product_categories={categories}
-            className="w-full md:w-auto"
-          /> */}
-        </div>
-        <div className="flex-1">
-          <Title
-            title={"Категории"}
-            subtitle={category?.title || "Продукты"}
-            total={total}
-          />
+    <div className="container mx-auto px-4 py-4">
+      {/* Минималистичный заголовок категории */}
+      {category?.title && (
+        <h1 className="text-xl font-medium text-gray-900 mb-4">{category.title}</h1>
+      )}
 
-          {children_categories?.length > 0 && (
-            <div className="mb-6">
-              <h3 className="font-medium text-sm mb-3 text-gray-600">Подкатегории</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                {/* {children_categories?.map((category) => (
-                  <Link
-                    key={category.id}
-                    className="p-3 flex items-center justify-center border border-gray-100 rounded
-                              bg-white hover:bg-orange-50 hover:border-orange-100
-                              text-gray-700 hover:text-gray-700 transition-all duration-200 ease-in-out cursor-pointer"
-                    href={`/categories/${category.id}`}
-                  >
-                    <span className="text-sm">{category.title}</span>
-                  </Link>
-                ))} */}
-              </div>
-            </div>
-          )}
-
-          <ProductGrid products={products} />
-          <Pagination totalPages={totalPages} />
+      {/* Простые чипсы подкатегорий */}
+      {children_categories?.length > 0 && (
+        <div className="mb-6 flex flex-wrap gap-2">
+          {children_categories.map((child) => (
+            <Link
+              key={child.id}
+              href={`/categories/${child.id}`}
+              className="px-3 py-1.5 bg-gray-100 text-gray-800 text-xs rounded-full hover:bg-orange-100 transition-colors"
+            >
+              {child.title}
+            </Link>
+          ))}
         </div>
-      </div>
-    </>
+      )}
+
+      {/* Товары */}
+      <ProductGrid products={products} />
+      <Pagination totalPages={totalPages} />
+    </div>
   );
 }

@@ -5,7 +5,7 @@ import { GoodCategory } from "@/interfaces";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IoCloseOutline, IoChevronDownOutline, IoGridOutline, IoConstructOutline, IoHomeOutline, IoCarOutline } from "react-icons/io5";
+import { IoCloseOutline, IoChevronDownOutline, IoGridOutline, IoConstructOutline, IoHomeOutline, IoCarOutline, IoInformationCircleOutline, IoCallOutline } from "react-icons/io5";
 import { getCategories } from '@/api';
 import { ItemSiginOut } from "./itemSiginOut";
 import { FaTools, FaTractor, FaPaintRoller } from 'react-icons/fa';
@@ -220,6 +220,37 @@ export const SideBar = () => {
 
         {/* Содержимое прокручиваемой области */}
         <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 180px)' }}>
+          {/* Основные разделы */}
+          <div className="px-3 py-4 border-b">
+            <div className="space-y-1">
+              <Link 
+                href="/about"
+                onClick={closeMenu}
+                className={`flex items-center gap-3 py-2.5 px-3 rounded-md hover:bg-gray-50 transition-colors ${pathname === '/about' ? 'bg-orange-50 text-orange-500 font-medium' : ''}`}
+              >
+                <span className={`text-gray-500 transition-colors ${pathname === '/about' ? 'text-orange-500' : ''}`}>
+                  <IoInformationCircleOutline className="w-5 h-5" />
+                </span>
+                <span className={`text-sm ${pathname === '/about' ? 'text-orange-500' : 'text-gray-700'}`}>
+                  О сервисе
+                </span>
+              </Link>
+              
+              <Link 
+                href="/contacts"
+                onClick={closeMenu}
+                className={`flex items-center gap-3 py-2.5 px-3 rounded-md hover:bg-gray-50 transition-colors ${pathname === '/contacts' ? 'bg-orange-50 text-orange-500 font-medium' : ''}`}
+              >
+                <span className={`text-gray-500 transition-colors ${pathname === '/contacts' ? 'text-orange-500' : ''}`}>
+                  <IoCallOutline className="w-5 h-5" />
+                </span>
+                <span className={`text-sm ${pathname === '/contacts' ? 'text-orange-500' : 'text-gray-700'}`}>
+                  Контакты
+                </span>
+              </Link>
+            </div>
+          </div>
+
           {/* Категории товаров */}
           <div className="px-3 py-4">
             <Link 

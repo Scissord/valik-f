@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import api from '@/api/axios'; // Импортируем наш экземпляр axios
 
 /**
  * Интерфейс для сообщения в чате
@@ -41,8 +42,8 @@ interface AIAssistantContextType {
   createNewChat: () => void;
 }
 
-// Базовый URL для API
-const API_BASE_URL = 'http://26.34.25.229:8080/api';
+// Базовый URL для API теперь не нужен, он берется из axios
+// const API_BASE_URL = 'http://26.34.25.229:8080/api';
 
 /**
  * Контекст для управления состоянием ИИ-ассистента
@@ -107,18 +108,9 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
   const getChats = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_BASE_URL}/chats`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await api.get('/chats'); // Используем axios
       
-      if (!response.ok) {
-        throw new Error('Не удалось получить список чатов');
-      }
-      
-      const responseData = await response.json();
+      const responseData = response.data;
       const chatsData = responseData.data || responseData;
       
       // Преобразуем данные в нужный формат, если необходимо
@@ -148,18 +140,9 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
       // Временно всегда используем chatId = 1
       const fixedChatId = '1';
       
-      const response = await fetch(`${API_BASE_URL}/chats/${fixedChatId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await api.get(`/chats/${fixedChatId}`); // Используем axios
       
-      if (!response.ok) {
-        throw new Error('Не удалось получить историю чата');
-      }
-      
-      const responseData = await response.json();
+      const responseData = response.data;
       const messagesData = responseData.data || responseData;
       
       // Преобразуем полученные сообщения в нужный формат
@@ -187,16 +170,7 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
   const deleteChat = async (chatId: string) => {
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_BASE_URL}/chats/${chatId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error('Не удалось удалить чат');
-      }
+      await api.delete(`/chats/${chatId}`); // Используем axios
       
       // Обновляем список чатов
       await getChats();
@@ -230,20 +204,9 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
         chatId: 1 // Фиксированный chatId = 1 согласно требованию
       };
       
-      const response = await fetch(`${API_BASE_URL}/chats/message`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await api.post('/chats/message', requestBody); // Используем axios
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Не удалось отправить сообщение');
-      }
-      
-      const responseData = await response.json();
+      const responseData = response.data;
       
       // Проверяем структуру ответа
       const data = responseData.data || responseData;
@@ -277,22 +240,11 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
   // Тестовый вызов API для получения ответа от ассистента
   const testAssistantAPI = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/assistant/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: 'привет как дела'
-        }),
+      const response = await api.post('/assistant/', { // Используем axios
+        message: 'привет как дела'
       });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Не удалось получить ответ от ассистента');
-      }
-      
-      const responseData = await response.json();
+      const responseData = response.data;
       const data = responseData.data || responseData;
       
       console.log('Ответ от ассистента:', data);
