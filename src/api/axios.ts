@@ -27,9 +27,6 @@ export const logoutUser = () => {
     if (typeof window === "undefined") return;
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
-    // Перенаправляем на страницу входа
-    // В реальном приложении лучше использовать роутер фреймворка (e.g., router.push('/login'))
-    window.location.href = "/login";
 };
 
 

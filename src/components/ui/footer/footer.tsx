@@ -16,6 +16,7 @@ export const Footer = () => {
                 alt="Valik.kz"
                 width={120}
                 height={40}
+                style={{ height: 'auto' }}
                 priority
               />
             </Link>

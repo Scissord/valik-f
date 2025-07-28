@@ -1,15 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { IoClose, IoChatbubbleEllipsesOutline, IoTrashOutline, IoAddOutline, IoReloadOutline, IoSendOutline } from 'react-icons/io5';
+import { IoClose, IoChatbubbleEllipsesOutline, IoTrashOutline, IoAddOutline, IoReloadOutline, IoSendOutline, IoLogInOutline } from 'react-icons/io5';
 import { useAIAssistant } from './ai-context';
+import { useUserStore } from '@/store';
+import Link from 'next/link';
 
-/**
- * Компонент ИИ-ассистента для помощи пользователям
- * Отображается в правом нижнем углу страницы
- */
 export const AIAssistant = () => {
-  // Получаем данные из контекста
   const { 
     isOpen, 
     messages, 
@@ -24,77 +21,96 @@ export const AIAssistant = () => {
     deleteChat,
     createNewChat
   } = useAIAssistant();
-
-  // Текущее сообщение пользователя
+  
+  const user = useUserStore((state) => state.user);
   const [userMessage, setUserMessage] = useState('');
-  // Показывать ли список чатов
   const [showChatsList, setShowChatsList] = useState(false);
-  // Ссылка на контейнер сообщений для автопрокрутки
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  /**
-   * Обработчик отправки сообщения
-   */
   const handleSendMessage = async () => {
     if (!userMessage.trim() || isLoading) return;
     
-    // Отправляем сообщение через контекст
     await sendMessage(userMessage);
     setUserMessage('');
   };
 
-  /**
-   * Обработчик выбора чата
-   */
   const handleSelectChat = async (chatId: string) => {
     await getChatHistory(chatId);
     setShowChatsList(false);
   };
 
-  /**
-   * Обработчик удаления чата
-   */
   const handleDeleteChat = async (chatId: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Предотвращаем выбор чата
+    e.stopPropagation();
     await deleteChat(chatId);
   };
 
-  /**
-   * Обработчик создания нового чата
-   */
   const handleCreateNewChat = () => {
     createNewChat();
     setShowChatsList(false);
   };
 
-  /**
-   * Прокрутка к последнему сообщению при добавлении новых сообщений
-   */
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  /**
-   * Загрузка чатов при открытии ассистента
-   */
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && user) {
       getChats();
     }
-  }, [isOpen, getChats]);
+  }, [isOpen, user, getChats]);
 
-  /**
-   * Текущий заголовок чата
-   */
   const currentChatTitle = currentChatId 
     ? chats.find(chat => chat.id === currentChatId)?.title || 'Новый чат' 
     : 'Новый чат';
 
+  if (!user) {
+    return (
+      <div className="fixed right-4 sm:right-6 z-50 bottom-20 sm:bottom-24 lg:bottom-6">
+        {!isOpen ? (
+          <button
+            onClick={toggleAssistant}
+            className="bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 sm:p-4 shadow-lg transition-all duration-300 flex items-center justify-center"
+            aria-label="Открыть чат с ассистентом"
+          >
+            <IoChatbubbleEllipsesOutline className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+        ) : (
+          <div className="bg-white rounded-2xl shadow-2xl w-[90vw] sm:w-96 max-w-[90vw] flex flex-col overflow-hidden border border-gray-200 transition-all duration-300 animate-fade-in">
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-3 sm:p-4 flex justify-between items-center">
+              <div className="flex items-center space-x-2 flex-1">
+                <div className="bg-white/20 p-1.5 rounded-full">
+                  <IoChatbubbleEllipsesOutline className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-medium">Требуется авторизация</h3>
+                </div>
+              </div>
+              <button 
+                onClick={closeAssistant}
+                className="text-white hover:bg-white/20 rounded-full p-1.5 transition-colors"
+                aria-label="Закрыть чат"
+              >
+                <IoClose className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+            </div>
+            <div className="flex-grow p-4 flex flex-col items-center justify-center text-center bg-gray-50">
+              <IoLogInOutline className="w-12 h-12 text-gray-400 mb-4" />
+              <p className="text-lg font-semibold text-gray-700 mb-2">Войдите, чтобы продолжить</p>
+              <p className="text-sm text-gray-500 mb-6">Для доступа к ИИ-ассистенту необходимо авторизоваться.</p>
+              <Link href="/auth/login" className="bg-orange-500 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-600 transition-colors">
+                Войти
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="fixed right-4 sm:right-6 z-50 bottom-20 sm:bottom-24 lg:bottom-6">
-      {/* Кнопка для открытия/закрытия чата */}
       {!isOpen ? (
         <button
           onClick={toggleAssistant}

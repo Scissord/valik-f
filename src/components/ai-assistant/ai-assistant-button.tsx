@@ -3,9 +3,6 @@
 import { IoChatbubbleEllipsesOutline } from 'react-icons/io5';
 import { useAIAssistant } from './ai-context';
 
-/**
- * Интерфейс свойств компонента
- */
 interface AIAssistantButtonProps {
   className?: string;
   variant?: 'icon' | 'button';
@@ -13,9 +10,6 @@ interface AIAssistantButtonProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-/**
- * Кнопка для вызова ИИ-ассистента, которую можно разместить в любом месте приложения
- */
 export const AIAssistantButton = ({ 
   className = '',
   variant = 'button',
@@ -24,7 +18,6 @@ export const AIAssistantButton = ({
 }: AIAssistantButtonProps) => {
   const { openAssistant } = useAIAssistant();
   
-  // Определяем размеры в зависимости от параметра size
   const sizeClasses = {
     sm: {
       icon: 'w-8 h-8',

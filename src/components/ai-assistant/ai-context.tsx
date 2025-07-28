@@ -1,21 +1,16 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import api from '@/api/axios'; // Импортируем наш экземпляр axios
+import { usePathname } from 'next/navigation';
+import api from '@/api/axios';
 
-/**
- * Интерфейс для сообщения в чате
- */
 export interface ChatMessage {
   text: string;
   isUser: boolean;
-  id?: string;
+  id: string;
   timestamp?: string;
 }
 
-/**
- * Интерфейс для чата
- */
 export interface Chat {
   id: string;
   title: string;
@@ -23,9 +18,6 @@ export interface Chat {
   lastTimestamp?: string;
 }
 
-/**
- * Интерфейс контекста ИИ-ассистента
- */
 interface AIAssistantContextType {
   isOpen: boolean;
   messages: ChatMessage[];
@@ -42,85 +34,48 @@ interface AIAssistantContextType {
   createNewChat: () => void;
 }
 
-// Базовый URL для API теперь не нужен, он берется из axios
-// const API_BASE_URL = 'http://26.34.25.229:8080/api';
-
-/**
- * Контекст для управления состоянием ИИ-ассистента
- */
 const AIAssistantContext = createContext<AIAssistantContextType | undefined>(undefined);
 
-/**
- * Провайдер контекста ИИ-ассистента
- */
 export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
-  // Состояние для отслеживания открыт ли чат с ассистентом
   const [isOpen, setIsOpen] = useState(false);
-  
-  // История сообщений в чате
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  
-  // Список чатов
   const [chats, setChats] = useState<Chat[]>([]);
-  
-  // Текущий активный чат
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
-  
-  // Состояние загрузки
   const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
 
-  /**
-   * Загрузка списка чатов при инициализации компонента
-   */
   useEffect(() => {
-    getChats();
-  }, []);
+    const isAuthPage = pathname?.startsWith('/auth');
+    if (!isAuthPage) {
+      getChats();
+    }
+  }, [pathname]);
 
-  /**
-   * Открыть ассистента
-   */
   const openAssistant = () => setIsOpen(true);
-  
-  /**
-   * Закрыть ассистента
-   */
   const closeAssistant = () => setIsOpen(false);
-  
-  /**
-   * Переключить состояние ассистента
-   */
   const toggleAssistant = () => setIsOpen(prev => !prev);
-  
-  /**
-   * Создать новый чат
-   */
+
   const createNewChat = () => {
-    // Временно всегда устанавливаем chatId = 1
     setCurrentChatId('1');
     setMessages([
-      { text: 'Здравствуйте! Чем я могу вам помочь сегодня?', isUser: false }
+      { text: 'Здравствуйте! Чем я могу вам помочь сегодня?', isUser: false, id: crypto.randomUUID() }
     ]);
   };
 
-  /**
-   * Получить список чатов
-   */
   const getChats = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get('/chats'); // Используем axios
+      const response = await api.get('/api/chats');
       
       const responseData = response.data;
       const chatsData = responseData.data || responseData;
       
-      // Преобразуем данные в нужный формат, если необходимо
       const formattedChats = Array.isArray(chatsData) 
         ? chatsData 
         : [];
       
       setChats(formattedChats);
       
-      // Если нет активного чата и есть чаты в списке, выбираем первый
       if (!currentChatId && formattedChats.length > 0) {
         getChatHistory(formattedChats[0].id);
       }
@@ -131,21 +86,16 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  /**
-   * Получить историю сообщений чата
-   */
   const getChatHistory = async (chatId: string) => {
     try {
       setIsLoading(true);
-      // Временно всегда используем chatId = 1
       const fixedChatId = '1';
       
-      const response = await api.get(`/chats/${fixedChatId}`); // Используем axios
+      const response = await api.get(`/api/chats/${fixedChatId}`);
       
       const responseData = response.data;
       const messagesData = responseData.data || responseData;
       
-      // Преобразуем полученные сообщения в нужный формат
       const formattedMessages = Array.isArray(messagesData) 
         ? messagesData.map(msg => ({
             text: msg.message || msg.text,
@@ -156,7 +106,7 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
         : [];
       
       setMessages(formattedMessages);
-      setCurrentChatId('1'); // Всегда устанавливаем chatId = 1
+      setCurrentChatId('1');
     } catch (error) {
       console.error('Ошибка при получении истории чата:', error);
     } finally {
@@ -164,18 +114,13 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  /**
-   * Удалить чат
-   */
   const deleteChat = async (chatId: string) => {
     try {
       setIsLoading(true);
-      await api.delete(`/chats/${chatId}`); // Используем axios
+      await api.delete(`/api/chats/${chatId}`);
       
-      // Обновляем список чатов
       await getChats();
       
-      // Если был удален текущий чат, создаем новый
       if (currentChatId === chatId) {
         createNewChat();
       }
@@ -186,42 +131,32 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  /**
-   * Отправить сообщение ассистенту
-   */
   const sendMessage = async (message: string) => {
     if (!message.trim()) return;
     
-    // Добавляем сообщение пользователя в историю
-    setMessages(prev => [...prev, { text: message, isUser: true }]);
+    setMessages(prev => [...prev, { text: message, isUser: true, id: crypto.randomUUID() }]);
     setIsLoading(true);
     
     try {
-      // Отправляем сообщение на сервер
-      // Временно всегда используем chatId = 1
       const requestBody = {
         message: message,
-        chatId: 1 // Фиксированный chatId = 1 согласно требованию
+        chatId: 1
       };
       
-      const response = await api.post('/chats/message', requestBody); // Используем axios
+      const response = await api.post('/api/chats/message', requestBody);
       
       const responseData = response.data;
       
-      // Проверяем структуру ответа
       const data = responseData.data || responseData;
       
-      // Устанавливаем текущий чат как 1
       setCurrentChatId('1');
       
-      // Добавляем ответ от ассистента
       if (data.message) {
-        setMessages(prev => [...prev, { text: data.message, isUser: false }]);
+        setMessages(prev => [...prev, { text: data.message, isUser: false, id: crypto.randomUUID() }]);
       } else {
-        setMessages(prev => [...prev, { text: data.text || data.answer || 'Получен ответ от ассистента', isUser: false }]);
+        setMessages(prev => [...prev, { text: data.text || data.answer || 'Получен ответ от ассистента', isUser: false, id: crypto.randomUUID() }]);
       }
       
-      // Обновляем список чатов
       await getChats();
     } catch (error) {
       console.error('Ошибка при отправке сообщения:', error);
@@ -229,7 +164,8 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
         ...prev,
         { 
           text: error instanceof Error ? error.message : 'Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте еще раз.', 
-          isUser: false 
+          isUser: false,
+          id: crypto.randomUUID()
         }
       ]);
     } finally {
@@ -237,10 +173,9 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Тестовый вызов API для получения ответа от ассистента
   const testAssistantAPI = async () => {
     try {
-      const response = await api.post('/assistant/', { // Используем axios
+      const response = await api.post('/api/assistant/', {
         message: 'привет как дела'
       });
       
@@ -249,12 +184,11 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
       
       console.log('Ответ от ассистента:', data);
       
-      // Если нужно, можно добавить сообщение в текущий чат
       if (data.message) {
         setMessages(prev => [
           ...prev, 
-          { text: 'привет как дела', isUser: true },
-          { text: data.message, isUser: false }
+          { text: 'привет как дела', isUser: true, id: crypto.randomUUID() },
+          { text: data.message, isUser: false, id: crypto.randomUUID() }
         ]);
       }
     } catch (error) {
@@ -285,13 +219,10 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-/**
- * Хук для использования контекста ИИ-ассистента
- */
 export const useAIAssistant = () => {
   const context = useContext(AIAssistantContext);
   if (context === undefined) {
     throw new Error('useAIAssistant должен использоваться внутри AIAssistantProvider');
   }
   return context;
-}; 
+};
