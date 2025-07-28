@@ -14,6 +14,8 @@ interface SearchProps {
   isMobile?: boolean;
 }
 
+const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
 /**
  * Компонент поиска с функцией debounce
  */
@@ -116,7 +118,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
     setIsLoading(true);
     try {
       console.log(`[SEARCH] Отправка запроса на поиск: ${query}`);
-      const response = await fetch(`http://localhost:8080/search?q=${encodeURIComponent(query)}`);
+      const response = await fetch(`${baseURL}/search?q=${encodeURIComponent(query)}`);
       
       if (!response.ok) {
         console.error(`[SEARCH] Ошибка при выполнении поиска: ${response.status}`);
