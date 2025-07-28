@@ -114,13 +114,13 @@ export default function ContactsPage() {
           <div className="h-96 bg-gray-200">
             {/* Карта обновлена на основе нового адреса */}
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d23789.54472919875!2d69.9546258414009!3d42.1895857991583!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38a8f1a81235b2e5%3A0x1d4a6de1f6b1e2e3!2sAkzhar%2C%20Turkistan%20Region%2C%20Kazakhstan!5e0!3m2!1sen!2sde!4v1722022802058!5m2!1sen!2sde"
+              src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d2959.444738596681!2d69.7691883770416!3d42.45738817119254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNDLCsDI3JzI2LjYiTiA2OcKwNDYnMTYuOSJF!5e0!3m2!1sru!2skz!4v1722204523996!5m2!1sru!2skz"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen={true}
               loading="lazy"
-              title="Карта расположения офиса"
+              title="Наше местоположение"
             ></iframe>
           </div>
         </motion.div>

@@ -1,187 +1,168 @@
-"use client";
+'use client'
+import { registerUser } from '@/api/auth/register';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import Link from 'next/link';
+import { IoAlertCircleOutline, IoMailOutline, IoLockClosedOutline, IoPersonOutline, IoArrowForwardOutline } from 'react-icons/io5';
+import { useRouter } from 'next/navigation';
 
-import Link from "next/link";
-import clsx from 'clsx';
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { UserRegister } from "@/interfaces";
-import { IoInformationOutline, IoMailOutline, IoLockClosedOutline, IoPersonOutline } from "react-icons/io5";
-import { useUserStore } from "@/store";
-import { registerUser } from "@/api/auth/registration";
+const registerSchema = z.object({
+  login: z.string().min(4, { message: 'Логин должен содержать минимум 4 символа' }).refine(s => !s.includes(' '), 'Логин не должен содержать пробелы'),
+  email: z.string().email({ message: 'Неверный формат email' }),
+  password: z.string().min(8, { message: 'Пароль должен содержать минимум 8 символов' }).refine(s => !s.includes(' '), 'Пароль не должен содержать пробелы'),
+  full_name: z.string().min(2, { message: 'Введите ваше полное имя' }),
+});
+
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export const RegistrationForm = () => {
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
   const router = useRouter();
-  const [responseErrors, setResponseErrors] = useState<{ msg: string }[] | null>([]);
-  const user = useUserStore((state) => state.user);
-  const setUser = useUserStore((state) => state.setUser);
-
-  useEffect(() => {
-    if (user) {
-      router.push(`/`);
-    }
-  }, [user]);
-
-  const onSubmit = async (data: UserRegister) => {
-    setResponseErrors([]);
-    const { user, accessToken, errors } = await registerUser(data);
-    if (user && accessToken) {
-      setUser(user, accessToken);
-      router.push(`/`);
-    } else {
-      if(errors && errors.length > 0) {
-        setResponseErrors(errors);
-        reset();
-      }
-    };
-  };
 
   const {
-    handleSubmit,
     register,
-    formState: { errors, isValid },
-    reset,
-  } = useForm<UserRegister>();
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    mode: 'onChange'
+  });
+
+  const onSubmit = async (data: RegisterFormValues) => {
+    setError(null);
+    setSuccess(false);
+
+    const result = await registerUser(data);
+
+    if (!result.success) {
+      setError(result.errors?.map((e: { msg: string }) => e.msg).join(', ') || 'Произошла ошибка');
+    } else {
+      setSuccess(true);
+      setTimeout(() => {
+        router.push('/auth/login');
+      }, 2000); 
+    }
+  };
+
+  if (success) {
+    return (
+        <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-md">
+            <p className="font-bold">Успешно!</p>
+            <p>Вы успешно зарегистрированы. Перенаправляем на страницу входа...</p>
+        </div>
+    )
+  }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col"
-    >
-      <div className='flex flex-col'>
-        <label htmlFor="login">Логин</label>
-        <input
-          className="p-2 border border-slate-300 rounded-md mt-2"
-          type="text"
-          {...register("login", { required: "Укажите ваше логин!" })}
-        />
-        {errors.login && (
-          <p className="text-red-500 text-sm">{errors.login.message}</p>
+    <>
+        {error && (
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-5 rounded-md">
+                <div className="flex items-center">
+                    <IoAlertCircleOutline className="h-5 w-5 text-red-500 mr-2" />
+                    <p className="text-sm text-red-600">{error}</p>
+                </div>
+            </div>
         )}
-      </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+            <div className="mb-5">
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <IoPersonOutline className="h-5 w-5" />
+                </div>
+                <input
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  type="text"
+                  placeholder="Логин"
+                  {...register("login")}
+                />
+              </div>
+              {errors.login && (
+                <p className="text-red-500 text-sm mt-1">{errors.login.message}</p>
+              )}
+            </div>
 
-      <div className='flex flex-col'>
-        <label htmlFor="email">
-          Пароль
-        </label>
-        <input
-          className="p-2 border border-slate-300 rounded-md mt-2 "
-          type="password"
-          {...register("password", { required: "Укажите ваш пароль!" })}
-        />
-        {errors.password && (
-          <p className="text-red-500 text-sm">
-            {errors.password.message}
-          </p>
-        )}
-      </div>
+            <div className="mb-5">
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <IoMailOutline className="h-5 w-5" />
+                </div>
+                <input
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  type="email"
+                  placeholder="Email"
+                  {...register("email")}
+                />
+              </div>
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              )}
+            </div>
 
-      <div className='flex flex-col'>
-        <label htmlFor="name">
-          ФИО
-        </label>
-        <input
-          className="p-2 border border-slate-300 rounded-md mt-2 "
-          type="text"
-          {...register("name", { required: "Укажите ваше ФИО!" })}
-        />
-        {errors.name && (
-          <p className="text-red-500 text-sm">
-            {errors.name.message}
-          </p>
-        )}
-      </div>
+            <div className="mb-5">
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <IoPersonOutline className="h-5 w-5" />
+                </div>
+                <input
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  type="text"
+                  placeholder="Полное имя"
+                  {...register("full_name")}
+                />
+              </div>
+              {errors.full_name && (
+                <p className="text-red-500 text-sm mt-1">{errors.full_name.message}</p>
+              )}
+            </div>
 
-      <div className='flex flex-col'>
-        <label htmlFor="full_name">
-          Почта
-        </label>
-        <input
-          className="p-2 border border-slate-300 rounded-md mt-2 "
-          type="email"
-          {...register("email", { required: "Укажите вашу почту!" })}
-        />
-        {errors.email && (
-          <p className="text-red-500 text-sm">
-            {errors.email.message}
-          </p>
-        )}
-      </div>
+            <div className="mb-5">
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <IoLockClosedOutline className="h-5 w-5" />
+                </div>
+                <input
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  type="password"
+                  placeholder="Пароль"
+                  {...register("password")}
+                />
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+              )}
+            </div>
 
-      <div className='flex flex-col'>
-        <label htmlFor="phone">
-          Телефон
-        </label>
-        <input
-          className="p-2 border border-slate-300 rounded-md mt-2 "
-          type="text"
-          {...register("phone", { required: "Укажите ваш  телефон!" })}
-        />
-        {errors.phone && (
-          <p className="text-red-500 text-sm">
-            {errors.phone.message}
-          </p>
-        )}
-      </div>
+            <button
+              type="submit"
+              disabled={isSubmitting || !isValid}
+              className={`bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${(!isValid || isSubmitting) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
+              <IoArrowForwardOutline className="w-5 h-5" />
+            </button>
 
-      <div className='flex flex-col'>
-        <label htmlFor="gender">
-          Пол
-        </label>
-        <input
-          className="p-2 border border-slate-300 rounded-md mt-2 "
-          type="text"
-          {...register("gender", { required: "Укажите ваш  пол!" })}
-        />
-        {errors.gender && (
-          <p className="text-red-500 text-sm">
-            {errors.gender.message}
-          </p>
-        )}
-      </div>
+            <div className="flex items-center my-6">
+              <div className="flex-1 bg-gray-200 h-0.5 rounded"></div>
+              <div className="px-3 text-gray-500 text-sm">Или</div>
+              <div className="flex-1 bg-gray-200 h-0.5 rounded" />
+            </div>
 
-      <div
-        className="flex h-8 items-end space-x-1"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {responseErrors && responseErrors.length > 0 && (
-          <div className="flex flex-row mb-2">
-            <IoInformationOutline className="h-5 w-5 text-red-500" />
-            <p className="text-sm text-red-500">
-              Неверно введенные данные!
-            </p>
-          </div>
-        )}
-      </div>
+            <Link
+              href="/auth/login"
+              className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors text-center"
+            >
+              У меня уже есть аккаунт
+            </Link>
 
-      <button
-        type="submit"
-        className={clsx({
-          "btn-primary": isValid,
-          "btn-disabled": !isValid
-        })}
-        disabled={!isValid}
-      >
-        Зарегистрироваться
-      </button>
-
-      <div className="flex items-center my-5">
-        <div className="flex-1 bg-slate-300 h-0.5 rounded"></div>
-        <div className="px-2 text-slate-800">Или</div>
-        <div className="flex-1 bg-slate-300 h-0.5 rounded " />
-      </div>
-
-      <Link href="/auth/login" className="btn-secondary text-center">
-        Войти в учетную запись
-      </Link>
-      
-      {/* Кнопка "Вернуться на главную" только для десктопной версии */}
-      <div className="mt-4 text-center hidden lg:block">
-        <Link href="/" className="text-orange-500 hover:text-orange-600 text-sm">
-          Вернуться на главную
-        </Link>
-      </div>
-    </form>
+            <div className="mt-4 text-center">
+              <Link href="/" className="text-orange-500 hover:text-orange-600 text-sm">
+                Вернуться на главную
+              </Link>
+            </div>
+        </form>
+    </>
   );
-};
+} 

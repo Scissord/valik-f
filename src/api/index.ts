@@ -7,3 +7,7 @@ export * from "./orders/find_order";
 export * from "./auth/login";
 export * from "./auth/registration";
 export * from "./auth/getProfile";
+export * from "./ai/getChats";
+export * from "./ai/getChatHistory";
+export * from "./ai/sendMessage";
+export * from "./ai/deleteChat";

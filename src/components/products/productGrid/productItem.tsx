@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useState, memo, useEffect } from "react";
 import { IoCartOutline } from "react-icons/io5";
 import { useCartStore } from "@/store";
+import { CartItem } from "@/interfaces";
 
 interface Props {
   product: Product;
@@ -29,9 +30,11 @@ export const ProductItem = memo(({ product }: Props) => {
     
     setIsAddingToCart(true);
     
-    const cartProduct = {
+    // Преобразуем Product в CartItem
+    const cartProduct: CartItem = {
       ...product,
-      quantity: 1,
+      quantity: 1, // Добавляем количество
+      image: product.images?.[0] // Берем первое изображение
     };
     
     addProductToCart(cartProduct);

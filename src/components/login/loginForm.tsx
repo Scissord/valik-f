@@ -54,13 +54,13 @@ export const LoginForm = () => {
           </div>
           <input
             className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-            type="email"
-            placeholder="Email"
-            {...register("email", { required: "Укажите ваш email!" })}
+            type="text"
+            placeholder="Логин или Email"
+            {...register("login", { required: "Укажите ваш логин или email!" })}
           />
         </div>
-        {errors.email && (
-          <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+        {errors.login && (
+          <p className="text-red-500 text-sm mt-1">{errors.login.message}</p>
         )}
       </div>
 

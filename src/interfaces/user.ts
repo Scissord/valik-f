@@ -1,20 +1,26 @@
 export interface User {
-    id:        string;
+    id:        number;
     email:     string;
-    name:      string;
+    full_name: string;
     login:     string;
     phone?:    string | null;
+    birth_date?: number | null;
+    gender?:    string | null;
+    address?:  string | null;
+    created_at?: string;
+    updated_at?: string;
+    deleted_at?: string | null;
   }
   
   export interface UserLogin {
-    email:      string;
+    login:      string;
     password:   string;
   }
   
   export interface UserRegister {
     email:      string;
     password:   string;
-    name:       string;
+    full_name:  string;
     login:      string;
     phone?:     string;
     gender?:    string;

@@ -304,7 +304,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
     `,
     input: `
       border-none outline-none
-      text-black text-sm
+      text-black text-base
       pl-4 py-2 w-full
       placeholder:text-gray-400
     `,

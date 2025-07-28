@@ -146,7 +146,7 @@ export default function CartPage() {
                 <div key={product.id} className="py-6 flex flex-col sm:flex-row gap-4">
                   <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-24 h-24 flex items-center justify-center">
                     <Image
-                      src={product.image || "/imgs/placeholder.png"}
+                      src={product.image?.[0] || "/imgs/placeholder.png"}
                       width={80}
                       height={80}
                       alt={product.title}
@@ -155,11 +155,11 @@ export default function CartPage() {
                   </div>
                   
                   <div className="flex-grow">
-                    <Link href={`/product/${product.id}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
+                    <Link href={`/product/${product.slug}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
                       {product.title}
                     </Link>
                     <div className="mt-1 text-sm text-gray-500">
-                      Артикул: {product.id.substring(0, 8)}
+                      Артикул: {product.articul}
                     </div>
                     <div className="mt-4 flex items-center justify-between">
                       <div className="flex items-center gap-4">

@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProduct } from "@/api";
 import { titleFont } from "@/config/fonts";
+import { Product } from "@/interfaces";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -47,22 +48,26 @@ export default async function ProductPage({ params }: Props) {
     }
 
     // Адаптируем данные продукта, обеспечивая наличие всех необходимых полей
-    const adaptedProduct = {
+    const adaptedProduct: Product = {
       ...product,
+      slug: slug,
       images: product.images && product.images.length > 0 ? product.images : ['/imgs/placeholder.png'],
-      brand: product.brand || 'Не указан',
-      category: product.category || 'Не указана',
-      unit: product.unit || 'шт',
-      article: Number(product.article) || 0,
+      brand: String(product.brand || 'Не указан'),
+      category: String(product.category || 'Не указана'),
+      unit: String(product.unit || 'шт'),
+      articul: product.articul || 'N/A',
       rating: product.rating || 0,
-      sizes: product.sizes || [],
-      tags: product.tags || [],
-      brand_id: 0, 
-      unit_id: 0, 
-      created_at: 0,
-      updated_at: 0,
-      deleted_at: 0,
+      brand_id: product.brand_id || 0,
+      unit_id: product.unit_id || 0,
+      created_at: product.created_at || '',
+      updated_at: product.updated_at || '',
+      deleted_at: product.deleted_at || null,
       category_id: product.category_id || 0,
+      quantity: product.quantity || 0,
+      description: product.description || '',
+      title: product.title || 'Без названия',
+      id: product.id || 0,
+      price: Number(product.price) || 0,
     };
 
     return (
@@ -105,7 +110,7 @@ export default async function ProductPage({ params }: Props) {
                       {adaptedProduct.price.toLocaleString('ru-RU')} ₸
                     </div>
                     <div className="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm">
-                      Артикул: {adaptedProduct.article}
+                      Артикул: {adaptedProduct.articul}
                     </div>
                   </div>
                 </div>
@@ -141,33 +146,13 @@ export default async function ProductPage({ params }: Props) {
                       <span className="text-gray-600">Рейтинг:</span>
                       <div className="flex items-center">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <svg key={star} className={`w-4 h-4 ${star <= adaptedProduct.rating ? 'text-orange-400' : 'text-gray-300'}`} 
+                          <svg key={star} className={`w-4 h-4 ${star <= (adaptedProduct.rating || 0) ? 'text-orange-400' : 'text-gray-300'}`} 
                             fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                           </svg>
                         ))}
                       </div>
                     </div>
-                    
-                    {adaptedProduct.sizes.length > 0 && (
-                      <div className="flex justify-between border-b border-gray-200 py-2 col-span-1 md:col-span-2">
-                        <span className="text-gray-600">Доступные размеры:</span>
-                        <span className="font-medium">{adaptedProduct.sizes.join(', ')}</span>
-                      </div>
-                    )}
-                    
-                    {adaptedProduct.tags.length > 0 && (
-                      <div className="flex justify-between border-b border-gray-200 py-2 col-span-1 md:col-span-2">
-                        <span className="text-gray-600">Теги:</span>
-                        <div className="flex flex-wrap justify-end gap-1">
-                          {adaptedProduct.tags.map((tag: string) => (
-                            <span key={tag} className="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-full">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>

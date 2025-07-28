@@ -47,7 +47,7 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
-  const headerBgClass = isHomePage && !isScrolled ? 'bg-white' : 'bg-white shadow-md';
+  const headerBgClass = isHomePage ? 'bg-white' : 'bg-white shadow-md';
 
   return (
     <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300
@@ -101,8 +101,8 @@ export const Header = () => {
             </div>
           </div>
           
-          <div className="flex-1 flex justify-center px-4 md:flex-none md:order-2">
-            <nav className="hidden md:flex items-center space-x-1">
+          <div className="flex-1 hidden md:flex justify-center px-4 md:flex-none md:order-2">
+            <nav className="flex items-center space-x-1">
               <Link
                 className="px-3 py-1 text-gray-700 font-medium hover:text-[#fc640c] transition-colors duration-200"
                 href="/products"

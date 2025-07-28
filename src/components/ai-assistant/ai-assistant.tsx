@@ -16,8 +16,8 @@ export const AIAssistant = () => {
     toggleAssistant, 
     closeAssistant, 
     sendMessage,
-    getChats,
-    getChatHistory,
+    loadChats,
+    loadChatHistory,
     deleteChat,
     createNewChat
   } = useAIAssistant();
@@ -35,7 +35,7 @@ export const AIAssistant = () => {
   };
 
   const handleSelectChat = async (chatId: string) => {
-    await getChatHistory(chatId);
+    await loadChatHistory(chatId);
     setShowChatsList(false);
   };
 
@@ -57,9 +57,9 @@ export const AIAssistant = () => {
 
   useEffect(() => {
     if (isOpen && user) {
-      getChats();
+      loadChats();
     }
-  }, [isOpen, user, getChats]);
+  }, [isOpen, user, loadChats]);
 
   const currentChatTitle = currentChatId 
     ? chats.find(chat => chat.id === currentChatId)?.title || 'Новый чат' 
@@ -134,7 +134,7 @@ export const AIAssistant = () => {
             </div>
             <div className="flex items-center space-x-1 sm:space-x-2">
               <button 
-                onClick={() => getChats()}
+                onClick={() => loadChats()}
                 className="text-white hover:bg-white/20 rounded-full p-1.5 transition-colors"
                 aria-label="Обновить список чатов"
               >
@@ -246,7 +246,7 @@ export const AIAssistant = () => {
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Введите сообщение..."
                 disabled={isLoading}
-                className="w-full border border-gray-300 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100 pr-10"
+                className="w-full border border-gray-300 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100 pr-10 text-base"
               />
               <button
                 onClick={handleSendMessage}

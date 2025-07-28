@@ -1,20 +1,25 @@
 export interface Product {
-  id: string;
+  id: number;
+  title: string;
   description: string;
   images: string[];
-  inStock: number;
   price: number;
-  sizes: Sizes[];
-  slug: string;
-  tags: string[];
-  title: string;
-  gender: Category;
-  category_id?: number;
+  quantity: number;
+  articul: string;
+  supplier_id?: number;
+  brand_id: number;
+  category_id: number;
+  unit_id: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+
+ 
   brand?: string;
   category?: string;
   unit?: string;
-  article?: string;
   rating?: number;
+  slug?: string;
 }
 
 export interface CartProduct{
@@ -23,7 +28,6 @@ export interface CartProduct{
   title: string;
   price: number;
   quantity: number;
-  size: Sizes;
   images: string;
 }
 
@@ -31,7 +35,3 @@ export interface ProductImage{
   id:number,
   url:string
 }
-
-type Category="men"|"women"|"kid"|"unisex"
-export type Sizes = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
-export type ypes = "shirts" | "pants" | "hoodies" | "hats";

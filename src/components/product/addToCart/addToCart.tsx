@@ -1,12 +1,12 @@
 "use client";
-import type{ CartItem, ProductItem, Sizes } from "@/interfaces";
+import type{ CartItem, Product } from "@/interfaces";
 import { StockLabel } from "../stockLabel/StockLabel";
 import { titleFont } from "@/config/fonts";
-import { QuantitySelector, SizeSelector } from "@/components";
+import { QuantitySelector } from "@/components";
 import { useState } from "react";
 import { useCartStore } from "@/store";
 
-export const AddToCart = ({ product }: { product: ProductItem }) => {
+export const AddToCart = ({ product }: { product: Product }) => {
   const addProductToCart = useCartStore((state) => state.addProductToCart)
   const [quantity, setQuantity] = useState<number>(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -17,6 +17,7 @@ export const AddToCart = ({ product }: { product: ProductItem }) => {
     const cartProduct: CartItem = {
       ...product,
       quantity: quantity,
+      image: product.images?.[0]
     }
     
     addProductToCart(cartProduct);
