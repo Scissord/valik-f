@@ -12,7 +12,7 @@ export const ProductGrid = memo(({ products }: Props) => {
   // Проверяем, есть ли товары
   if (!products || products.length === 0) {
     return (
-      <div className="w-full py-16 flex flex-col items-center justify-center rounded-2xl ">
+      <div className="w-full py-16 flex flex-col items-center justify-center rounded-2xl bg-gray-50">
         <div className="bg-orange-50 p-6 rounded-full mb-6">
           <IoCartOutline className="w-16 h-16 text-orange-400" />
         </div>
@@ -26,7 +26,7 @@ export const ProductGrid = memo(({ products }: Props) => {
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 mb-10">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-10">
       {products.map((product) => (
         <ProductItem key={product.id} product={product} />
       ))}

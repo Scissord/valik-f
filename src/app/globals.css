@@ -62,6 +62,36 @@ body {
   animation: slideDown 0.3s ease-out forwards;
 }
 
+/* Анимации для AI-ассистента */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 2s infinite ease-in-out;
+}
 
 .btn-primary {
   @apply bg-blue-600 hover:bg-blue-800 text-white py-2 px-4 rounded transition-all shadow-md shadow-blue-200;

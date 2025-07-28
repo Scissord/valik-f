@@ -20,7 +20,7 @@ export default async function ProductsPage({
   try {
     const result = await getProductsForMainPage({
       page,
-      limit: 12, // Показываем больше товаров на странице категории
+      limit: 20, // Показываем больше товаров на странице категории
     });
 
     products = result.products || [];
@@ -32,9 +32,14 @@ export default async function ProductsPage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-6">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Наши товары</h1>
       <ProductGrid products={products} />
-      {totalPages > 0 && <Pagination totalPages={totalPages} />}
+      {totalPages > 0 && (
+        <div className="mt-8">
+          <Pagination totalPages={totalPages} />
+        </div>
+      )}
     </div>
   );
 }

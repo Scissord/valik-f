@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { IoClose, IoChatbubbleEllipsesOutline, IoTrashOutline, IoAddOutline, IoReloadOutline } from 'react-icons/io5';
+import { useState, useEffect, useRef } from 'react';
+import { IoClose, IoChatbubbleEllipsesOutline, IoTrashOutline, IoAddOutline, IoReloadOutline, IoSendOutline } from 'react-icons/io5';
 import { useAIAssistant } from './ai-context';
 
 /**
@@ -29,6 +29,8 @@ export const AIAssistant = () => {
   const [userMessage, setUserMessage] = useState('');
   // Показывать ли список чатов
   const [showChatsList, setShowChatsList] = useState(false);
+  // Ссылка на контейнер сообщений для автопрокрутки
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   /**
    * Обработчик отправки сообщения
@@ -66,6 +68,15 @@ export const AIAssistant = () => {
   };
 
   /**
+   * Прокрутка к последнему сообщению при добавлении новых сообщений
+   */
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  /**
    * Загрузка чатов при открытии ассистента
    */
   useEffect(() => {
@@ -82,51 +93,57 @@ export const AIAssistant = () => {
     : 'Новый чат';
 
   return (
-    <div className="fixed right-6 z-50 bottom-24 lg:bottom-6">
+    <div className="fixed right-4 sm:right-6 z-50 bottom-20 sm:bottom-24 lg:bottom-6">
       {/* Кнопка для открытия/закрытия чата */}
       {!isOpen ? (
         <button
           onClick={toggleAssistant}
-          className="bg-orange-500 hover:bg-orange-600 text-white rounded-full p-4 shadow-lg transition-all duration-300"
+          className="bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 sm:p-4 shadow-lg transition-all duration-300 flex items-center justify-center"
           aria-label="Открыть чат с ассистентом"
         >
-          <IoChatbubbleEllipsesOutline size={24} />
+          <IoChatbubbleEllipsesOutline className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       ) : (
-        <div className="bg-white rounded-lg shadow-xl w-80 md:w-96 flex flex-col overflow-hidden border border-gray-200">
+        <div className="bg-white rounded-2xl shadow-2xl w-[90vw] sm:w-96 max-w-[90vw] flex flex-col overflow-hidden border border-gray-200 transition-all duration-300 animate-fade-in">
           {/* Заголовок чата */}
-          <div className="bg-orange-500 text-white p-4 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-3 sm:p-4 flex justify-between items-center">
             <div className="flex items-center space-x-2 flex-1 cursor-pointer" onClick={() => setShowChatsList(!showChatsList)}>
-              <h3 className="font-medium truncate">{currentChatTitle}</h3>
+              <div className="bg-white/20 p-1.5 rounded-full">
+                <IoChatbubbleEllipsesOutline className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-medium truncate">{currentChatTitle}</h3>
+                <p className="text-xs text-white/70">{showChatsList ? 'Скрыть чаты' : 'Показать чаты'}</p>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 sm:space-x-2">
               <button 
                 onClick={() => getChats()}
-                className="text-white hover:bg-orange-600 rounded-full p-1 transition-colors"
+                className="text-white hover:bg-white/20 rounded-full p-1.5 transition-colors"
                 aria-label="Обновить список чатов"
               >
-                <IoReloadOutline size={20} />
+                <IoReloadOutline className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
               <button 
                 onClick={handleCreateNewChat}
-                className="text-white hover:bg-orange-600 rounded-full p-1 transition-colors"
+                className="text-white hover:bg-white/20 rounded-full p-1.5 transition-colors"
                 aria-label="Создать новый чат"
               >
-                <IoAddOutline size={20} />
+                <IoAddOutline className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
               <button 
                 onClick={closeAssistant}
-                className="text-white hover:bg-orange-600 rounded-full p-1 transition-colors"
+                className="text-white hover:bg-white/20 rounded-full p-1.5 transition-colors"
                 aria-label="Закрыть чат"
               >
-                <IoClose size={20} />
+                <IoClose className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>
           
           {/* Выпадающий список чатов */}
           {showChatsList && (
-            <div className="max-h-64 overflow-y-auto border-b border-gray-200">
+            <div className="max-h-64 overflow-y-auto border-b border-gray-200 bg-gray-50">
               {chats.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">
                   Нет доступных чатов
@@ -137,15 +154,15 @@ export const AIAssistant = () => {
                     <li 
                       key={chat.id} 
                       className={`
-                        p-3 flex justify-between items-center cursor-pointer hover:bg-gray-50
-                        ${currentChatId === chat.id ? 'bg-orange-50' : ''}
+                        p-3 flex justify-between items-center cursor-pointer hover:bg-gray-100 transition-colors
+                        ${currentChatId === chat.id ? 'bg-orange-50 border-l-4 border-orange-500' : ''}
                       `}
                       onClick={() => handleSelectChat(chat.id)}
                     >
                       <div className="flex-1 truncate">
                         <p className="font-medium">{chat.title}</p>
                         {chat.lastMessage && (
-                          <p className="text-sm text-gray-500 truncate">{chat.lastMessage}</p>
+                          <p className="text-xs text-gray-500 truncate">{chat.lastMessage}</p>
                         )}
                       </div>
                       <button
@@ -153,7 +170,7 @@ export const AIAssistant = () => {
                         className="text-gray-400 hover:text-red-500 p-1 rounded-full transition-colors"
                         aria-label="Удалить чат"
                       >
-                        <IoTrashOutline size={18} />
+                        <IoTrashOutline className="w-4 h-4" />
                       </button>
                     </li>
                   ))}
@@ -163,10 +180,16 @@ export const AIAssistant = () => {
           )}
           
           {/* Область сообщений */}
-          <div className="flex-grow p-4 h-80 overflow-y-auto flex flex-col gap-3">
+          <div className="flex-grow p-3 sm:p-4 h-72 sm:h-80 overflow-y-auto flex flex-col gap-3 bg-gray-50">
             {messages.length === 0 && !isLoading ? (
-              <div className="text-center text-gray-500 my-auto">
-                Начните новый разговор
+              <div className="text-center text-gray-500 my-auto flex flex-col items-center gap-3">
+                <div className="bg-orange-100 p-3 rounded-full">
+                  <IoChatbubbleEllipsesOutline className="w-6 h-6 text-orange-500" />
+                </div>
+                <div>
+                  <p className="font-medium">Начните новый разговор</p>
+                  <p className="text-xs text-gray-400">Задайте вопрос ассистенту</p>
+                </div>
               </div>
             ) : (
               messages.map((msg, index) => (
@@ -174,43 +197,49 @@ export const AIAssistant = () => {
                   key={index} 
                   className={`${
                     msg.isUser 
-                      ? 'bg-blue-100 ml-auto' 
-                      : 'bg-gray-100 mr-auto'
-                  } rounded-lg p-3 max-w-[80%]`}
+                      ? 'bg-orange-100 ml-auto rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl' 
+                      : 'bg-white mr-auto rounded-tl-2xl rounded-tr-2xl rounded-br-2xl shadow-sm'
+                  } p-3 max-w-[85%] animate-fade-in`}
                 >
-                  {msg.text}
+                  <p className="text-sm">{msg.text}</p>
+                  <div className={`text-[10px] mt-1 ${msg.isUser ? 'text-orange-400' : 'text-gray-400'}`}>
+                    {msg.isUser ? 'Вы' : 'Ассистент'} • {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  </div>
                 </div>
               ))
             )}
             {isLoading && (
-              <div className="bg-gray-100 rounded-lg p-3 max-w-[80%] mr-auto flex items-center">
+              <div className="bg-white rounded-tl-2xl rounded-tr-2xl rounded-br-2xl shadow-sm p-3 max-w-[85%] mr-auto animate-fade-in">
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '200ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '400ms' }}></div>
+                  <div className="w-2 h-2 bg-orange-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '200ms' }}></div>
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '400ms' }}></div>
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
           
           {/* Поле ввода */}
-          <div className="border-t border-gray-200 p-3 flex gap-2">
-            <input
-              type="text"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder="Введите сообщение..."
-              disabled={isLoading}
-              className="flex-grow border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100"
-            />
-            <button
-              onClick={handleSendMessage}
-              disabled={!userMessage.trim() || isLoading}
-              className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white rounded-lg px-4 py-2 transition-colors"
-            >
-              Отправить
-            </button>
+          <div className="border-t border-gray-200 p-3 flex gap-2 bg-white">
+            <div className="flex-grow relative">
+              <input
+                type="text"
+                value={userMessage}
+                onChange={(e) => setUserMessage(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                placeholder="Введите сообщение..."
+                disabled={isLoading}
+                className="w-full border border-gray-300 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100 pr-10"
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={!userMessage.trim() || isLoading}
+                className="absolute right-1 top-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white rounded-full p-1.5 transition-colors"
+              >
+                <IoSendOutline className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       )}
