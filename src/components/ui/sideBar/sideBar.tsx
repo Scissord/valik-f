@@ -10,7 +10,7 @@ import { getCategories } from '@/api';
 import { ItemSiginOut } from "./itemSiginOut";
 import { FaTools, FaTractor, FaPaintRoller } from 'react-icons/fa';
 import { GiBrickWall, GiWoodBeam, GiHeatHaze } from 'react-icons/gi';
-import { 
+import {
   MdWallpaper, MdOutlineLayers, MdOutlineDoorFront, MdChair,
   MdOutlineFormatPaint, MdAgriculture, MdOutlineWater, MdHvac,
   MdHomeRepairService, MdStyle, MdMicrowave, MdHardware,
@@ -49,8 +49,8 @@ export const SideBar = () => {
 
   // Функция для поиска родительских категорий
   const findParentCategories = (
-    categories: GoodCategory[], 
-    targetId: string, 
+    categories: GoodCategory[],
+    targetId: string,
     path: string[] = []
   ): string[] | null => {
     for (const category of categories) {
@@ -118,14 +118,14 @@ export const SideBar = () => {
       'техника': <FaTractor className="h-5 w-5" />,
       'дом': <IoHomeOutline className="h-5 w-5" />,
     };
-    
+
     const title = categoryTitle.toLowerCase();
     for (const [keyword, icon] of Object.entries(iconMap)) {
       if (title.includes(keyword)) {
         return icon;
       }
     }
-    
+
     return <IoConstructOutline className="h-5 w-5" />;
   };
 
@@ -136,12 +136,23 @@ export const SideBar = () => {
     const isActive = currentCategoryId === category.id;
     const icon = getCategoryIcon(category.title);
 
+    // Определяем отступ в зависимости от уровня вложенности
+    const getPaddingClass = (level: number) => {
+      switch (level) {
+        case 0: return 'px-3';
+        case 1: return 'pl-8 pr-3';
+        case 2: return 'pl-12 pr-3';
+        case 3: return 'pl-16 pr-3';
+        default: return 'pl-20 pr-3';
+      }
+    };
+
     return (
       <div key={category.id} className="w-full">
         <div
           className={`
-            group relative flex items-center justify-between py-2.5 px-3 rounded-md
-            ${level > 0 ? 'pl-' + (level * 4 + 3) : ''}
+            group relative flex items-center justify-between py-2.5 rounded-md
+            ${getPaddingClass(level)}
             ${isActive ? 'bg-orange-50 text-orange-500 font-medium' : 'hover:bg-gray-50'}
             cursor-pointer transition-all duration-200
           `}
@@ -155,11 +166,19 @@ export const SideBar = () => {
               closeMenu();
             }}
           >
-            <span className={`text-gray-500 transition-colors group-hover:text-orange-500 ${isActive ? 'text-orange-500' : ''}`}>
+            {/* Индикатор подкатегории */}
+            {level > 0 && (
+              <div className="flex items-center">
+                <div className="w-3 h-px bg-gray-300 mr-1"></div>
+                <div className="w-1 h-1 bg-gray-400 rounded-full mr-2"></div>
+              </div>
+            )}
+
+            <span className={`text-gray-500 transition-colors group-hover:text-orange-500 ${isActive ? 'text-orange-500' : ''} ${level > 0 ? 'text-xs' : ''}`}>
               {icon}
             </span>
 
-            <span className={`text-sm ${isActive ? '' : 'text-gray-700'}`}>
+            <span className={`${level > 0 ? 'text-xs' : 'text-sm'} ${isActive ? '' : 'text-gray-700'}`}>
               {category.title}
             </span>
           </Link>
@@ -167,12 +186,13 @@ export const SideBar = () => {
           {hasChildren && (
             <div
               className={`
-                flex items-center justify-center w-5 h-5 rounded-full
+                flex items-center justify-center rounded-full
+                ${level > 0 ? 'w-4 h-4' : 'w-5 h-5'}
                 ${isActive ? 'text-orange-500' : 'text-gray-500'}
                 transition-transform ${isExpanded ? 'rotate-180' : ''}
               `}
             >
-              <IoChevronDownOutline className="w-4 h-4" />
+              <IoChevronDownOutline className={level > 0 ? 'w-3 h-3' : 'w-4 h-4'} />
             </div>
           )}
         </div>
@@ -223,7 +243,7 @@ export const SideBar = () => {
           {/* Основные разделы */}
           <div className="px-3 py-4 border-b">
             <div className="space-y-1">
-              <Link 
+              <Link
                 href="/about"
                 onClick={closeMenu}
                 className={`flex items-center gap-3 py-2.5 px-3 rounded-md hover:bg-gray-50 transition-colors ${pathname === '/about' ? 'bg-orange-50 text-orange-500 font-medium' : ''}`}
@@ -235,8 +255,8 @@ export const SideBar = () => {
                   О сервисе
                 </span>
               </Link>
-              
-              <Link 
+
+              <Link
                 href="/contacts"
                 onClick={closeMenu}
                 className={`flex items-center gap-3 py-2.5 px-3 rounded-md hover:bg-gray-50 transition-colors ${pathname === '/contacts' ? 'bg-orange-50 text-orange-500 font-medium' : ''}`}
@@ -253,7 +273,7 @@ export const SideBar = () => {
 
           {/* Категории товаров */}
           <div className="px-3 py-4">
-            <Link 
+            <Link
               href="/categories"
               onClick={closeMenu}
               className="flex items-center px-3 mb-3 group"
@@ -263,7 +283,7 @@ export const SideBar = () => {
               </span>
               <h3 className="font-medium text-gray-800 transition-colors group-hover:text-orange-500">Все категории</h3>
             </Link>
-            
+
             <div className="mt-2 space-y-1">
               {loading ? (
                 <div className="flex justify-center items-center py-6">

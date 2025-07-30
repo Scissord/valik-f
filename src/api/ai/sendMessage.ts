@@ -7,10 +7,12 @@ interface SendMessageParams {
 }
 
 interface SendMessageResponse {
-  chatId?: string;
+  chatId?: string | number;
   message?: string;
   text?: string;
   answer?: string;
+  content?: string;
+  chat_id?: number;
 }
 
 export const sendMessage = async ({ message, chatId }: SendMessageParams): Promise<ChatMessage | null> => {
@@ -26,10 +28,10 @@ export const sendMessage = async ({ message, chatId }: SendMessageParams): Promi
     const data: SendMessageResponse = responseData.data || responseData;
     
     return {
-      text: data.message || data.text || data.answer || 'Получен ответ от ассистента',
+      text: data.message || data.text || data.answer || data.content || 'Получен ответ от ассистента',
       isUser: false,
       id: crypto.randomUUID(),
-      chatId: data.chatId
+      chatId: (data.chatId || data.chat_id)?.toString()
     };
   } catch (error) {
     console.error('Ошибка при отправке сообщения:', error);

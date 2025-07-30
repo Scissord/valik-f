@@ -1,64 +1,73 @@
 "use client";
 
 import { ProductGrid } from "@/components";
-import { getProductsForMainPage } from '@/api';
+import { getProductsForMainPage, getCategories } from '@/api';
 import Link from "next/link";
-import { IoArrowForwardOutline, IoConstructOutline, IoLayersOutline, IoHomeOutline, IoColorPaletteOutline, IoCartOutline } from "react-icons/io5";
-import { FaToolbox, FaScrewdriver, FaPaintRoller, FaTruck, FaCreditCard, FaHeadset } from "react-icons/fa";
+import { IoArrowForwardOutline, IoCartOutline } from "react-icons/io5";
+import { FaTruck, FaCreditCard, FaHeadset } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { motion, Variants } from "framer-motion";
-import { Product } from "@/interfaces";
+import { Product, GoodCategory } from "@/interfaces";
+import { getCategoryIcon, getCategoryGradient } from "@/util/categoryIcons";
 
-const categories = [
-  {
-    id: 1,
-    name: "Инструменты",
-    icon: <FaToolbox className="w-8 h-8" />,
-    description: "Электро- и ручные инструменты для любых задач",
-    image: "/categories/tools.jpg",
-    slug: "tools"
-  },
-  {
-    id: 2,
-    name: "Материалы",
-    icon: <IoLayersOutline className="w-8 h-8" />,
-    description: "Строительные и отделочные материалы",
-    image: "/categories/materials.jpg",
-    slug: "materials"
-  },
-  {
-    id: 3,
-    name: "Крепёж",
-    icon: <FaScrewdriver className="w-8 h-8" />,
-    description: "Винты, гайки, анкеры и другие крепёжные изделия",
-    image: "/categories/fasteners.jpg",
-    slug: "fasteners"
-  },
-  {
-    id: 4,
-    name: "Сантехника",
-    icon: <IoConstructOutline className="w-8 h-8" />,
-    description: "Всё для водопровода и канализации",
-    image: "/categories/plumbing.jpg",
-    slug: "plumbing"
-  },
-  {
-    id: 5,
-    name: "Отделка",
-    icon: <FaPaintRoller className="w-8 h-8" />,
-    description: "Краски, декор и отделочные материалы",
-    image: "/categories/finishing.jpg",
-    slug: "finishing"
-  },
-  {
-    id: 6,
-    name: "Освещение",
-    icon: <IoHomeOutline className="w-8 h-8" />,
-    description: "Светильники и электрооборудование",
-    image: "/categories/lighting.jpg",
-    slug: "lighting"
+// Функция для генерации описания категории
+const getCategoryDescription = (categoryName: string): string => {
+  const name = categoryName.toLowerCase();
+
+  if (name.includes('обои')) {
+    return 'Рулонные, жидкие, фотообои и другие виды настенных покрытий';
   }
-];
+  if (name.includes('сантехник')) {
+    return 'Смесители, унитазы, ванны и всё для водопровода';
+  }
+  if (name.includes('покрытия для пола')) {
+    return 'Ламинат, линолеум, паркет и другие напольные покрытия';
+  }
+  if (name.includes('кафель')) {
+    return 'Керамическая плитка для стен и пола';
+  }
+  if (name.includes('двер') && name.includes('фурнитур')) {
+    return 'Входные и межкомнатные двери, замки и фурнитура';
+  }
+  if (name.includes('мебель')) {
+    return 'Мебель для дома и офиса';
+  }
+  if (name.includes('лак') || name.includes('краск') || name.includes('клей')) {
+    return 'Краски, лаки, клеи и материалы для отделки';
+  }
+  if (name.includes('инструмент')) {
+    return 'Электро- и ручные инструменты для любых задач';
+  }
+  if (name.includes('дом') && name.includes('сад') && name.includes('огород')) {
+    return 'Товары для дома, сада и огорода';
+  }
+  if (name.includes('водоснабжен') || name.includes('отоплен') || name.includes('вентиляц')) {
+    return 'Системы водоснабжения, отопления и вентиляции';
+  }
+  if (name.includes('оборудован')) {
+    return 'Профессиональное и бытовое оборудование';
+  }
+  if (name.includes('декор')) {
+    return 'Декоративные элементы и украшения для интерьера';
+  }
+  if (name.includes('техник') || name.includes('быт')) {
+    return 'Бытовая техника для дома';
+  }
+  if (name.includes('крепёж') || name.includes('крепеж')) {
+    return 'Винты, гайки, анкеры и другие крепёжные изделия';
+  }
+  if (name.includes('материал') || name.includes('строительн')) {
+    return 'Строительные и отделочные материалы';
+  }
+  if (name.includes('электр')) {
+    return 'Электротовары и светотехника';
+  }
+  if (name.includes('авто')) {
+    return 'Автомобильные товары и аксессуары';
+  }
+
+  return `Качественные товары категории "${categoryName}"`;
+};
 
 const advantages = [
   {
@@ -80,21 +89,38 @@ const advantages = [
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<GoodCategory[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
-        const result = await getProductsForMainPage({
+        // Загружаем продукты
+        const productsResult = await getProductsForMainPage({
           page: 1,
           limit: 8,
         });
-        setProducts(result.products || []);
+        setProducts(productsResult.products || []);
+
+        // Загружаем категории
+        setIsLoadingCategories(true);
+        const categoriesResult = await getCategories();
+
+        if (categoriesResult && categoriesResult.length > 0) {
+          // Берем только родительские категории (без parent_id) и первые 6
+          const parentCategories = categoriesResult
+            .filter(category => !category.parent_id)
+            .slice(0, 6);
+          setCategories(parentCategories);
+        }
       } catch (error) {
-        console.error("Ошибка при загрузке продуктов:", error);
+        console.error("Ошибка при загрузке данных:", error);
+      } finally {
+        setIsLoadingCategories(false);
       }
     };
 
-    fetchProducts();
+    fetchData();
   }, []);
 
   const containerVariants: Variants = {
@@ -126,7 +152,7 @@ export default function Home() {
   };
 
   const cardHoverVariants: Variants = {
-    hover: { 
+    hover: {
       boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
       transition: { duration: 0.3, ease: "easeOut" }
     }
@@ -134,12 +160,12 @@ export default function Home() {
 
   const iconVariants: Variants = {
     hidden: { scale: 0.8, opacity: 0 },
-    visible: { 
-      scale: 1, 
+    visible: {
+      scale: 1,
       opacity: 1,
       transition: { duration: 0.5, ease: "easeOut" }
     },
-    hover: { 
+    hover: {
       rotate: [0, -10, 10, -5, 0],
       scale: [1, 1.1, 1],
       transition: { duration: 0.7 }
@@ -174,9 +200,9 @@ export default function Home() {
         </div>
         <div className="absolute bottom-[-1px] left-0 right-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 80" className="w-full h-auto">
-            <path 
-              fill="#f9fafb" 
-              fillOpacity="1" 
+            <path
+              fill="#f9fafb"
+              fillOpacity="1"
               d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,42.7C840,32,960,32,1080,37.3C1200,43,1320,53,1380,58.7L1440,64L1440,80L1380,80C1320,80,1200,80,1080,80C960,80,840,80,720,80C600,80,480,80,360,80C240,80,120,80,60,80L0,80Z"
             ></path>
           </svg>
@@ -204,7 +230,7 @@ export default function Home() {
                   whileHover="hover"
                   className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:border-orange-100 transition-all duration-300"
                 >
-                  <motion.div 
+                  <motion.div
                     className="bg-orange-50 text-orange-500 p-4 rounded-2xl inline-flex mb-6"
                     variants={iconVariants}
                   >
@@ -243,44 +269,86 @@ export default function Home() {
               </motion.div>
             </div>
             <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {categories.slice(0, 6).map((category) => (
-                <motion.div 
-                  key={category.id} 
-                  variants={itemVariants}
-                  whileHover="hover"
-                >
-                  <Link
-                    href={`/categories/${category.slug}`}
-                    className="group"
+              {isLoadingCategories ? (
+                // Скелетон загрузки
+                Array.from({ length: 6 }).map((_, index) => (
+                  <motion.div
+                    key={index}
+                    variants={itemVariants}
+                    className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 h-full flex flex-col animate-pulse"
                   >
-                    <motion.div 
-                      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 h-full flex flex-col"
-                      variants={cardHoverVariants}
+                    <div className="h-48 bg-gray-200"></div>
+                    <div className="p-6 flex-1">
+                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                    </div>
+                  </motion.div>
+                ))
+              ) : categories.length > 0 ? (
+                categories.map((category, index) => {
+                  // Проверяем наличие ID
+                  if (!category.id) {
+                    console.warn('Категория без ID:', category);
+                    return null;
+                  }
+
+                  return (
+                    <motion.div
+                      key={category.id}
+                      variants={itemVariants}
+                      whileHover="hover"
                     >
-                      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-orange-500 to-orange-600">
-                        <motion.div 
-                          className="absolute bottom-0 right-0 p-6 text-white"
-                          variants={iconVariants}
+                      <Link
+                        href={`/categories/${category.id}`}
+                        className="group"
+                      >
+                        <motion.div
+                          className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 h-full flex flex-col"
+                          variants={cardHoverVariants}
                         >
-                          <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                            {category.icon}
+                          <div className={`relative h-48 overflow-hidden bg-gradient-to-br ${getCategoryGradient(index)}`}>
+                            <motion.div
+                              className="absolute bottom-0 right-0 p-6 text-white"
+                              variants={iconVariants}
+                            >
+                              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
+                                {getCategoryIcon(category.title, category.id)}
+                              </div>
+                            </motion.div>
+                            <h3 className="absolute bottom-6 left-6 font-bold text-2xl text-white z-10 max-w-[70%] leading-tight">
+                              {category.title}
+                            </h3>
+                          </div>
+                          <div className="p-6 flex-1">
+                            <p className="text-gray-700 mb-4">
+                              {getCategoryDescription(category.title)}
+                            </p>
+                            <span className="text-orange-500 font-medium inline-flex items-center text-sm group-hover:underline">
+                              Перейти в категорию
+                              <IoArrowForwardOutline className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </span>
                           </div>
                         </motion.div>
-                        <h3 className="absolute bottom-6 left-6 font-bold text-2xl text-white z-10 max-w-[60%] leading-tight">
-                          {category.name}
-                        </h3>
-                      </div>
-                      <div className="p-6 flex-1">
-                        <p className="text-gray-700 mb-4">{category.description}</p>
-                        <span className="text-orange-500 font-medium inline-flex items-center text-sm group-hover:underline">
-                          Перейти в категорию
-                          <IoArrowForwardOutline className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                      </div>
+                      </Link>
                     </motion.div>
-                  </Link>
+                  );
+                })
+              ) : (
+                // Заглушка если нет категорий
+                <motion.div
+                  variants={itemVariants}
+                  className="col-span-full text-center py-12"
+                >
+                  <p className="text-gray-500 text-lg">Категории временно недоступны</p>
+                  <p className="text-gray-400 text-sm mt-2 mb-4">Попробуйте обновить страницу</p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  >
+                    Обновить страницу
+                  </button>
                 </motion.div>
-              ))}
+              )}
             </motion.div>
           </motion.section>
 
@@ -310,10 +378,10 @@ export default function Home() {
                 </Link>
               </motion.div>
             </div>
-            <motion.div 
+            <motion.div
               className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100"
               variants={itemVariants}
-              whileHover={{ 
+              whileHover={{
                 boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
                 transition: { duration: 0.4 }
               }}

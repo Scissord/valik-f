@@ -5,93 +5,75 @@ import { GoodCategory } from "@/interfaces";
 const mockCategories: GoodCategory[] = [
   { 
     id: "1", 
-    title: "Категория 1", 
-    slug: "category_1",
+    title: "Инструменты", 
+    slug: "instruments",
     parent_id: null,
-    children: [
-      { 
-        id: "11", 
-        title: "Подкатегория 1-1", 
-        slug: "subcategory_1_1",
-        parent_id: "1",
-        totalProductCount: 30,
-        created_at: "1750934812775",
-        updated_at: "1750934812775",
-        deleted_at: null,
-        children: []
-      },
-      { 
-        id: "12", 
-        title: "Подкатегория 1-2", 
-        slug: "subcategory_1_2",
-        parent_id: "1",
-        totalProductCount: 20,
-        created_at: "1750934812775",
-        updated_at: "1750934812775",
-        deleted_at: null,
-        children: []
-      }
-    ],
-    totalProductCount: 50,
-    created_at: "1750934812775",
-    updated_at: "1750934812775",
-    deleted_at: null
+    children: [],
+    totalProductCount: 150,
+    created_at: "2024-01-01T00:00:00.000Z",
+    updated_at: "2024-01-01T00:00:00.000Z",
+    deleted_at: null,
+    _count: { goods: 150 }
   },
   { 
     id: "2", 
-    title: "Категория 2", 
-    slug: "category_2",
+    title: "Строительные материалы", 
+    slug: "building-materials",
     parent_id: null,
-    children: [
-      { 
-        id: "21", 
-        title: "Подкатегория 2-1", 
-        slug: "subcategory_2_1",
-        parent_id: "2",
-        totalProductCount: 25,
-        created_at: "1750934812775",
-        updated_at: "1750934812775",
-        deleted_at: null,
-        children: []
-      },
-      { 
-        id: "22", 
-        title: "Подкатегория 2-2", 
-        slug: "subcategory_2_2",
-        parent_id: "2",
-        totalProductCount: 15,
-        created_at: "1750934812775",
-        updated_at: "1750934812775",
-        deleted_at: null,
-        children: []
-      }
-    ],
-    totalProductCount: 40,
-    created_at: "1750934812775",
-    updated_at: "1750934812775",
-    deleted_at: null
+    children: [],
+    totalProductCount: 200,
+    created_at: "2024-01-01T00:00:00.000Z",
+    updated_at: "2024-01-01T00:00:00.000Z",
+    deleted_at: null,
+    _count: { goods: 200 }
   },
   { 
     id: "3", 
-    title: "Категория 3", 
-    slug: "category_3",
+    title: "Отделочные материалы", 
+    slug: "finishing-materials",
     parent_id: null,
-    totalProductCount: 30,
-    created_at: "1750934812775",
-    updated_at: "1750934812775",
+    children: [],
+    totalProductCount: 120,
+    created_at: "2024-01-01T00:00:00.000Z",
+    updated_at: "2024-01-01T00:00:00.000Z",
     deleted_at: null,
-    children: []
+    _count: { goods: 120 }
   },
   { 
     id: "4", 
-    title: "Категория 4", 
-    slug: "category_4",
+    title: "Сантехника", 
+    slug: "plumbing",
     parent_id: null,
-    totalProductCount: 20,
-    created_at: "1750934812775",
-    updated_at: "1750934812775",
+    children: [],
+    totalProductCount: 80,
+    created_at: "2024-01-01T00:00:00.000Z",
+    updated_at: "2024-01-01T00:00:00.000Z",
     deleted_at: null,
-    children: []
+    _count: { goods: 80 }
+  },
+  { 
+    id: "5", 
+    title: "Электрика и освещение", 
+    slug: "electrical",
+    parent_id: null,
+    children: [],
+    totalProductCount: 90,
+    created_at: "2024-01-01T00:00:00.000Z",
+    updated_at: "2024-01-01T00:00:00.000Z",
+    deleted_at: null,
+    _count: { goods: 90 }
+  },
+  { 
+    id: "6", 
+    title: "Крепёжные изделия", 
+    slug: "fasteners",
+    parent_id: null,
+    children: [],
+    totalProductCount: 60,
+    created_at: "2024-01-01T00:00:00.000Z",
+    updated_at: "2024-01-01T00:00:00.000Z",
+    deleted_at: null,
+    _count: { goods: 60 }
   }
 ];
 
@@ -102,11 +84,25 @@ export const getCategories = async (): Promise<GoodCategory[]> => {
     
     console.log('Категории успешно получены:', response.data);
     
-    return response.data;
+    // Проверяем, что данные корректны
+    if (response.data && Array.isArray(response.data)) {
+      // Фильтруем категории, у которых есть id и title
+      const validCategories = response.data.filter(category => 
+        category && category.id && category.title
+      );
+      
+      if (validCategories.length > 0) {
+        return validCategories;
+      }
+    }
+    
+    // Если данные некорректны, возвращаем тестовые данные
+    console.log('Данные категорий некорректны, возвращаем тестовые данные');
+    return mockCategories;
   } catch (error) {
     console.error('Ошибка при получении списка категорий:', error);
     console.log('Возвращаем тестовые данные категорий');
-    // В случае ошибки возвращаем пустой массив или тестовые данные
-    return [];
+    // В случае ошибки возвращаем тестовые данные для демонстрации
+    return mockCategories;
   }
 };
