@@ -112,8 +112,8 @@ export const LoginForm = () => {
         <div className="flex-1 bg-gray-200 h-0.5 rounded" />
       </div>
 
-      <Link 
-        href="/auth/register" 
+      <Link
+        href="/auth/registration"
         className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors text-center"
       >
         Создать новую учетную запись

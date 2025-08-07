@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'via.placeholder.com',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080',
+      },
     ],
   },
   eslint: {
