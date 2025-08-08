@@ -11,8 +11,22 @@ export const getProduct = async ({ id }: Params): Promise<Product | null> => {
     return null;
   }
   
+  console.log(`[API] Запрос товара с ID: ${id}`);
+  
   try {
     const response = await api.get(`/products/${id}`);
+    
+    console.log('[API] Товар успешно получен с бэкенда:', {
+      id: response.data?.id,
+      title: response.data?.title,
+      price: response.data?.price,
+      category: response.data?.category,
+      brand: response.data?.brand,
+      images_count: response.data?.images?.length || 0,
+      has_description: !!response.data?.description,
+      articul: response.data?.articul
+    });
+    
     return response.data;
   } catch (error) {
     console.error('[API] Ошибка при загрузке продукта:', error);

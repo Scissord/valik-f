@@ -80,9 +80,9 @@ export default async function ProductPage({ params }: Props) {
         </div>
         
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
             {/* Галерея изображений */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-2">
               {/* Desktop slideshow */}
               <ProductSlidesShow
                 className="hidden md:block"
@@ -98,7 +98,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
             
             {/* Информация о товаре */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-3">
               <div className="flex flex-col h-full">
                 {/* Заголовок и цена */}
                 <div className="mb-6">

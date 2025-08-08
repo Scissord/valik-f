@@ -155,7 +155,7 @@ export default function CartPage() {
                   </div>
                   
                   <div className="flex-grow">
-                    <Link href={`/product/${product.slug}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
+                    <Link href={`/product/${product.id}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
                       {product.title}
                     </Link>
                     <div className="mt-1 text-sm text-gray-500">
@@ -214,7 +214,7 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Доставка</span>
-                <span className="text-green-600">Бесплатно</span>
+                <span className="text-blue-600">По согласованию</span>
               </div>
             </div>
             
