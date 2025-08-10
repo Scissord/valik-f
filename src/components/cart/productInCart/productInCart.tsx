@@ -59,11 +59,11 @@ export const ProductInCart = () => {
         .map((product) => (
           <div key={product.id} className="flex mb-5">
             <Image
-              src={"/imgs/placeholder.png"}
+              src={product.image || (product.images && product.images.length > 0 ? product.images[0] : "/placeholder.jpg")}
               width={100}
               height={100}
               alt={product.title}
-              className="mr-5 rodunded-none"
+              className="mr-5 rounded-none object-cover"
             />
             <div>
               <Link className="hover:underline" href={`/product/${product.id}`}>

@@ -1,5 +1,5 @@
 export const revalidate = 604800; //7 dias
-import { Pagination, ProductGrid } from "@/components";
+import { Pagination, ProductGrid, Breadcrumbs, BreadcrumbItem } from "@/components";
 // import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProductsForCategory, getCategories } from '@/api'
@@ -30,8 +30,38 @@ export default async function ProductPage({
     category_id: slug,
   });
 
+  // Создаем хлебные крошки
+  const breadcrumbItems: BreadcrumbItem[] = [
+    {
+      label: "Каталог",
+      href: "/categories"
+    }
+  ];
+
+  // Если есть родительская категория, добавляем её
+  if (category?.parent_id) {
+    const parentCategory = categories.find(cat => cat.id === category.parent_id);
+    if (parentCategory) {
+      breadcrumbItems.push({
+        label: parentCategory.title,
+        href: `/categories/${parentCategory.id}`
+      });
+    }
+  }
+
+  // Добавляем текущую категорию как активную
+  if (category?.title) {
+    breadcrumbItems.push({
+      label: category.title,
+      isActive: true
+    });
+  }
+
   return (
     <div className="container mx-auto px-4 py-4">
+      {/* Хлебные крошки */}
+      <Breadcrumbs items={breadcrumbItems} className="mb-4" />
+
       {/* Минималистичный заголовок категории */}
       {category?.title && (
         <h1 className="text-xl font-medium text-gray-900 mb-4">{category.title}</h1>

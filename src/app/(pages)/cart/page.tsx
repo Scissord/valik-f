@@ -1,6 +1,6 @@
 'use client';
 
-import { Title } from "@/components";
+import { Title, CheckoutModal } from "@/components";
 import { useCartStore } from "@/store";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,6 +14,7 @@ import { useShallow } from 'zustand/react/shallow';
 export default function CartPage() {
   const [loaded, setLoaded] = useState(false);
   const [isUpdatingPrices, setIsUpdatingPrices] = useState(false);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   
   // Используем useShallow для предотвращения лишних ререндеров
   const { cart, updateProductQuantity, deleteProduct } = useCartStore(
@@ -225,15 +226,22 @@ export default function CartPage() {
               </div>
             </div>
             
-            <Link
-              href="/checkout"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
+            <button
+              onClick={() => setIsCheckoutModalOpen(true)}
+              disabled={cart.length === 0}
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Оформить заказ
-            </Link>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Checkout Modal */}
+      <CheckoutModal 
+        isOpen={isCheckoutModalOpen}
+        onClose={() => setIsCheckoutModalOpen(false)}
+      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { GoodCategory } from '@/interfaces';
 import { getCategories } from '@/api';
 import Link from 'next/link';
 import { MobileCategoriesPage } from '@/components/mobile';
+import { Breadcrumbs, BreadcrumbItem } from '@/components';
 import { 
   IoConstructOutline, IoHomeOutline, IoCarOutline
 } from 'react-icons/io5';
@@ -110,6 +111,12 @@ export default function CategoriesPage() {
 
       <div className="hidden md:block bg-gray-50">
         <div className="container mx-auto px-4 py-12">
+          {/* Хлебные крошки */}
+          <Breadcrumbs 
+            items={[{ label: "Каталог", isActive: true }]} 
+            className="mb-8" 
+          />
+          
           <div className="text-center mb-12">
             <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">Каталог товаров</h1>
             <p className="mt-2 text-lg text-gray-500">Все необходимое для строительства и ремонта в одном месте</p>

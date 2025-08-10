@@ -124,7 +124,7 @@ export const Footer = () => {
                 Email: <a href="mailto:valik.kazakhstan@gmail.com" className="hover:text-[#fc640c]">valik.kazakhstan@gmail.com</a>
               </li>
               <li className="text-sm text-gray-600">
-                Адрес: с. Айтеке Би, Туркестанская обл.
+                Адрес: Казахстан, Туркестанская область, Сайрамский район, село Айтеке Би, улица №1, дом 1078, п.и. 160806.
               </li>
             </ul>
           </div>

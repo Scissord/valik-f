@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -59,15 +60,24 @@ export const ProductMobileSlidesShow = ({
         >
           {images.map((image, index) => (
             <SwiperSlide key={image}>
-              <div className="relative cursor-pointer h-full" onClick={() => openFullscreen(index)}>
+              <div 
+                className="relative cursor-pointer flex items-center justify-center bg-gray-50 rounded-lg h-full"
+                onClick={() => openFullscreen(index)}
+              >
                 <ProductImage
-                  className="object-cover w-full h-full"
+                  className="rounded-lg max-w-full max-h-full"
                   url={image}
                   width={800}
                   height={600}
                   title={title}
                 />
-                <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all">
+                <div 
+                  className="absolute top-2 right-2 p-2 rounded-full transition-all"
+                  style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    color: '#ffffff'
+                  }}
+                >
                   <IoExpand className="w-4 h-4" />
                 </div>
               </div>
@@ -77,29 +87,51 @@ export const ProductMobileSlidesShow = ({
       </div>
 
       {/* Полноэкранный просмотр */}
-      {isFullscreen && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-[99999] flex items-center justify-center p-4">
-          <div className="relative w-full h-full flex items-center justify-center">
+      {isFullscreen && createPortal(
+        <div 
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ 
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 2147483647
+          }}
+        >
+          <div className="relative w-full max-h-[80vh] flex items-center justify-center">
             {/* Кнопка закрытия */}
             <button
               onClick={closeFullscreen}
-              className="absolute top-6 right-6 text-white bg-black bg-opacity-50 p-3 rounded-full hover:bg-opacity-70 transition-all z-10"
+              className="absolute top-6 right-6 p-2 rounded-full transition-all z-10"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                color: '#ffffff',
+                border: '1px solid rgba(255, 255, 255, 0.3)'
+              }}
             >
               <IoClose className="w-6 h-6" />
             </button>
 
-            {/* Навигация для мобильных */}
+            {/* Навигация */}
             {images.length > 1 && (
               <>
                 <button
                   onClick={prevImage}
-                  className="absolute left-6 text-white bg-black bg-opacity-50 p-3 rounded-full hover:bg-opacity-70 transition-all z-10 text-xl"
+                  className="absolute left-6 p-2 rounded-full transition-all z-10"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.3)'
+                  }}
                 >
                   ←
                 </button>
                 <button
                   onClick={nextImage}
-                  className="absolute right-6 text-white bg-black bg-opacity-50 p-3 rounded-full hover:bg-opacity-70 transition-all z-10 text-xl"
+                  className="absolute right-6 p-2 rounded-full transition-all z-10"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.3)'
+                  }}
                 >
                   →
                 </button>
@@ -107,9 +139,9 @@ export const ProductMobileSlidesShow = ({
             )}
 
             {/* Изображение */}
-            <div className="max-w-full max-h-full flex items-center justify-center px-12 py-16">
+            <div className="max-w-full max-h-full flex items-center justify-center px-8 py-12">
               <ProductImage
-                className="max-w-full max-h-full object-contain"
+                className="max-w-full max-h-[70vh] object-contain rounded-lg"
                 url={images[currentImageIndex]}
                 width={1920}
                 height={1080}
@@ -119,12 +151,20 @@ export const ProductMobileSlidesShow = ({
 
             {/* Индикатор */}
             {images.length > 1 && (
-              <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-2 rounded-full">
+              <div 
+                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-full"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  color: '#ffffff',
+                  border: '1px solid rgba(255, 255, 255, 0.3)'
+                }}
+              >
                 {currentImageIndex + 1} / {images.length}
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
