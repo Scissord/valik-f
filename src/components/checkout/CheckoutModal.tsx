@@ -72,14 +72,14 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
 
   return createPortal(
     <div 
-      className="fixed inset-0 flex items-center justify-center p-4"
+      className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto"
       style={{ 
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
         backdropFilter: 'blur(4px)',
         zIndex: 2147483647
       }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] my-8 flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -96,7 +96,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto flex-1">
           {orderSuccess ? (
             // Success State
             <div className="text-center py-8">
@@ -143,7 +143,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
               {/* Order Summary */}
               <div className="mb-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Ваш заказ</h3>
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-48 overflow-y-auto">
                   {cart.map((item: CartItem) => (
                     <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <img 
@@ -205,33 +205,38 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                 </div>
               )}
 
-              {/* Action Buttons */}
-              <div className="flex gap-3">
-                <button
-                  onClick={handleClose}
-                  disabled={isLoading}
-                  className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50"
-                >
-                  Отмена
-                </button>
-                <button
-                  onClick={handleOrderSubmit}
-                  disabled={isLoading || !user || cart.length === 0}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Оформляем...
-                    </div>
-                  ) : (
-                    'Подтвердить заказ'
-                  )}
-                </button>
-              </div>
             </>
           )}
         </div>
+
+        {/* Action Buttons - Fixed at bottom */}
+        {!orderSuccess && (
+          <div className="p-6 border-t border-gray-100 bg-white rounded-b-2xl">
+            <div className="flex gap-3">
+              <button
+                onClick={handleClose}
+                disabled={isLoading}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={handleOrderSubmit}
+                disabled={isLoading || !user || cart.length === 0}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Оформляем...
+                  </div>
+                ) : (
+                  'Подтвердить заказ'
+                )}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>,
     document.body
