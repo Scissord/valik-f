@@ -147,7 +147,7 @@ export default function CartPage() {
                 <div key={product.id} className="py-6 flex flex-col sm:flex-row gap-4">
                   <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-24 h-24 flex items-center justify-center">
                     <Image
-                      src={product.image || "/placeholder.jpg"}
+                      src={product.images[0] || "/placeholder.jpg"}
                       width={80}
                       height={80}
                       alt={product.title}

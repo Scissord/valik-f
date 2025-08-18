@@ -45,9 +45,9 @@ export default function Home() {
 
   return (
     <>
-      <HeroSection />
+      <ProductsSection products={products} />
       <div className="bg-white">
-        <ProductsSection products={products} />
+        <HeroSection />
         <AdvantagesSection />
         <CategoriesSection categories={categories} isLoadingCategories={isLoadingCategories} />
       </div>
