@@ -14,6 +14,7 @@ interface Params {
 export const createOrder = async ({
   cart,
   // address
+  // additional_info
 }: Params): Promise<IOrder | null> => {
   try {
     // Преобразуем корзину в формат для API
@@ -25,6 +26,7 @@ export const createOrder = async ({
     const response = await api.post('/orders', {
       cart: orderItems
       // address
+      // additional_info
     });
 
     return response.data;
