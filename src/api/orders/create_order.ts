@@ -8,10 +8,12 @@ interface OrderItem {
 
 interface Params {
   cart: CartItem[];
+  address: string;
 }
 
 export const createOrder = async ({
-  cart
+  cart,
+  // address
 }: Params): Promise<IOrder | null> => {
   try {
     // Преобразуем корзину в формат для API
@@ -22,8 +24,9 @@ export const createOrder = async ({
 
     const response = await api.post('/orders', {
       cart: orderItems
+      // address
     });
-    
+
     return response.data;
   } catch (error) {
     console.error('Ошибка при создании заказа:', error);
