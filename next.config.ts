@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'res.cloudinary.com',
+        hostname: 'api.valik.kz',
+        pathname: '/uploads/**',
       },
       {
         protocol: 'https',
