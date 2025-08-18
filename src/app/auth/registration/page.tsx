@@ -21,7 +21,7 @@ export default function RegisterPage() {
           </h1>
           <p className="text-white/80 mt-1 text-center">Зарегистрируйтесь, чтобы начать покупки</p>
         </div>
-        
+
         <div className="p-5 mx-auto max-w-sm w-full">
           <RegistrationForm />
         </div>

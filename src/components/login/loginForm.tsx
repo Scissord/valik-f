@@ -55,8 +55,8 @@ export const LoginForm = () => {
           <input
             className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
             type="text"
-            placeholder="Логин или Email"
-            {...register("login", { required: "Укажите ваш логин или email!" })}
+            placeholder="Логин"
+            {...register("login", { required: "Укажите ваш логин!" })}
           />
         </div>
         {errors.login && (

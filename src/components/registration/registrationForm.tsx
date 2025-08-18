@@ -43,7 +43,7 @@ export const RegistrationForm = () => {
       setSuccess(true);
       setTimeout(() => {
         router.push('/auth/login');
-      }, 2000); 
+      }, 2000);
     }
   };
 
@@ -165,4 +165,4 @@ export const RegistrationForm = () => {
         </form>
     </>
   );
-} 
+}
