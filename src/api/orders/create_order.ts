@@ -8,7 +8,7 @@ interface OrderItem {
 
 interface Params {
   cart: CartItem[];
-  address: string;
+  // address: string;
 }
 
 export const createOrder = async ({
