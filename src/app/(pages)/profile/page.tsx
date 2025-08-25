@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useUserStore } from "@/store";
 import { useRouter } from "next/navigation";
 import { IoLogOutOutline, IoPersonCircleOutline, IoMailOutline, IoPhonePortraitOutline, IoCalendarOutline, IoMaleFemaleOutline, IoLocationOutline } from "react-icons/io5";
+import { OrderHistory } from "@/components/profile/OrderHistory";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -161,6 +162,9 @@ export default function ProfilePage() {
               Аккаунт создан: {user.created_at ? new Date(parseInt(user.created_at)).toLocaleDateString() : 'Нет данных'}
             </p>
           </div>
+        </div>
+        <div className="p-8 border-t border-gray-200">
+          <OrderHistory />
         </div>
       </div>
     </div>

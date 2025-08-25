@@ -4,6 +4,7 @@ export * from "./products/get_products_for_category";
 export * from "./products/get_product";
 export * from "./orders/create_order";
 export * from "./orders/find_order";
+export * from "./orders/get_orders";
 export * from "./auth/login";
 export * from "./auth/registration";
 export * from "./auth/getProfile";
