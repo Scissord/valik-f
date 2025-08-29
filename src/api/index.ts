@@ -5,6 +5,7 @@ export * from "./products/get_product";
 export * from "./orders/create_order";
 export * from "./orders/find_order";
 export * from "./orders/get_orders";
+export * from "./orders/check_order_status";
 export * from "./auth/login";
 export * from "./auth/registration";
 export * from "./auth/getProfile";

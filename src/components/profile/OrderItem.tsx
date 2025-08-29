@@ -1,32 +1,55 @@
 "use client";
 
+import { checkOrderStatus } from "@/api";
 import { IOrder } from "@/interfaces";
 import { useState } from "react";
-import { IoChevronDownOutline, IoChevronUpOutline } from "react-icons/io5";
+import { IoChevronDownOutline, IoChevronUpOutline, IoRefreshOutline } from "react-icons/io5";
 import Image from "next/image";
 
 interface OrderItemProps {
   order: IOrder;
 }
 
-export const OrderItem = ({ order }: OrderItemProps) => {
+export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [order, setOrder] = useState<IOrder>(initialOrder);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("ru-RU");
   };
 
+  const handleUpdateStatus = async () => {
+    setIsUpdating(true);
+    try {
+      const updatedOrder = await checkOrderStatus({ order_id: order.id });
+      if (updatedOrder) {
+        setOrder(updatedOrder);
+      }
+    } catch (error) {
+      console.error("Ошибка при обновлении статуса заказа:", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const getStatusText = (status: number) => {
     switch (status) {
       case 0:
-        return "В ожидании";
+        return "Создан";
       case 1:
-        return "В обработке";
+        return "Принят";
       case 2:
-        return "Отправлен";
+        return "Отгружен";
       case 3:
         return "Доставлен";
+      case 4:
+        return "Отменен";
+      case 5:
+        return "Частичный возврат";
+      case 6:
+        return "Полный возврат";
       default:
         return "Неизвестен";
     }
@@ -65,6 +88,17 @@ export const OrderItem = ({ order }: OrderItemProps) => {
           <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
             {getStatusText(order.status)}
           </span>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleUpdateStatus();
+            }}
+            disabled={isUpdating}
+            className={`text-gray-500 hover:text-gray-700 ${isUpdating ? 'animate-spin' : ''}`}
+            title="Обновить статус заказа"
+          >
+            <IoRefreshOutline className="text-xl" />
+          </button>
           {isExpanded ? (
             <IoChevronUpOutline className="text-gray-500 text-xl" />
           ) : (

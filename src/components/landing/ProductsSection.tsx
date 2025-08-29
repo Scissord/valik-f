@@ -31,7 +31,7 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <motion.section
-        className="relative pt-0 pb-12 md:pb-16"
+        className="relative pt-8 pb-12 md:pb-16"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -39,10 +39,10 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
       >
         {/* Header */}
         <div className="relative z-10">
-          <div className="flex flex-col items-center gap-4 text-center mb-10 md:mb-12">
+          <div className="flex flex-col items-center gap-4 text-center mb-6 md:mb-8">
             <motion.h2
               variants={itemVariants}
-              className="text-2xl md:text-3xl tracking-tight text-gray-900"
+              className="text-3xl font-bold text-center mb-4 text-gray-900"
             >
               Наши товары
             </motion.h2>
@@ -77,13 +77,7 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
                   ))}
                 </div>
 
-                <div className="mt-10 flex flex-col items-center">
-                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                    <IoCartOutline className="w-6 h-6 text-gray-500" />
-                  </div>
-                  <h3 className="text-base md:text-lg text-gray-900">Товары загружаются</h3>
-                  <p className="text-sm text-gray-600">Пожалуйста, подождите немного…</p>
-                </div>
+
               </div>
             )}
           </motion.div>

@@ -71,24 +71,31 @@ export const useCartStore = create<State>()(
 
       addProductToCart: (product: CartItem) => {
         const { cart } = get();
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
-        const productInCart = cart.some(
-          (item) => item.id === product.id
+        // Ищем товар в корзине по ID, артикулу и сегодняшней дате
+        const productInCart = cart.find(
+          (item) => item.id === product.id && item.articul === product.articul && item.added_at === today
         );
 
-        if (!productInCart) {
-          set({ cart: [...cart, product] });
-          return;
+        if (productInCart) {
+          // Если такой товар, добавленный сегодня, уже есть, обновляем его количество
+          const updatedCart = cart.map((item) => {
+            if (item.id === product.id && item.articul === product.articul && item.added_at === today) {
+              return { ...item, quantity: item.quantity + (product.quantity || 1) };
+            }
+            return item;
+          });
+          set({ cart: updatedCart });
+        } else {
+          // Если товара нет или он был добавлен в другой день, добавляем его как новый
+          const newProduct = {
+            ...product,
+            quantity: product.quantity || 1,
+            added_at: today,
+          };
+          set({ cart: [...cart, newProduct] });
         }
-
-        const updatedCart = cart.map((item) => {
-          if (item.id === product.id) {
-            return { ...item, quantity: item.quantity + product.quantity };
-          }
-          return item;
-        });
-
-        set({ cart: updatedCart });
       },
     }),
     {

@@ -48,8 +48,19 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
     setError(null);
 
     try {
+      // Группируем товары по id и articul, суммируя количество
+      const groupedCart = cart.reduce<CartItem[]>((acc, item) => {
+        const existingItem = acc.find(i => i.id === item.id && i.articul === item.articul);
+        if (existingItem) {
+          existingItem.quantity += item.quantity;
+        } else {
+          acc.push({ ...item });
+        }
+        return acc;
+      }, []);
+
       const order = await createOrder({
-        cart,
+        cart: groupedCart,
         address: address.trim(),
         additional_info: additionalInfo.trim() || undefined
       });

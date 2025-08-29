@@ -25,6 +25,16 @@ export default function CartPage() {
     }))
   );
 
+  // Группируем товары по дате добавления
+  const groupedCart = cart.reduce((acc, product) => {
+    const date = product.added_at ? new Date(product.added_at).toLocaleDateString('ru-RU') : 'Без даты';
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(product);
+    return acc;
+  }, {} as Record<string, typeof cart>);
+
   // Вычисляем summary только когда корзина загружена и только при изменении cart
   const summary = loaded ? {
     total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
@@ -142,60 +152,68 @@ export default function CartPage() {
               </div>
             </div>
 
-            <div className="divide-y divide-gray-100">
-              {cart.map((product) => (
-                <div key={product.id} className="py-6 flex flex-col sm:flex-row gap-4">
-                  <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-24 h-24 flex items-center justify-center">
-                    <Image
-                      src={product.images?.[0] || "/placeholder.jpg"}
-                      width={80}
-                      height={80}
-                      alt={product.title}
-                      className="object-contain"
-                    />
-                  </div>
-
-                  <div className="flex-grow">
-                    <Link href={`/product/${product.id}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
-                      {product.title}
-                    </Link>
-                    <div className="mt-1 text-sm text-gray-500">
-                      Артикул: {product.articul}
-                    </div>
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center border border-gray-200 rounded-lg">
-                          <button
-                            onClick={() => updateProductQuantity(product, Math.max(1, product.quantity - 1))}
-                            className="p-2 text-gray-500 hover:text-orange-500"
-                            disabled={product.quantity <= 1}
-                          >
-                            <IoRemoveCircleOutline className="w-5 h-5" />
-                          </button>
-                          <span className="px-3 py-1 font-medium">{product.quantity}</span>
-                          <button
-                            onClick={() => updateProductQuantity(product, product.quantity + 1)}
-                            className="p-2 text-gray-500 hover:text-orange-500"
-                          >
-                            <IoAddCircleOutline className="w-5 h-5" />
-                          </button>
+            <div className="space-y-6">
+              {Object.entries(groupedCart).map(([date, products]) => (
+                <div key={date}>
+                  <h3 className="text-md font-semibold text-gray-600 mb-3 pb-2 border-b border-gray-200">
+                    Добавлено: {date}
+                  </h3>
+                  <div className="divide-y divide-gray-100">
+                    {products.map((product) => (
+                      <div key={`${product.id}-${product.added_at}`} className="py-6 flex flex-col sm:flex-row gap-4">
+                        <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-24 h-24 flex items-center justify-center">
+                          <Image
+                            src={product.images?.[0] || "/placeholder.jpg"}
+                            width={80}
+                            height={80}
+                            alt={product.title}
+                            className="object-contain"
+                          />
                         </div>
-                        <button
-                          onClick={() => deleteProduct(product)}
-                          className="text-red-500 hover:text-red-600 p-2"
-                        >
-                          <FaRegTrashCan className="w-4 h-4" />
-                        </button>
+                        <div className="flex-grow">
+                          <Link href={`/product/${product.id}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
+                            {product.title}
+                          </Link>
+                          <div className="mt-1 text-sm text-gray-500">
+                            Артикул: {product.articul}
+                          </div>
+                          <div className="mt-4 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="flex items-center border border-gray-200 rounded-lg">
+                                <button
+                                  onClick={() => updateProductQuantity(product, Math.max(1, product.quantity - 1))}
+                                  className="p-2 text-gray-500 hover:text-orange-500"
+                                  disabled={product.quantity <= 1}
+                                >
+                                  <IoRemoveCircleOutline className="w-5 h-5" />
+                                </button>
+                                <span className="px-3 py-1 font-medium">{product.quantity}</span>
+                                <button
+                                  onClick={() => updateProductQuantity(product, product.quantity + 1)}
+                                  className="p-2 text-gray-500 hover:text-orange-500"
+                                >
+                                  <IoAddCircleOutline className="w-5 h-5" />
+                                </button>
+                              </div>
+                              <button
+                                onClick={() => deleteProduct(product)}
+                                className="text-red-500 hover:text-red-600 p-2"
+                              >
+                                <FaRegTrashCan className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <div className="font-semibold text-lg">
+                              <div className="text-right">
+                                {currencyFormat(product.price * product.quantity)}
+                              </div>
+                              <div className="text-xs text-gray-500 text-right">
+                                {currencyFormat(product.price)} за шт.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="font-semibold text-lg">
-                        <div className="text-right">
-                          {currencyFormat(product.price * product.quantity)}
-                        </div>
-                        <div className="text-xs text-gray-500 text-right">
-                          {currencyFormat(product.price)} за шт.
-                        </div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               ))}
