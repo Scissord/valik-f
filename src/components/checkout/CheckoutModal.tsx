@@ -18,7 +18,9 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+  const [address, setAddress] = useState('');
+  const [additionalInfo, setAdditionalInfo] = useState('');
+
   const { cart, clearCart } = useCartStore();
   const { user } = useUserStore();
 
@@ -37,12 +39,21 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
       return;
     }
 
+    if (!address.trim()) {
+      setError('Укажите адрес доставки');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const order = await createOrder({ cart });
-      
+      const order = await createOrder({
+        cart,
+        address: address.trim(),
+        additional_info: additionalInfo.trim() || undefined
+      });
+
       if (order) {
         setOrderSuccess(true);
         clearCart();
@@ -65,15 +76,17 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
       onClose();
       setError(null);
       setOrderSuccess(false);
+      setAddress('');
+      setAdditionalInfo('');
     }
   };
 
   if (!isOpen) return null;
 
   return createPortal(
-    <div 
+    <div
       className="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto"
-      style={{ 
+      style={{
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
         backdropFilter: 'blur(4px)',
         zIndex: 2147483647
@@ -105,7 +118,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                 Заказ успешно оформлен!
               </h3>
               <p className="text-gray-600 mb-4">
-                Информация о заказе отправлена в Telegram бот. 
+                Информация о заказе отправлена в Telegram бот.
                 Мы свяжемся с вами в ближайшее время.
               </p>
               <div className="flex items-center justify-center gap-3 mt-4">
@@ -146,11 +159,13 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                 <div className="space-y-3 max-h-48 overflow-y-auto">
                   {cart.map((item: CartItem) => (
                     <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <img 
-                        src={item.image || '/placeholder.jpg'} 
-                        alt={item.title}
-                        className="w-12 h-12 object-cover rounded-lg"
-                      />
+                      <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-12 h-12 flex items-center justify-center">
+                        <img
+                          src={item.images?.[0] || "/placeholder.jpg"}
+                          alt={item.title}
+                          className="w-10 h-10 object-contain"
+                        />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-900 truncate">{item.title}</p>
                         <p className="text-sm text-gray-600">
@@ -162,6 +177,40 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                       </p>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Delivery Form */}
+              <div className="mb-6">
+                <h3 className="font-semibold text-gray-900 mb-4">Информация о доставке</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                      Адрес доставки *
+                    </label>
+                    <textarea
+                      id="address"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="Укажите полный адрес доставки"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
+                      rows={3}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700 mb-2">
+                      Дополнительная информация
+                    </label>
+                    <textarea
+                      id="additionalInfo"
+                      value={additionalInfo}
+                      onChange={(e) => setAdditionalInfo(e.target.value)}
+                      placeholder="Комментарии к заказу"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
+                      rows={3}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -188,7 +237,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                       Оформление через Telegram
                     </p>
                     <p className="text-sm text-gray-600">
-                      После подтверждения заказа вся информация будет отправлена в наш Telegram бот. 
+                      После подтверждения заказа вся информация будет отправлена в наш Telegram бот.
                       Мы свяжемся с вами для уточнения деталей доставки и оплаты.
                     </p>
                   </div>
@@ -222,7 +271,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
               </button>
               <button
                 onClick={handleOrderSubmit}
-                disabled={isLoading || !user || cart.length === 0}
+                disabled={isLoading || !user || cart.length === 0 || !address.trim()}
                 className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
               >
                 {isLoading ? (

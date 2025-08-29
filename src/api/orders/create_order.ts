@@ -9,12 +9,13 @@ interface OrderItem {
 interface Params {
   cart: CartItem[];
   address: string;
+  additional_info?: string;
 }
 
 export const createOrder = async ({
   cart,
-  // address
-  // additional_info
+  address,
+  additional_info
 }: Params): Promise<IOrder | null> => {
   try {
     // Преобразуем корзину в формат для API
@@ -24,9 +25,9 @@ export const createOrder = async ({
     }));
 
     const response = await api.post('/orders', {
-      cart: orderItems
-      // address
-      // additional_info
+      cart: orderItems,
+      address,
+      additional_info
     });
 
     return response.data;
