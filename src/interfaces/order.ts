@@ -2,13 +2,13 @@ import { IOrderItem } from "./order_item";
 
 export interface IOrder {
   id: string;
-  name: string;
-  phone: string,
-  total: number,
-  status: number,
-  created_at: number,
-  updated_at: number,
-  deleted_at: number | null,
-  items: IOrderItem[],
+  user_id: string;
+  address: string;
+  additional_info: string;
+  total: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+  items: IOrderItem[];
 }
 

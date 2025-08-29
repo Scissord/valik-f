@@ -8,8 +8,12 @@ interface OrderItem {
 
 interface Params {
   cart: CartItem[];
+<<<<<<< HEAD
   address: string;
   additional_info?: string;
+=======
+  // address: string;
+>>>>>>> f0eed17249263e45bf0606a3b1968a190bc6a71a
 }
 
 export const createOrder = async ({
