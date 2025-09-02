@@ -23,9 +23,19 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
   const handleUpdateStatus = async () => {
     setIsUpdating(true);
     try {
+      console.log("Запрос на обновление заказа:", order.id);
       const updatedOrder = await checkOrderStatus({ order_id: order.id });
-      if (updatedOrder) {
+      console.log("Получен ответ от сервера:", updatedOrder);
+      
+      if (updatedOrder && updatedOrder.items) {
         setOrder(updatedOrder);
+      } else {
+        console.error("Получен неполный ответ от сервера:", updatedOrder);
+        // Если в ответе нет items, сохраняем текущие items
+        setOrder(prev => ({
+          ...(updatedOrder as IOrder),
+          items: updatedOrder?.items || prev.items || []
+        }));
       }
     } catch (error) {
       console.error("Ошибка при обновлении статуса заказа:", error);
@@ -130,7 +140,7 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
                       Количество: <span className="font-medium">{item.quantity}</span>
                     </p>
                     <p className="text-sm font-medium text-gray-900">
-                       {item.product.price} ₽
+                       {item.product.price} ₸
                      </p>
                   </div>
                 </div>
@@ -155,7 +165,7 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
               <div className="pt-3 border-t border-gray-100">
                 <p className="font-medium text-gray-900 flex justify-between">
                   <span>Итоговая сумма:</span>
-                  <span className="text-orange-500">{order.total} ₽</span>
+                  <span className="text-orange-500">{order.total} ₸</span>
                 </p>
               </div>
             </div>
