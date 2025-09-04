@@ -2,7 +2,7 @@ import api from "../axios";
 import { IOrder } from "@/interfaces";
 
 interface Params {
-  order_id: string | number;
+  order_id: string;
 }
 
 export const checkOrderStatus = async ({ order_id }: Params): Promise<IOrder | null> => {

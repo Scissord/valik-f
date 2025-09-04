@@ -1,7 +1,7 @@
 export interface IOrderProduct {
-  id: string;
+  id: number;
   name: string;
-  description: string;
-  price: string;
-  image_url: string;
+  title: string;
+  price: number;
+  images: string[];
 }

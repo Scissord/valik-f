@@ -26,7 +26,7 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
       console.log("Запрос на обновление заказа:", order.id);
       const updatedOrder = await checkOrderStatus({ order_id: order.id });
       console.log("Получен ответ от сервера:", updatedOrder);
-      
+
       if (updatedOrder && updatedOrder.items) {
         setOrder(updatedOrder);
       } else {
@@ -124,7 +124,7 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
               <div key={item.id} className="flex items-center space-x-4 bg-white p-3 rounded-lg">
                 <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 relative">
                   <Image
-                    src={item.product.image_url}
+                    src={item.product.images?.[0] || "/placeholder.jpg"}
                     alt={item.product.name}
                     fill
                     className="object-cover"
@@ -133,15 +133,15 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
                 <div className="flex-1">
                   <p className="font-medium text-gray-800">{item.product.name}</p>
                   <p className="text-sm text-gray-500 line-clamp-2">
-                    {item.product.description}
+                    {item.product.title}
                   </p>
                   <div className="flex justify-between items-center mt-2">
                     <p className="text-sm text-gray-700">
                       Количество: <span className="font-medium">{item.quantity}</span>
                     </p>
                     <p className="text-sm font-medium text-gray-900">
-                       {item.product.price} ₸
-                     </p>
+                      {item.product.price} ₸
+                    </p>
                   </div>
                 </div>
               </div>
@@ -154,14 +154,14 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
                 <p className="text-sm font-medium text-gray-700">Адрес доставки:</p>
                 <p className="text-sm text-gray-600">{order.address}</p>
               </div>
-              
+
               {order.additional_info && (
                 <div>
                   <p className="text-sm font-medium text-gray-700">Дополнительная информация:</p>
                   <p className="text-sm text-gray-600">{order.additional_info}</p>
                 </div>
               )}
-              
+
               <div className="pt-3 border-t border-gray-100">
                 <p className="font-medium text-gray-900 flex justify-between">
                   <span>Итоговая сумма:</span>
