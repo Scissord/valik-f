@@ -19,7 +19,6 @@ export default function RegisterPage() {
           <h1 className={`${titleFont.className} text-3xl text-white text-center`}>
             Создание аккаунта
           </h1>
-          <p className="text-white/80 mt-1 text-center">Зарегистрируйтесь, чтобы начать покупки</p>
         </div>
 
         <div className="p-6 mx-auto max-w-sm w-full">
@@ -34,7 +33,6 @@ export default function RegisterPage() {
             <h1 className={`${titleFont.className} text-3xl text-white`}>
               Создание аккаунта
             </h1>
-            <p className="text-white/80 mt-1">Зарегистрируйтесь, чтобы начать покупки</p>
           </div>
 
           <div className="p-8">

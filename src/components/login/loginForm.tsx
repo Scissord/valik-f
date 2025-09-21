@@ -81,7 +81,6 @@ export const LoginForm = () => {
         )}
       </div>
 
-
       <div
         className="flex h-8 items-end space-x-1"
         aria-live="polite"
@@ -119,7 +118,6 @@ export const LoginForm = () => {
         Создать новую учетную запись
       </Link>
 
-      {/* Кнопка "Вернуться на главную" только для десктопной версии */}
       <div className="mt-4 text-center hidden lg:block">
         <Link href="/" className="text-orange-500 hover:text-orange-600 text-sm">
           Вернуться на главную

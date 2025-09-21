@@ -18,7 +18,6 @@ export default function LoginPage() {
           <h1 className={`${titleFont.className} text-3xl text-white text-center`}>
             Вход в аккаунт
           </h1>
-          <p className="text-white/80 mt-1 text-center">Войдите, чтобы продолжить покупки</p>
         </div>
         
         <div className="p-5 mx-auto max-w-sm w-full">
@@ -33,7 +32,6 @@ export default function LoginPage() {
             <h1 className={`${titleFont.className} text-3xl text-white`}>
               Вход в аккаунт
             </h1>
-            <p className="text-white/80 mt-1">Войдите, чтобы продолжить покупки</p>
           </div>
           
           <div className="p-8">

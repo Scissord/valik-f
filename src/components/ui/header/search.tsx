@@ -81,7 +81,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
         state.materialIndex = (state.materialIndex + 1) % exampleMaterials.length;
         timeout = 500;
       }
-      
+
       state.timeoutId = setTimeout(type, timeout);
     };
 
@@ -100,7 +100,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
   // Функция debounce для задержки запросов
   const debounce = useCallback((callback: (value: string) => void, delay: number) => {
     let timeout: NodeJS.Timeout;
-    
+
     return (value: string) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => callback(value), delay);
@@ -119,18 +119,18 @@ const Search = ({ isMobile = false }: SearchProps) => {
     try {
       console.log(`[SEARCH] Отправка запроса на поиск: ${query}`);
       const response = await fetch(`${baseURL}/search?q=${encodeURIComponent(query)}`);
-      
+
       if (!response.ok) {
         console.error(`[SEARCH] Ошибка при выполнении поиска: ${response.status}`);
         throw new Error(`Ошибка поиска: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log("[SEARCH] Успешный ответ от API. Структура результатов:", data);
-      
+
       // Обработка и преобразование результатов
       const processedResults: SearchResult[] = [];
-      
+
       if (data.products && Array.isArray(data.products)) {
         console.log(`[SEARCH] Найдено продуктов: ${data.products.length}`);
         data.products.forEach((product: any) => {
@@ -143,7 +143,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
           });
         });
       }
-      
+
       if (data.categories && Array.isArray(data.categories)) {
         console.log(`[SEARCH] Найдено категорий: ${data.categories.length}`);
         data.categories.forEach((category: any) => {
@@ -155,7 +155,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
           });
         });
       }
-      
+
       if (data.brands && Array.isArray(data.brands)) {
         console.log(`[SEARCH] Найдено брендов: ${data.brands.length}`);
         data.brands.forEach((brand: any) => {
@@ -167,7 +167,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
           });
         });
       }
-      
+
       console.log(`[SEARCH] Всего обработано результатов: ${processedResults.length}`);
       setResults(processedResults);
     } catch (error) {
@@ -191,7 +191,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
     handleSearchChange(searchQuery);
     setShowResults(searchQuery.length >= 2);
   }, [searchQuery, handleSearchChange]);
-  
+
   // Закрытие выпадающего списка при клике вне компонента
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -202,7 +202,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
         }
       }
     };
-    
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMobile]);
@@ -222,23 +222,23 @@ const Search = ({ isMobile = false }: SearchProps) => {
       try {
         console.log("[INDEX] Начало создания поисковых индексов в Elasticsearch...");
         console.time("[INDEX] Время создания индексов");
-        
+
         // Запрос на создание индексов
         const response = await fetch("http://localhost:8080/search/create_index");
-        
+
         console.log(`[INDEX] Статус запроса: ${response.status} ${response.statusText}`);
-        
+
         if (!response.ok) {
           const errorText = await response.text();
           console.error(`[INDEX] Ошибка при создании индексов: ${response.status}`, errorText);
           setIndexError(`Ошибка ${response.status}: ${errorText}`);
           return;
         }
-        
+
         const result = await response.text();
         console.log(`[INDEX] Результат создания индексов: ${result}`);
         console.timeEnd("[INDEX] Время создания индексов");
-        
+
         setIndexCreated(true);
         console.log("[INDEX] Индексы успешно созданы и готовы к использованию");
       } catch (error) {
@@ -246,7 +246,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
         setIndexError(error instanceof Error ? error.message : String(error));
       }
     };
-    
+
     // Вызываем функцию создания индексов
     // initSearchIndex(); // <--- ЭТОТ КОД ВЫЗЫВАЕТ ПРОБЛЕМУ
   }, []);
@@ -263,8 +263,8 @@ const Search = ({ isMobile = false }: SearchProps) => {
   // Если это мобильная версия и поиск не открыт, показываем только иконку
   if (isMobile && !showMobileSearch) {
     return (
-      <button 
-        onClick={toggleMobileSearch} 
+      <button
+        onClick={toggleMobileSearch}
         className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
         aria-label="Поиск"
       >
@@ -315,7 +315,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
       ${isLoading ? 'animate-spin' : ''}
     `,
     resultsContainer: `
-      ${isMobile 
+      ${isMobile
         ? 'fixed left-4 right-4 top-[72px] bg-white mt-2 py-2 rounded-lg shadow-lg max-h-[60vh] overflow-y-auto border border-gray-200 z-50'
         : 'absolute top-full left-0 right-0 bg-white mt-2 py-2 rounded-lg shadow-lg max-h-[400px] overflow-y-auto border border-gray-200 z-50'
       }
@@ -353,7 +353,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
         <div className={css.mobileContainer}>
           <div className={css.mobileSearchHeader}>
             <div className={css.mobileSearchTitle}>Поиск</div>
-            <button 
+            <button
               onClick={toggleMobileSearch}
               className={css.closeButton}
               aria-label="Закрыть поиск"
@@ -361,7 +361,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
               <IoCloseOutline className="w-6 h-6 text-gray-700" />
             </button>
           </div>
-          
+
           <div className={css.container} ref={searchRef}>
             <input
               ref={inputRef}
@@ -376,7 +376,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
             />
             <IoSearchOutline className={css.icon} />
           </div>
-          
+
           {showResults && (
             <div className={css.resultsContainer}>
               {results.length > 0 ? (
@@ -386,8 +386,8 @@ const Search = ({ isMobile = false }: SearchProps) => {
                       result.type === 'product'
                         ? `/product/${result.slug}`
                         : result.type === 'category'
-                        ? `/categories/${result.slug}`
-                        : `/brands/${result.slug}`
+                          ? `/categories/${result.slug}`
+                          : `/brands/${result.slug}`
                     }
                     key={`${result.type}-${result.id}`}
                     onClick={() => {
@@ -396,22 +396,21 @@ const Search = ({ isMobile = false }: SearchProps) => {
                       setShowMobileSearch(false);
                     }}
                   >
-                    <div 
-                      className={`${css.resultItem} ${
-                        result.type === 'product'
-                          ? css.resultItemProduct
-                          : result.type === 'category'
+                    <div
+                      className={`${css.resultItem} ${result.type === 'product'
+                        ? css.resultItemProduct
+                        : result.type === 'category'
                           ? css.resultItemCategory
                           : css.resultItemBrand
-                      }`}
+                        }`}
                     >
                       <div className={css.resultTitle}>{result.title}</div>
                       <div className={css.resultType}>
-                        {result.type === 'product' 
+                        {result.type === 'product'
                           ? `Товар ${result.price ? `• ${result.price.toLocaleString('ru-RU')} ₸` : ''}`
                           : result.type === 'category'
-                          ? 'Категория'
-                          : 'Бренд'
+                            ? 'Категория'
+                            : 'Бренд'
                         }
                       </div>
                     </div>
@@ -445,7 +444,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
         onBlur={() => setIsFocused(false)}
       />
       <IoSearchOutline className={css.icon} />
-      
+
       {showResults && (
         <div className={css.resultsContainer}>
           {results.length > 0 ? (
@@ -455,8 +454,8 @@ const Search = ({ isMobile = false }: SearchProps) => {
                   result.type === 'product'
                     ? `/product/${result.slug}`
                     : result.type === 'category'
-                    ? `/categories/${result.slug}`
-                    : `/brands/${result.slug}`
+                      ? `/categories/${result.slug}`
+                      : `/brands/${result.slug}`
                 }
                 key={`${result.type}-${result.id}`}
                 onClick={() => {
@@ -464,22 +463,21 @@ const Search = ({ isMobile = false }: SearchProps) => {
                   setSearchQuery("");
                 }}
               >
-                <div 
-                  className={`${css.resultItem} ${
-                    result.type === 'product'
-                      ? css.resultItemProduct
-                      : result.type === 'category'
+                <div
+                  className={`${css.resultItem} ${result.type === 'product'
+                    ? css.resultItemProduct
+                    : result.type === 'category'
                       ? css.resultItemCategory
                       : css.resultItemBrand
-                  }`}
+                    }`}
                 >
                   <div className={css.resultTitle}>{result.title}</div>
                   <div className={css.resultType}>
-                    {result.type === 'product' 
+                    {result.type === 'product'
                       ? `Товар ${result.price ? `• ${result.price.toLocaleString('ru-RU')} ₸` : ''}`
                       : result.type === 'category'
-                      ? 'Категория'
-                      : 'Бренд'
+                        ? 'Категория'
+                        : 'Бренд'
                     }
                   </div>
                 </div>
