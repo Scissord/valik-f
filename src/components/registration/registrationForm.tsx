@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import Link from 'next/link';
-import { IoAlertCircleOutline, IoMailOutline, IoLockClosedOutline, IoPersonOutline, IoArrowForwardOutline } from 'react-icons/io5';
+import { IoAlertCircleOutline, IoMailOutline, IoLockClosedOutline, IoPersonOutline, IoArrowForwardOutline, IoCallOutline } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
 
 const registerSchema = z.object({
@@ -13,6 +13,7 @@ const registerSchema = z.object({
   email: z.string().email({ message: 'Неверный формат email' }),
   password: z.string().min(8, { message: 'Пароль должен содержать минимум 8 символов' }).refine(s => !s.includes(' '), 'Пароль не должен содержать пробелы'),
   full_name: z.string().min(2, { message: 'Введите ваше полное имя' }),
+  phone: z.string().min(10, { message: 'Введите корректный номер телефона' }).regex(/^[\+]?[0-9\s\-\(\)]+$/, { message: 'Неверный формат номера телефона' }),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -115,6 +116,23 @@ export const RegistrationForm = () => {
               </div>
               {errors.full_name && (
                 <p className="text-red-500 text-sm mt-1">{errors.full_name.message}</p>
+              )}
+            </div>
+
+            <div className="mb-5">
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <IoCallOutline className="h-5 w-5" />
+                </div>
+                <input
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  type="tel"
+                  placeholder="Номер телефона"
+                  {...register("phone")}
+                />
+              </div>
+              {errors.phone && (
+                <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
               )}
             </div>
 
