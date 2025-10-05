@@ -44,13 +44,13 @@ export default function Home() {
   }, []);
 
   return (
-    <>
-      <ProductsSection products={products} />
-      <div className="bg-white">
+    <div className="bg-gray-50 pt-24 pb-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <ProductsSection products={products} />
         <HeroSection />
         <AdvantagesSection />
         <CategoriesSection categories={categories} isLoadingCategories={isLoadingCategories} />
       </div>
-    </>
+    </div>
   );
 }

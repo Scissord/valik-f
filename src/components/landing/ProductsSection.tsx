@@ -31,7 +31,7 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <motion.section
-        className="relative pt-16 pb-12 md:pb-16"
+        className="relative pb-12 md:pb-16"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"

@@ -92,8 +92,8 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="bg-gray-50">
-      <div className="container mx-auto px-4 py-16">
+    <div className="bg-gray-50 pt-24 pb-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         
         <motion.div 
           className="text-center mb-20"
@@ -182,4 +182,4 @@ export default function AboutPage() {
       </div>
     </div>
   );
-} 
+}

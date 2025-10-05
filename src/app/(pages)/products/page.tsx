@@ -32,14 +32,16 @@ export default async function ProductsPage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Наши товары</h1>
-      <ProductGrid products={products} />
-      {totalPages > 0 && (
-        <div className="mt-8">
-          <Pagination totalPages={totalPages} />
-        </div>
-      )}
+    <div className="bg-gray-50 pt-24 pb-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Наши товары</h1>
+        <ProductGrid products={products} />
+        {totalPages > 0 && (
+          <div className="mt-8">
+            <Pagination totalPages={totalPages} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

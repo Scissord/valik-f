@@ -76,7 +76,7 @@ export const AdvantagesSection = () => {
               key={index}
               variants={itemVariants}
               whileHover="hover"
-              className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:border-orange-100 transition-all duration-300"
+              className="rounded-2xl p-8 shadow-sm border border-gray-100 hover:border-orange-100 transition-all duration-300"
             >
               <motion.div
                 className="bg-orange-50 text-orange-500 p-4 rounded-2xl inline-flex mb-6"

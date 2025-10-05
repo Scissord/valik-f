@@ -47,7 +47,7 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
-  const headerBgClass = isHomePage ? 'bg-white' : 'bg-white shadow-md';
+  const headerBgClass = isHomePage ? 'bg-white' : 'bg-white';
 
   return (
     <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300
@@ -123,7 +123,7 @@ export const Header = () => {
               </Link>
               <button
                 onClick={openMenu}
-                className="group flex items-center gap-2 rounded-md bg-gradient-to-r from-[#fc640c] to-[#ff8534] px-4 py-1.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-lg hover:translate-y-[-1px] hover:brightness-105"
+                className="group flex items-center gap-2 rounded-md bg-gradient-to-r from-[#fc640c] to-[#ff8534] px-4 py-1.5 font-medium text-white transition-all duration-300 hover:translate-y-[-1px] hover:brightness-105"
                 aria-label="Открыть меню"
                 disabled={isSideMenuOpen}
               >
