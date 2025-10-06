@@ -16,7 +16,7 @@ export const OrderHistory = () => {
       try {
         const data = await getOrders();
         setOrders(data);
-      } catch (error) {
+      } catch (_error) {
         setError("Не удалось загрузить заказы.");
       }
       setIsLoading(false);

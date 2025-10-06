@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import Image from 'next/image';
 import { IoClose, IoCheckmarkCircle, IoWarning, IoCard, IoPersonOutline } from 'react-icons/io5';
 import { FaTelegram } from 'react-icons/fa';
 import { useCartStore, useUserStore } from '@/store';
@@ -171,9 +172,11 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                   {cart.map((item: CartItem) => (
                     <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-12 h-12 flex items-center justify-center">
-                        <img
+                        <Image
                           src={item.images?.[0] || "/placeholder.jpg"}
                           alt={item.title}
+                          width={40}
+                          height={40}
                           className="w-10 h-10 object-contain"
                         />
                       </div>

@@ -5,7 +5,7 @@ import { GoodCategory } from '@/interfaces';
 import { getCategories } from '@/api';
 import Link from 'next/link';
 import { MobileCategoriesPage } from '@/components/mobile';
-import { Breadcrumbs, BreadcrumbItem } from '@/components';
+import { Breadcrumbs } from '@/components';
 import { 
   IoConstructOutline, IoHomeOutline, IoCarOutline
 } from 'react-icons/io5';
@@ -158,11 +158,11 @@ export default function CategoriesPage() {
                  <IoConstructOutline className="w-12 h-12 text-gray-400" />
               </div>
               <p className="text-xl font-medium text-gray-600">Категории не найдены</p>
-              <p className="text-gray-500 mt-2">По вашему запросу "{searchQuery}" ничего не найдено.</p>
+              <p className="text-gray-500 mt-2">По вашему запросу &quot;{searchQuery}&quot; ничего не найдено.</p>
             </div>
           )}
         </div>
       </div>
     </>
   );
-} 
+}

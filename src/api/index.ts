@@ -13,3 +13,28 @@ export * from "./ai/getChats";
 export * from "./ai/getChatHistory";
 export * from "./ai/sendMessage";
 export * from "./ai/deleteChat";
+import { getProduct } from "./products/get_product";
+import { getProductsForCategory } from "./products/get_products_for_category";
+import { getProductsForMainPage } from "./products/get_products_for_main_page";
+import { getCategories } from "./categories/get_categories";
+import { getProfile } from "./auth/getProfile";
+import { login } from "./auth/login";
+import { registerUser } from './auth/registration';
+import { update } from "./users/update";
+
+export const UserAPI = {
+    getProfile,
+    login,
+    registration: registerUser,
+    update,
+}
+
+export const ProductAPI = {
+    getProduct,
+    getProductsForMainPage,
+    getProductsForCategory,
+}
+
+export const CategoriesAPI = {
+    getCategories,
+}

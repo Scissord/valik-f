@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IoCloseOutline, IoChevronDownOutline, IoGridOutline, IoConstructOutline, IoHomeOutline, IoCarOutline, IoInformationCircleOutline, IoCallOutline } from "react-icons/io5";
 import { getCategories } from '@/api';
-import { ItemSiginOut } from "./itemSiginOut";
+
 import { FaTools, FaTractor, FaPaintRoller } from 'react-icons/fa';
 import { GiBrickWall, GiWoodBeam, GiHeatHaze } from 'react-icons/gi';
 import {
@@ -80,7 +80,7 @@ export const SideBar = () => {
         setExpandedCategories(path);
       }
     }
-  }, [pathname, categories]);
+  }, [pathname, categories, getCurrentCategoryId, findParentCategories]);
 
   const toggleCategory = (categoryId: string) => {
     if (expandedCategories.includes(categoryId)) {

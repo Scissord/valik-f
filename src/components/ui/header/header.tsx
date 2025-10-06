@@ -4,13 +4,13 @@ import { useCartStore, useUIStore, useUserStore } from "@/store";
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import { IoCartOutline, IoMenuOutline, IoPersonOutline, IoSearchOutline } from "react-icons/io5";
+import { IoCartOutline, IoMenuOutline, IoPersonOutline } from "react-icons/io5";
 import Logo from "./logo";
 import Search from "./search";
 import { useShallow } from 'zustand/react/shallow';
 
 // Функция для debounce
-const debounce = (fn: Function, ms = 100) => {
+const debounce = (fn: (...args: any[]) => void, ms = 100) => {
   let timeoutId: NodeJS.Timeout;
   return function (...args: any[]) {
     clearTimeout(timeoutId);
@@ -29,7 +29,7 @@ export const Header = () => {
 
   const user = useUserStore(state => state.user);
   const [loaded, setLoaded] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [_isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === '/';
 
@@ -37,7 +37,7 @@ export const Header = () => {
     debounce(() => {
       setIsScrolled(window.scrollY > 10);
     }, 50),
-    []
+    [setIsScrolled]
   );
 
   useEffect(() => {

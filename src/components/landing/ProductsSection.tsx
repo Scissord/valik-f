@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { IoArrowForwardOutline, IoCartOutline } from "react-icons/io5";
+import { IoArrowForwardOutline } from 'react-icons/io5';
 import { motion, Variants } from "framer-motion";
 import { ProductGrid } from "@/components";
 import { Product } from "@/interfaces";

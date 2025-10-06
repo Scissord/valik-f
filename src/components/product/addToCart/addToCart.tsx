@@ -1,8 +1,5 @@
 "use client";
 import type{ CartItem, Product } from "@/interfaces";
-import { StockLabel } from "../stockLabel/StockLabel";
-import { titleFont } from "@/config/fonts";
-import { QuantitySelector } from "@/components";
 import { useState } from "react";
 import { useCartStore } from "@/store";
 

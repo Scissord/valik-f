@@ -1,6 +1,6 @@
 'use client';
 
-import { Title, CheckoutModal } from "@/components";
+import { CheckoutModal } from "@/components";
 import { useCartStore } from "@/store";
 import Link from "next/link";
 import Image from "next/image";

@@ -22,7 +22,7 @@ export default async function ProductPage({
     category,
     products,
     children_categories,
-    total,
+    total: _total,
     totalPages
   } = await getProductsForCategory({
     page,

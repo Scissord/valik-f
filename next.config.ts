@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
     ],
   },
   eslint: {
-    ignoreDuringBuilds: true
+    ignoreDuringBuilds: false,
   },
   // webpack: (config, { isServer }) => {
   //   // Добавляем псевдоним для @prisma/client

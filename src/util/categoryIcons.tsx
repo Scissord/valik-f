@@ -1,63 +1,32 @@
 import { ReactNode } from 'react';
 import { 
-  IoConstructOutline, 
-  IoLayersOutline, 
-  IoHomeOutline, 
-  IoColorPaletteOutline,
-  IoHammerOutline,
-  IoFlashOutline,
-  IoWaterOutline,
-  IoLeafOutline,
-  IoCarOutline,
-  IoGridOutline,
-  IoSettingsOutline,
-  IoShieldOutline
+  IoLayersOutline
 } from "react-icons/io5";
 import { 
   FaToolbox, 
   FaScrewdriver, 
   FaPaintRoller, 
-  FaTruck, 
-  FaHardHat,
   FaPlug,
   FaFaucet,
-  FaSeedling,
-  FaCar,
-  FaBox,
-  FaCog,
-  FaShieldAlt
+  FaCar
 } from "react-icons/fa";
 import { 
   GiBrickWall, 
-  GiWoodBeam, 
-  GiHeatHaze,
-  GiElectric,
-  GiWaterDrop,
-  GiFlowers,
-  GiCarWheel,
-  GiToolbox,
-  GiGears,
-  GiShield
+  GiHeatHaze
 } from "react-icons/gi";
 import { 
   MdWallpaper, 
   MdOutlineLayers, 
   MdOutlineDoorFront, 
   MdChair,
-  MdOutlineFormatPaint, 
   MdAgriculture, 
-  MdOutlineWater, 
-  MdHvac,
   MdHomeRepairService, 
   MdStyle, 
-  MdMicrowave, 
-  MdHardware,
-  MdElectricalServices, 
-  MdHandyman
+  MdMicrowave
 } from "react-icons/md";
 
 // Функция для получения иконки категории по названию или ID
-export const getCategoryIcon = (categoryName: string, categoryId?: string): ReactNode => {
+export const getCategoryIcon = (categoryName: string, _categoryId?: string): ReactNode => {
   const name = categoryName.toLowerCase();
   
   // Обои
@@ -150,7 +119,7 @@ export const getCategoryIcon = (categoryName: string, categoryId?: string): Reac
 };
 
 // Функция для получения единого минималистичного фона с оранжевыми оттенками
-export const getCategoryGradient = (index: number): string => {
+export const getCategoryGradient = (_index: number): string => {
   // Единый минималистичный дизайн с оранжевыми оттенками
   return 'from-orange-500 to-orange-600';
 };

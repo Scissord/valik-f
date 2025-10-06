@@ -29,7 +29,7 @@ export async function generateMetadata(
         images: product?.images?.[0] ? [product.images[0]] : [],
       },
     };
-  } catch (error) {
+  } catch (_error) {
     return {
       title: "Product not found",
       description: "Product page",

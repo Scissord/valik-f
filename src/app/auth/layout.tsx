@@ -1,4 +1,4 @@
-import { AIAssistantProvider } from "@/components/ai-assistant";
+import { AIAssistantProvider as _AIAssistantProvider } from "@/components/ai-assistant";
 
 export default async function AuthLayout({
   children,

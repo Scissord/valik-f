@@ -5,8 +5,7 @@ import {
   IoHomeOutline, IoHome, 
   IoGridOutline, IoGrid, 
   IoCartOutline, IoCart, 
-  IoPersonOutline, IoPerson,
-  IoLogInOutline, IoLogIn
+  IoPersonOutline, IoPerson
 } from "react-icons/io5";
 import { useUserStore } from "@/store";
 
@@ -79,4 +78,4 @@ export const MobileNavbar = () => {
   );
 };
 
-export default MobileNavbar; 
+export default MobileNavbar;

@@ -14,7 +14,6 @@ export default async function ProductsPage({
 
   // Добавляем обработку ошибок
   let products: Product[] = [];
-  let total = 0;
   let totalPages = 0;
 
   try {
@@ -24,7 +23,7 @@ export default async function ProductsPage({
     });
 
     products = result.products || [];
-    total = result.total || 0;
+    const _total = result.total || 0;
     totalPages = result.totalPages || 0;
   } catch (error) {
     console.error("Ошибка при загрузке продуктов:", error);

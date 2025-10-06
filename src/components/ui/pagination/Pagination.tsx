@@ -11,13 +11,13 @@ interface Props {
 }
 
 export const Pagination = ({ totalPages }: Props) => {
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
+  
   // Если страниц нет или всего одна страница, не показываем пагинацию
   if (!totalPages || totalPages <= 1) {
     return null;
   }
-  
-  const pathName = usePathname();
-  const searchParams = useSearchParams();
   const param = searchParams.get("page") ?? 1;
   const currentPage = !isNaN(+param) && +param > 1 ? +param : 1;
   

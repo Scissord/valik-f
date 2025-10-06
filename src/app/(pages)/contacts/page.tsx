@@ -52,7 +52,7 @@ export default function ContactsPage() {
             Мы всегда на связи и готовы ответить на ваши вопросы.
           </motion.p>
           <motion.p variants={itemVariants} className="mt-2 text-sm text-gray-500">
-            Товарищество с ограниченной ответственностью "1R-tech"
+            Товарищество с ограниченной ответственностью &quot;1R-tech&quot;
           </motion.p>
         </motion.div>
 

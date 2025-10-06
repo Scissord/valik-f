@@ -1,4 +1,3 @@
-import { titleFont } from "@/config/fonts";
 import Link from "next/link";
 import { FaInstagram, FaTiktok } from "react-icons/fa6";
 import Image from "next/image";

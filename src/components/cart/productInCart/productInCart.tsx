@@ -1,5 +1,4 @@
 "use client";
-import { QuantitySelector } from "@/components";
 import { useCartStore } from "@/store";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,7 +6,7 @@ import { FaRegTrashCan } from "react-icons/fa6";
 
 export const ProductInCart = () => {
   //const [loading, setLoaded] = useState(false);
-  const updateProductInCart=useCartStore((state)=>state.updateProductQuantity);
+  const _updateProductInCart=useCartStore((state)=>state.updateProductQuantity);
   const cart = useCartStore((state) => state.cart)|| [];
   const deleteProduct=useCartStore((state)=>state.deleteProduct);
 

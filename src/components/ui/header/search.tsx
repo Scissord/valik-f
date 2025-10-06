@@ -25,8 +25,8 @@ const Search = ({ isMobile = false }: SearchProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [indexCreated, setIndexCreated] = useState(false);
-  const [indexError, setIndexError] = useState<string | null>(null);
+  const [_indexCreated, setIndexCreated] = useState(false);
+  const [_indexError, setIndexError] = useState<string | null>(null);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const [placeholder, setPlaceholder] = useState("Найти на Valik.kz");
@@ -95,7 +95,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
     return () => {
       if (state.timeoutId) clearTimeout(state.timeoutId);
     };
-  }, [isFocused, searchQuery]);
+  }, [isFocused, searchQuery, exampleMaterials]);
 
   // Функция debounce для задержки запросов
   const debounce = useCallback((callback: (value: string) => void, delay: number) => {
@@ -176,7 +176,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setResults, setIsLoading]);
 
   // Обработчик изменения поискового запроса с debounce
   const handleSearchChange = useCallback(
@@ -190,7 +190,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
   useEffect(() => {
     handleSearchChange(searchQuery);
     setShowResults(searchQuery.length >= 2);
-  }, [searchQuery, handleSearchChange]);
+  }, [searchQuery, handleSearchChange, setShowResults]);
 
   // Закрытие выпадающего списка при клике вне компонента
   useEffect(() => {
@@ -205,7 +205,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMobile]);
+  }, [isMobile, setShowResults, setShowMobileSearch]);
 
   // Фокус на поле ввода при открытии мобильного поиска
   useEffect(() => {
@@ -218,7 +218,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
 
   // Инициализация индексов Elasticsearch при первом запуске
   useEffect(() => {
-    const initSearchIndex = async () => {
+    const _initSearchIndex = async () => {
       try {
         console.log("[INDEX] Начало создания поисковых индексов в Elasticsearch...");
         console.time("[INDEX] Время создания индексов");
@@ -248,17 +248,17 @@ const Search = ({ isMobile = false }: SearchProps) => {
     };
 
     // Вызываем функцию создания индексов
-    // initSearchIndex(); // <--- ЭТОТ КОД ВЫЗЫВАЕТ ПРОБЛЕМУ
-  }, []);
+    // _initSearchIndex(); // <--- ЭТОТ КОД ВЫЗЫВАЕТ ПРОБЛЕМУ
+  }, [setIndexCreated, setIndexError]);
 
   // Обработчик открытия/закрытия мобильного поиска
-  const toggleMobileSearch = () => {
+  const toggleMobileSearch = useCallback(() => {
     setShowMobileSearch(!showMobileSearch);
     if (!showMobileSearch) {
       setSearchQuery('');
       setResults([]);
     }
-  };
+  }, [showMobileSearch, setShowMobileSearch, setSearchQuery, setResults]);
 
   // Если это мобильная версия и поиск не открыт, показываем только иконку
   if (isMobile && !showMobileSearch) {

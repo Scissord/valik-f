@@ -1,6 +1,6 @@
 'use client';
 
-import { IoBusinessOutline, IoPeopleOutline, IoRocketOutline, IoWalletOutline, IoCubeOutline, IoShieldCheckmarkOutline, IoChatbubblesOutline, IoGitNetworkOutline, IoHardwareChipOutline, IoMegaphoneOutline, IoEyeOutline, IoHomeOutline, IoBuildOutline, IoColorPaletteOutline } from "react-icons/io5";
+import { IoBusinessOutline, IoPeopleOutline, IoWalletOutline, IoCubeOutline, IoShieldCheckmarkOutline, IoChatbubblesOutline, IoGitNetworkOutline, IoHardwareChipOutline, IoMegaphoneOutline, IoEyeOutline, IoHomeOutline, IoBuildOutline, IoColorPaletteOutline } from "react-icons/io5";
 import { motion, Variants } from 'framer-motion';
 
 export default function AboutPage() {
