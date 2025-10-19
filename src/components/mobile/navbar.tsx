@@ -21,12 +21,7 @@ export const MobileNavbar = () => {
       activeIcon: <IoHome className="h-6 w-6" />,
       inactiveIcon: <IoHomeOutline className="h-6 w-6" />,
     },
-    {
-      name: "Категории",
-      href: "/categories",
-      activeIcon: <IoGrid className="h-6 w-6" />,
-      inactiveIcon: <IoGridOutline className="h-6 w-6" />,
-    },
+
     {
       name: "Корзина",
       href: "/cart",
