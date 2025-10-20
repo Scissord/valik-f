@@ -51,7 +51,7 @@ export const Header = () => {
 
   return (
     <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300
-      ${headerBgClass} py-1
+      ${headerBgClass} py-1 border-b border-gray-200
       ${isSideMenuOpen ? 'pointer-events-none opacity-50' : 'opacity-100'}`}
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">

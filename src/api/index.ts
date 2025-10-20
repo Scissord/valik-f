@@ -7,7 +7,7 @@ export * from "./orders/find_order";
 export * from "./orders/get_orders";
 export * from "./orders/check_order_status";
 export * from "./auth/login";
-export * from "./auth/registration";
+export * from "./auth/register";
 export * from "./auth/getProfile";
 export * from "./ai/getChats";
 export * from "./ai/getChatHistory";
@@ -19,7 +19,7 @@ import { getProductsForMainPage } from "./products/get_products_for_main_page";
 import { getCategories } from "./categories/get_categories";
 import { getProfile } from "./auth/getProfile";
 import { login } from "./auth/login";
-import { registerUser } from './auth/registration';
+import { registerUser } from './auth/register';
 import { update } from "./users/update";
 
 export const UserAPI = {

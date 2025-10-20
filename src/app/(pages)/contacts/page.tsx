@@ -47,7 +47,7 @@ export default function ContactsPage() {
           initial="hidden"
           animate="visible"
         >
-          <motion.h1 variants={itemVariants} className="text-4xl font-extrabold text-gray-800 tracking-tight">Наши контакты</motion.h1>
+          <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">Наши контакты</motion.h1>
           <motion.p variants={itemVariants} className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
             Мы всегда на связи и готовы ответить на ваши вопросы.
           </motion.p>
