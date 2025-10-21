@@ -1,21 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getCategories } from "@/api";
-import { useUIStore } from "@/store";
 import { GoodCategory } from "@/interfaces";
 
 import {
-  IoCallOutline,
   IoCarOutline,
   IoChevronDownOutline,
-  IoCloseOutline,
   IoConstructOutline,
   IoHomeOutline,
-  IoInformationCircleOutline,
 } from "react-icons/io5";
 import { FaPaintRoller, FaTools, FaTractor } from "react-icons/fa";
 import { GiBrickWall, GiHeatHaze, GiWoodBeam } from "react-icons/gi";
@@ -37,8 +32,6 @@ import {
 } from "react-icons/md";
 
 export const SideBar = () => {
-  const isSideMenuOpen = useUIStore((state) => state.isSideMenuOpen);
-  const closeMenu = useUIStore((state) => state.closeSideMenu);
   const pathname = usePathname();
   const [categories, setCategories] = useState<GoodCategory[]>([]);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
@@ -58,14 +51,6 @@ export const SideBar = () => {
 
     fetchCategories();
   }, []);
-
-  const areArraysEqual = (a: string[], b: string[]) => {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false;
-    }
-    return true;
-  };
 
   const getCurrentCategoryId = useCallback((): string | null => {
     const match = pathname.match(/\/categories\/(\w+)/);
@@ -99,9 +84,7 @@ export const SideBar = () => {
     if (currentCategoryId && categories.length > 0) {
       const path = findParentCategories(categories, currentCategoryId);
       if (path) {
-        setExpandedCategories((prev) =>
-          areArraysEqual(prev, path) ? prev : path
-        );
+        setExpandedCategories(path);
       }
     }
   }, [categories, findParentCategories, getCurrentCategoryId]);
@@ -152,39 +135,23 @@ export const SideBar = () => {
     return <IoConstructOutline className="h-5 w-5" />;
   };
 
-  const renderCategory = (
-    category: GoodCategory,
-    level: number = 0,
-    onNavigate?: () => void
-  ): JSX.Element => {
+  const renderCategory = (category: GoodCategory, level = 0): JSX.Element => {
     const isExpanded = expandedCategories.includes(category.id);
-    const hasChildren =
-      category.children && category.children.length > 0;
+    const hasChildren = category.children && category.children.length > 0;
     const currentCategoryId = getCurrentCategoryId();
     const isActive = currentCategoryId === category.id;
     const icon = getCategoryIcon(category.title);
 
-    const getPaddingClass = (depth: number) => {
-      switch (depth) {
-        case 0:
-          return "px-3";
-        case 1:
-          return "pl-8 pr-3";
-        case 2:
-          return "pl-12 pr-3";
-        case 3:
-          return "pl-16 pr-3";
-        default:
-          return "pl-20 pr-3";
-      }
-    };
+    const paddingClasses = ["px-3", "pl-8 pr-3", "pl-12 pr-3", "pl-16 pr-3"];
+    const paddingClass =
+      paddingClasses[level] || "pl-20 pr-3";
 
     return (
       <div key={category.id} className="w-full">
         <div
           className={`
-            group relative flex items-center justify-between py-2.5 rounded-md border
-            ${getPaddingClass(level)}
+            group flex items-center justify-between py-2.5 rounded-md border
+            ${paddingClass}
             ${
               isActive
                 ? "border-gray-300 bg-gray-50 text-orange-600 font-semibold"
@@ -197,10 +164,7 @@ export const SideBar = () => {
           <Link
             href={`/categories/${category.id}`}
             className="flex-grow flex items-center gap-3"
-            onClick={(event) => {
-              event.stopPropagation();
-              onNavigate?.();
-            }}
+            onClick={(event) => event.stopPropagation()}
           >
             {level > 0 && (
               <div className="flex items-center">
@@ -228,12 +192,11 @@ export const SideBar = () => {
 
           {hasChildren && (
             <div
-              className={`
-                flex items-center justify-center rounded-full
-                ${level > 0 ? "w-4 h-4" : "w-5 h-5"}
-                ${isActive ? "text-orange-500" : "text-gray-500"}
-                transition-transform ${isExpanded ? "rotate-180" : ""}
-              `}
+              className={`flex items-center justify-center rounded-full ${
+                level > 0 ? "w-4 h-4" : "w-5 h-5"
+              } text-gray-500 transition-transform ${
+                isExpanded ? "rotate-180" : ""
+              }`}
             >
               <IoChevronDownOutline
                 className={level > 0 ? "w-3 h-3" : "w-4 h-4"}
@@ -244,213 +207,31 @@ export const SideBar = () => {
 
         {isExpanded && hasChildren && (
           <div className="mt-1 animate-slideDown">
-            {category.children?.map((child) =>
-              renderCategory(child, level + 1, onNavigate)
-            )}
+            {category.children?.map((child) => renderCategory(child, level + 1))}
           </div>
         )}
       </div>
     );
   };
 
-  const renderMobileSkeleton = () => (
-    <div className="flex justify-center items-center py-6">
-      <div className="animate-pulse flex flex-col items-center">
-        <div className="w-8 h-8 rounded-full mb-2 bg-gray-200" />
-        <div className="h-3 rounded w-1/2 mb-2 bg-gray-200/70" />
-        <div className="h-2 rounded w-1/3 bg-gray-200/50" />
-      </div>
-    </div>
-  );
-
-  const renderDesktopSkeleton = () => (
-    <div className="flex justify-center items-center py-6">
-      <div className="animate-pulse flex flex-col items-center">
-        <div className="w-10 h-10 rounded-full mb-2 bg-gray-200" />
-        <div className="h-3 rounded w-3/4 mb-2 bg-gray-200/70" />
-        <div className="h-2 rounded w-1/2 bg-gray-200/50" />
-      </div>
-    </div>
-  );
-
-  const MobileSidebarContent = () => (
-    <>
-      <div className="flex items-center justify-between px-5 py-6 bg-white border-b border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-800">Меню</h2>
-        <button
-          onClick={closeMenu}
-          className="p-2 rounded-full transition-colors hover:bg-gray-100"
-          aria-label="Закрыть меню"
-        >
-          <IoCloseOutline className="w-6 h-6 text-gray-600" />
-        </button>
-      </div>
-
-      <div
-        className="flex-1 overflow-y-auto bg-white"
-        style={{ maxHeight: "calc(100vh - 180px)" }}
-      >
-        <div className="px-3 py-4">
-          <div className="space-y-1">
-            <Link
-              href="/about"
-              onClick={closeMenu}
-              className={`flex items-center gap-3 py-2.5 px-3 rounded-xl border transition-colors ${
-                pathname === "/about"
-                  ? "border-gray-300 bg-gray-50 text-orange-500 font-medium"
-                  : "border-transparent hover:border-gray-200 hover:bg-gray-50"
-              }`}
-            >
-              <span
-                className={`text-gray-500 transition-colors ${
-                  pathname === "/about" ? "text-orange-500" : ""
-                }`}
-              >
-                <IoInformationCircleOutline className="w-5 h-5" />
-              </span>
-              <span
-                className={`text-sm ${
-                  pathname === "/about" ? "text-orange-500" : "text-gray-700"
-                }`}
-              >
-                О сервисе
-              </span>
-            </Link>
-
-            <Link
-              href="/contacts"
-              onClick={closeMenu}
-              className={`flex items-center gap-3 py-2.5 px-3 rounded-xl border transition-colors ${
-                pathname === "/contacts"
-                  ? "border-gray-300 bg-gray-50 text-orange-500 font-medium"
-                  : "border-transparent hover:border-gray-200 hover:bg-gray-50"
-              }`}
-            >
-              <span
-                className={`text-gray-500 transition-colors ${
-                  pathname === "/contacts" ? "text-orange-500" : ""
-                }`}
-              >
-                <IoCallOutline className="w-5 h-5" />
-              </span>
-              <span
-                className={`text-sm ${
-                  pathname === "/contacts"
-                    ? "text-orange-500"
-                    : "text-gray-700"
-                }`}
-              >
-                Контакты
-              </span>
-            </Link>
-          </div>
-        </div>
-
-        <div className="px-3 py-4">
-          <div className="space-y-1">
-            {loading
-              ? renderMobileSkeleton()
-              : categories.length > 0
-              ? categories.map((category) =>
-                  renderCategory(category, 0, closeMenu)
-                )
-              : (
-                <p className="py-4 px-4 text-sm text-gray-500 text-center">
-                  Категории не найдены
-                </p>
-              )}
-          </div>
-        </div>
-      </div>
-    </>
-  );
-
-  const DesktopSidebarContent = () => (
-    <aside className="hidden md:flex md:flex-col md:fixed md:top-0 md:left-0 md:h-screen md:w-72 md:bg-white md:border-r md:border-gray-200 md:z-30">
-      <div className="flex-1 overflow-y-auto pt-24 pb-8">
-        <div className="px-6 pb-6 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            Категории
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Быстрый доступ к товарам по разделам
+  return (
+    <aside className="hidden md:flex md:flex-col md:fixed md:top-0 md:left-0 md:h-screen md:w-72 md:bg-white md:border-r md:border-gray-200 md:z-30 pt-24 pb-6 overflow-y-auto">
+      <div className="px-6">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Категории</h2>
+        {loading ? (
+          <p className="py-4 text-center text-sm text-gray-500">
+            Загрузка категорий...
           </p>
-        </div>
-
-        <div className="px-6 py-6 border-b border-gray-200 space-y-2">
-          <Link
-            href="/about"
-            className={`flex items-center gap-3 rounded-xl px-3 py-2 border transition-colors ${
-              pathname === "/about"
-                ? "border-gray-300 bg-gray-50 text-orange-500 font-medium"
-                : "border-transparent text-gray-700 hover:border-gray-200 hover:bg-gray-50"
-            }`}
-          >
-            <IoInformationCircleOutline
-              className={`w-5 h-5 ${
-                pathname === "/about" ? "text-orange-500" : "text-gray-500"
-              }`}
-            />
-            <span className="text-sm">О сервисе</span>
-          </Link>
-          <Link
-            href="/contacts"
-            className={`flex items-center gap-3 rounded-xl px-3 py-2 border transition-colors ${
-              pathname === "/contacts"
-                ? "border-gray-300 bg-gray-50 text-orange-500 font-medium"
-                : "border-transparent text-gray-700 hover:border-gray-200 hover:bg-gray-50"
-            }`}
-          >
-            <IoCallOutline
-              className={`w-5 h-5 ${
-                pathname === "/contacts" ? "text-orange-500" : "text-gray-500"
-              }`}
-            />
-            <span className="text-sm">Контакты</span>
-          </Link>
-        </div>
-
-        <div className="px-6 py-6">
+        ) : categories.length > 0 ? (
           <div className="space-y-1">
-            {loading
-              ? renderDesktopSkeleton()
-              : categories.length > 0
-              ? categories.map((category) => renderCategory(category))
-              : (
-                <p className="py-4 px-4 text-sm text-gray-500 text-center">
-                  Категории не найдены
-                </p>
-              )}
+            {categories.map((category) => renderCategory(category))}
           </div>
-        </div>
+        ) : (
+          <p className="py-4 text-center text-sm text-gray-500">
+            Категории не найдены
+          </p>
+        )}
       </div>
     </aside>
-  );
-
-  return (
-    <>
-      <div className="md:hidden">
-        {isSideMenuOpen && (
-          <div
-            onClick={closeMenu}
-            className="fixed top-0 left-0 w-screen h-screen z-55 bg-black/50 backdrop-blur-sm transition-opacity duration-300 fade-in"
-          />
-        )}
-
-        <aside
-          className={clsx(
-            "fixed top-0 right-0 h-screen w-[300px] bg-white z-60 transition-transform duration-300 ease-in-out transform rounded-l-3xl border-l border-gray-200",
-            {
-              "translate-x-0": isSideMenuOpen,
-              "translate-x-full": !isSideMenuOpen,
-            }
-          )}
-        >
-          <MobileSidebarContent />
-        </aside>
-      </div>
-
-      <DesktopSidebarContent />
-    </>
   );
 };

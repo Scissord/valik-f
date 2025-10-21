@@ -2,6 +2,7 @@ export const revalidate = 604800; //7 dias
 import { Pagination, ProductGrid, Breadcrumbs, BreadcrumbItem } from "@/components";
 // import { notFound } from "next/navigation";
 import Link from "next/link";
+import { IoCartOutline } from "react-icons/io5";
 import { getProductsForCategory, getCategories } from '@/api'
 
 type Props = {
@@ -83,8 +84,33 @@ export default async function ProductPage({
       )}
 
       {/* Товары */}
-      <ProductGrid products={products} />
-      <Pagination totalPages={totalPages} />
+      {products && products.length > 0 ? (
+        <>
+          <ProductGrid products={products} />
+          <Pagination totalPages={totalPages} />
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center text-center py-20">
+          <div className="relative mb-6">
+            <div className="absolute inset-0 bg-orange-100/60 rounded-full blur-3xl scale-125" />
+            <div className="relative bg-white border border-gray-200 rounded-full p-7">
+              <IoCartOutline className="w-16 h-16 text-orange-400" />
+            </div>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+            Товары временно недоступны
+          </h2>
+          <p className="text-gray-600 max-w-lg">
+            Мы уже работаем над обновлением ассортимента. Попробуйте заглянуть позже или вернитесь к общему каталогу.
+          </p>
+          <Link
+            href="/products"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 font-medium shadow-sm transition hover:from-orange-600 hover:to-orange-500"
+          >
+            Смотреть все товары
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
