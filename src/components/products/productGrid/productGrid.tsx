@@ -12,13 +12,16 @@ export const ProductGrid = memo(({ products }: Props) => {
   // Проверяем, есть ли товары
   if (!products || products.length === 0) {
     return (
-      <div className="w-full py-16 flex flex-col items-center justify-center rounded-2xl bg-gray-50">
-        <div className="bg-orange-50 p-6 rounded-full mb-6">
-          <IoCartOutline className="w-16 h-16 text-orange-400" />
+      <div className="w-full py-20 flex flex-col items-center justify-center text-center rounded-3xl border border-gray-200 bg-white shadow-sm">
+        <div className="relative mb-8">
+          <div className="absolute inset-0 bg-orange-100/60 rounded-full blur-3xl scale-125" />
+          <div className="relative bg-white border border-gray-200 rounded-full p-7">
+            <IoCartOutline className="w-16 h-16 text-orange-400" />
+          </div>
         </div>
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">Товары отсутствуют</h3>
-        <p className="text-gray-500 text-center max-w-md">
-          В данный момент товары недоступны. Пожалуйста, загляните позже или свяжитесь с нами для получения информации.
+        <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Товары временно недоступны</h3>
+        <p className="text-gray-600 max-w-lg mb-6">
+          Мы уже работаем над обновлением ассортимента. Попробуйте обновить страницу или загляните позже — новые предложения появятся совсем скоро.
         </p>
         <RefreshButton />
       </div>

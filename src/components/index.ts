@@ -16,7 +16,6 @@ export * from "./registration/registrationForm"
 export * from "./ui/zodError/ZodError"
 export * from "./providers/providers"
 export * from "./products/productImages/productImage"
-// export * from "./product_breadcrumbs/product_breadcrumbs"
 export * from "./ai-assistant"
 export * from "./ai-assistant/ai-context"
 export * from './product/productSlidesShow/ProductSlidesShow';

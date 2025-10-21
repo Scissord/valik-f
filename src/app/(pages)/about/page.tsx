@@ -101,7 +101,7 @@ export default function AboutPage() {
           initial="hidden"
           animate="visible"
         >
-          <motion.h1 variants={itemVariants} className="text-4xl font-extrabold text-gray-800 tracking-tight sm:text-5xl">
+          <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
             Valik.kz — маркетплейс строительных материалов и услуг
           </motion.h1>
           <motion.p variants={itemVariants} className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
