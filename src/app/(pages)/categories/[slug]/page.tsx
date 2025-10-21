@@ -59,7 +59,8 @@ export default async function ProductPage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-4">
+    <div className="min-h-screen bg-white pt-6">
+      <div className="container mx-auto px-4 py-4">
       {/* Хлебные крошки */}
       <Breadcrumbs items={breadcrumbItems} className="mb-4" />
 
@@ -111,6 +112,7 @@ export default async function ProductPage({
           </Link>
         </div>
       )}
+      </div>
     </div>
   );
 }

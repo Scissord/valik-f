@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode, ReactElement } from "react";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -98,116 +99,190 @@ export const SideBar = () => {
   };
 
   const getCategoryIcon = (categoryTitle: string) => {
-    const iconMap: Record<string, React.ReactNode> = {
-      обои: <MdWallpaper className="h-5 w-5" />,
-      сантехника: <MdOutlineWater className="h-5 w-5" />,
-      "покрытия для пола": <MdOutlineLayers className="h-5 w-5" />,
-      кафель: <MdOutlineLayers className="h-5 w-5" />,
-      двери: <MdOutlineDoorFront className="h-5 w-5" />,
-      мебель: <MdChair className="h-5 w-5" />,
-      "лаки, краски, клей": <MdOutlineFormatPaint className="h-5 w-5" />,
-      инструменты: <FaTools className="h-5 w-5" />,
-      "для дома, сада и огорода": <MdAgriculture className="h-5 w-5" />,
-      "водоснабжение, отопление и вентиляция": <MdHvac className="h-5 w-5" />,
-      оборудование: <MdHomeRepairService className="h-5 w-5" />,
-      декор: <MdStyle className="h-5 w-5" />,
-      "бытовая техника": <MdMicrowave className="h-5 w-5" />,
-      крепёж: <MdHardware className="h-5 w-5" />,
-      "строительные материалы": <GiBrickWall className="h-5 w-5" />,
-      электротовары: <MdElectricalServices className="h-5 w-5" />,
-      "автомобильные товары": <IoCarOutline className="h-5 w-5" />,
-      "ручной инструмент": <MdHandyman className="h-5 w-5" />,
-      отделка: <FaPaintRoller className="h-5 w-5" />,
-      дерево: <GiWoodBeam className="h-5 w-5" />,
-      отопление: <GiHeatHaze className="h-5 w-5" />,
-      сад: <MdAgriculture className="h-5 w-5" />,
-      техника: <FaTractor className="h-5 w-5" />,
-      дом: <IoHomeOutline className="h-5 w-5" />,
-    };
+    const iconMatchers: Array<{ keywords: string[]; icon: ReactNode }> = [
+      {
+        keywords: ["обои", "wall", "wallpaper", "decor"],
+        icon: <MdWallpaper className="h-4 w-4" />,
+      },
+      {
+        keywords: ["сантехника", "водоснабжение", "канализац", "water", "plumb", "pipe"],
+        icon: <MdOutlineWater className="h-4 w-4" />,
+      },
+      {
+        keywords: ["покрыти", "кафель", "плитк", "панел", "layer", "sheet", "floor"],
+        icon: <MdOutlineLayers className="h-4 w-4" />,
+      },
+      {
+        keywords: ["двер", "door"],
+        icon: <MdOutlineDoorFront className="h-4 w-4" />,
+      },
+      {
+        keywords: ["мебел", "chair", "furniture"],
+        icon: <MdChair className="h-4 w-4" />,
+      },
+      {
+        keywords: ["лак", "краск", "клей", "paint", "отделк"],
+        icon: <MdOutlineFormatPaint className="h-4 w-4" />,
+      },
+      {
+        keywords: ["инструмент", "tool", "instrument"],
+        icon: <FaTools className="h-4 w-4" />,
+      },
+      {
+        keywords: ["сад", "огород", "агро", "seed", "farm"],
+        icon: <MdAgriculture className="h-4 w-4" />,
+      },
+      {
+        keywords: ["отоплен", "вентиляц", "климат", "hvac", "climate", "vent"],
+        icon: <MdHvac className="h-4 w-4" />,
+      },
+      {
+        keywords: ["оборудован", "сервис", "service", "repair"],
+        icon: <MdHomeRepairService className="h-4 w-4" />,
+      },
+      {
+        keywords: ["декор", "стиль", "style", "design"],
+        icon: <MdStyle className="h-4 w-4" />,
+      },
+      {
+        keywords: ["бытов", "кухон", "appliance", "kitchen"],
+        icon: <MdMicrowave className="h-4 w-4" />,
+      },
+      {
+        keywords: ["крепеж", "крепёж", "hardware", "fastener"],
+        icon: <MdHardware className="h-4 w-4" />,
+      },
+      {
+        keywords: ["строитель", "кирпич", "бетон", "brick", "block"],
+        icon: <GiBrickWall className="h-4 w-4" />,
+      },
+      {
+        keywords: ["электро", "кабель", "electric", "wire"],
+        icon: <MdElectricalServices className="h-4 w-4" />,
+      },
+      {
+        keywords: ["авто", "автомоб", "auto", "car"],
+        icon: <IoCarOutline className="h-4 w-4" />,
+      },
+      {
+        keywords: ["ручной", "hand", "craft", "handyman"],
+        icon: <MdHandyman className="h-4 w-4" />,
+      },
+      {
+        keywords: ["отделк", "маляр", "roller"],
+        icon: <FaPaintRoller className="h-4 w-4" />,
+      },
+      {
+        keywords: ["дерев", "wood", "beam"],
+        icon: <GiWoodBeam className="h-4 w-4" />,
+      },
+      {
+        keywords: ["тепл", "heat", "thermal"],
+        icon: <GiHeatHaze className="h-4 w-4" />,
+      },
+      {
+        keywords: ["трактор", "техник", "tractor", "field"],
+        icon: <FaTractor className="h-4 w-4" />,
+      },
+      {
+        keywords: ["дом", "home", "housing"],
+        icon: <IoHomeOutline className="h-4 w-4" />,
+      },
+    ];
 
-    const title = categoryTitle.toLowerCase();
-    for (const [keyword, icon] of Object.entries(iconMap)) {
-      if (title.includes(keyword)) {
+    const normalizedTitle = categoryTitle.toLowerCase();
+    for (const { keywords, icon } of iconMatchers) {
+      if (keywords.some((term) => normalizedTitle.includes(term))) {
         return icon;
       }
     }
 
-    return <IoConstructOutline className="h-5 w-5" />;
+    return <IoConstructOutline className="h-4 w-4" />;
   };
 
-  const renderCategory = (category: GoodCategory, level = 0): JSX.Element => {
+  const renderCategory = (
+    category: GoodCategory,
+    level = 0
+  ): ReactElement => {
     const isExpanded = expandedCategories.includes(category.id);
     const hasChildren = category.children && category.children.length > 0;
     const currentCategoryId = getCurrentCategoryId();
     const isActive = currentCategoryId === category.id;
     const icon = getCategoryIcon(category.title);
 
-    const paddingClasses = ["px-3", "pl-8 pr-3", "pl-12 pr-3", "pl-16 pr-3"];
-    const paddingClass =
-      paddingClasses[level] || "pl-20 pr-3";
+    const paddingClasses = ["px-3", "pl-6 pr-3", "pl-9 pr-3", "pl-12 pr-3"];
+    const paddingClass = paddingClasses[level] || "pl-14 pr-3";
 
     return (
       <div key={category.id} className="w-full">
         <div
           className={`
-            group flex items-center justify-between py-2.5 rounded-md border
+            group flex items-center gap-2 py-2 rounded-lg border
             ${paddingClass}
             ${
               isActive
-                ? "border-gray-300 bg-gray-50 text-orange-600 font-semibold"
+                ? "border-orange-200 bg-orange-50 text-orange-600 font-semibold"
                 : "border-transparent hover:border-gray-200 hover:bg-gray-50"
             }
-            cursor-pointer transition-all duration-200
+            transition-all duration-200
           `}
-          onClick={() => hasChildren && toggleCategory(category.id)}
         >
           <Link
             href={`/categories/${category.id}`}
-            className="flex-grow flex items-center gap-3"
-            onClick={(event) => event.stopPropagation()}
+            className="flex flex-1 items-center gap-2 min-w-0"
           >
-            {level > 0 && (
-              <div className="flex items-center">
-                <div className="w-3 h-px bg-gray-300 mr-1" />
-                <div className="w-1 h-1 bg-gray-400 rounded-full mr-2" />
-              </div>
-            )}
-
             <span
-              className={`text-gray-500 transition-colors group-hover:text-orange-500 ${
-                isActive ? "text-orange-500" : ""
-              } ${level > 0 ? "text-xs" : ""}`}
+              className={`
+                shrink-0 text-gray-400 transition-colors group-hover:text-orange-500
+                ${isActive ? "text-orange-500" : ""}
+              `}
             >
               {icon}
             </span>
 
             <span
-              className={`${level > 0 ? "text-xs" : "text-sm"} ${
-                isActive ? "" : "text-gray-700"
-              }`}
+              className={`
+                truncate ${level > 0 ? "text-xs" : "text-sm"}
+                ${isActive ? "text-orange-600" : "text-gray-700 group-hover:text-gray-900"}
+              `}
             >
               {category.title}
             </span>
           </Link>
 
           {hasChildren && (
-            <div
-              className={`flex items-center justify-center rounded-full ${
-                level > 0 ? "w-4 h-4" : "w-5 h-5"
-              } text-gray-500 transition-transform ${
-                isExpanded ? "rotate-180" : ""
-              }`}
+            <button
+              type="button"
+              aria-label={
+                isExpanded
+                  ? `Collapse category ${category.title}`
+                  : `Expand category ${category.title}`
+              }
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                toggleCategory(category.id);
+              }}
+              className={`
+                flex h-7 w-7 items-center justify-center rounded-md
+                text-gray-400 transition-colors hover:text-orange-500
+                focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-1
+              `}
             >
               <IoChevronDownOutline
-                className={level > 0 ? "w-3 h-3" : "w-4 h-4"}
+                className={`h-4 w-4 transition-transform ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
               />
-            </div>
+            </button>
           )}
         </div>
 
         {isExpanded && hasChildren && (
-          <div className="mt-1 animate-slideDown">
-            {category.children?.map((child) => renderCategory(child, level + 1))}
+          <div className="mt-1 space-y-1 animate-slideDown">
+            {category.children?.map((child) =>
+              renderCategory(child, level + 1)
+            )}
           </div>
         )}
       </div>
@@ -215,15 +290,14 @@ export const SideBar = () => {
   };
 
   return (
-    <aside className="hidden md:flex md:flex-col md:fixed md:top-0 md:left-0 md:h-screen md:w-72 md:bg-white md:border-r md:border-gray-200 md:z-30 pt-24 pb-6 overflow-y-auto">
-      <div className="px-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Категории</h2>
+    <aside className="hidden md:flex md:flex-col md:fixed md:top-0 md:left-0 md:h-screen md:w-60 md:bg-white md:border-r md:border-gray-200 md:z-30 pt-20 pb-6 overflow-y-auto scrollbar-thin">
+      <div className="px-4 pt-8">
         {loading ? (
           <p className="py-4 text-center text-sm text-gray-500">
             Загрузка категорий...
           </p>
         ) : categories.length > 0 ? (
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             {categories.map((category) => renderCategory(category))}
           </div>
         ) : (

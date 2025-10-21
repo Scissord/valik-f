@@ -9,7 +9,7 @@ export default function ShopLayout({
     <>
       <Header />
       <SideBar />
-      <div className="md:pl-72">
+      <div className="md:pl-60">
         <main className="min-h-screen pt-6 md:pt-8">
           {children}
         </main>
