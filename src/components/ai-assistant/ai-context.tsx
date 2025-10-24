@@ -118,7 +118,7 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
     setTimeout(() => {
       localStorage.removeItem('ai-assistant-creating-new-chat');
     }, 1000);
-  }, [messages.length]);
+  }, []);
 
   const deleteChat = useCallback(async (chatId: string) => {
     setIsLoading(true);

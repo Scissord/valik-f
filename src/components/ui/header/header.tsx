@@ -25,12 +25,12 @@ export const Header = () => {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
 
-  const handleScroll = useCallback(
-    debounce(() => {
+  const handleScroll = useCallback(() => {
+    const debounced = debounce(() => {
       setIsScrolled(window.scrollY > 10);
-    }, 50),
-    []
-  );
+    }, 50);
+    debounced();
+  }, []);
 
   useEffect(() => {
     setLoaded(true);

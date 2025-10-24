@@ -16,6 +16,17 @@ interface SearchProps {
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
+// Примеры строительных материалов для автоввода
+const exampleMaterials = [
+  "Цемент",
+  "Штукатурка",
+  "Гипсокартон",
+  "Керамическая плитка",
+  "Ламинат",
+  "Краска фасадная",
+  "Утеплитель"
+];
+
 /**
  * Компонент поиска с функцией debounce
  */
@@ -41,17 +52,6 @@ const Search = ({ isMobile = false }: SearchProps) => {
     charIndex: 0,
     isDeleting: false,
   });
-
-  // Примеры строительных материалов для автоввода
-  const exampleMaterials = [
-    "Цемент",
-    "Штукатурка",
-    "Гипсокартон",
-    "Керамическая плитка",
-    "Ламинат",
-    "Краска фасадная",
-    "Утеплитель"
-  ];
 
   // Функция для эффекта автоматического ввода текста
   useEffect(() => {
@@ -95,7 +95,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
     return () => {
       if (state.timeoutId) clearTimeout(state.timeoutId);
     };
-  }, [isFocused, searchQuery, exampleMaterials]);
+  }, [isFocused, searchQuery]);
 
   // Функция debounce для задержки запросов
   const debounce = useCallback((callback: (value: string) => void, delay: number) => {
@@ -180,10 +180,13 @@ const Search = ({ isMobile = false }: SearchProps) => {
 
   // Обработчик изменения поискового запроса с debounce
   const handleSearchChange = useCallback(
-    debounce((value: string) => {
-      performSearch(value);
-    }, 500),
-    [performSearch]
+    (value: string) => {
+      const debounced = debounce((val: string) => {
+        performSearch(val);
+      }, 500);
+      debounced(value);
+    },
+    [performSearch, debounce]
   );
 
   // Отслеживаем изменения в поисковом запросе

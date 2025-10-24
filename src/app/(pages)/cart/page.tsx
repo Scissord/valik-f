@@ -4,7 +4,7 @@ import { CheckoutModal } from "@/components";
 import { useCartStore } from "@/store";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { FaRegTrashCan, FaArrowLeft } from "react-icons/fa6";
 import { IoSyncOutline } from "react-icons/io5";
 import { IoCartOutline, IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
@@ -41,8 +41,7 @@ export default function CartPage() {
     count: cart.reduce((count, item) => count + item.quantity, 0)
   } : { total: 0, count: 0 };
 
-  // Функция для обновления цен товаров из бэкенда
-  const updatePricesFromBackend = async () => {
+  const updatePricesFromBackend = useCallback(async () => {
     if (isUpdatingPrices || cart.length === 0) return;
 
     setIsUpdatingPrices(true);
@@ -70,7 +69,8 @@ export default function CartPage() {
 
       // Обновляем корзину с актуальными ценами
       updatedCart.forEach(item => {
-        if (item.price !== cart.find(cartItem => cartItem.id === item.id)?.price) {
+        const originalItem = cart.find(cartItem => cartItem.id === item.id);
+        if (originalItem && item.price !== originalItem.price) {
           updateProductQuantity(item, item.quantity);
         }
       });
@@ -79,19 +79,23 @@ export default function CartPage() {
     } finally {
       setIsUpdatingPrices(false);
     }
-  };
+  }, [cart, isUpdatingPrices, updateProductQuantity]);
 
   // Загружаем данные из localStorage только один раз при монтировании
   useEffect(() => {
     // Небольшая задержка для гарантии гидратации
     const timer = setTimeout(() => {
       setLoaded(true);
-      // После загрузки корзины обновляем цены с бэкенда
-      updatePricesFromBackend();
     }, 100);
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      updatePricesFromBackend();
+    }
+  }, [loaded, updatePricesFromBackend]);
 
   // Показываем загрузку, пока не получим данные из localStorage
   if (!loaded) {

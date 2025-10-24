@@ -19,7 +19,7 @@ export const LoginForm = () => {
     if (user) {
       router.push(`/`);
     }
-  }, [user]);
+  }, [user, router]);
 
   const onSubmit = async (data: UserLogin) => {
     setResponseErrors([]);

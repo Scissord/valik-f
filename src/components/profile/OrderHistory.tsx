@@ -16,7 +16,7 @@ export const OrderHistory = () => {
       try {
         const data = await getOrders();
         setOrders(data);
-      } catch (_error) {
+      } catch {
         setError("Не удалось загрузить заказы.");
       }
       setIsLoading(false);
@@ -45,7 +45,7 @@ export const OrderHistory = () => {
       {orders.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-8">
           <IoReceiptOutline className="text-orange-500 text-5xl mb-4" />
-          <p className="text-gray-500 text-lg">У вас нет заказов.</p>
+          <p className="text-gray-500 text-lg">У вас еще не было заказов.</p>
         </div>
       ) : (
         <div className="space-y-6">

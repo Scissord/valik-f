@@ -55,7 +55,6 @@ api.interceptors.request.use(
 // --- Логика обновления токена ---
 
 let isRefreshing = false;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: any) => void; }[] = [];
 
 const processQueue = (error: AxiosError | null, token: string | null = null) => {
@@ -141,4 +140,4 @@ api.interceptors.response.use(
 );
 
 
-export default api; 
+export default api;

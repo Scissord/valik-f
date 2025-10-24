@@ -3,7 +3,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
   IoHomeOutline, IoHome, 
-  IoGridOutline, IoGrid, 
   IoCartOutline, IoCart, 
   IoPersonOutline, IoPerson
 } from "react-icons/io5";
