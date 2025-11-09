@@ -3,7 +3,7 @@
 import { getProductsForMainPage, getCategories } from '@/api';
 import { useEffect, useState } from "react";
 import { Product, GoodCategory } from "@/interfaces";
-import { HeroSection, ProductsSection, AdvantagesSection, CategoriesSection } from "@/components/landing";
+import { HeroSection, ProductsSection, CategoriesSection } from "@/components/landing";
 
 
 
@@ -48,7 +48,6 @@ export default function Home() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <ProductsSection products={products} />
         <HeroSection />
-        <AdvantagesSection />
         <CategoriesSection categories={categories} isLoadingCategories={isLoadingCategories} />
       </div>
     </div>

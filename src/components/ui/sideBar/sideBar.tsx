@@ -38,6 +38,9 @@ export const SideBar = () => {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Only show sidebar on /products and /product/{id} pages
+  const shouldShowSidebar = pathname === '/products' || pathname.startsWith('/product/');
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -288,6 +291,11 @@ export const SideBar = () => {
       </div>
     );
   };
+
+  // Don't render sidebar if not on products pages
+  if (!shouldShowSidebar) {
+    return null;
+  }
 
   return (
     <aside className="hidden md:flex md:flex-col md:fixed md:top-0 md:left-0 md:h-screen md:w-60 md:bg-white md:border-r md:border-gray-200 md:z-30 pt-20 pb-6 overflow-y-auto scrollbar-thin">

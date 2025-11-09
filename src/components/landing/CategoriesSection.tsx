@@ -123,43 +123,32 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <motion.section
-        className="py-24"
+        className="py-16"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
       >
-        <div className="flex flex-col md:flex-row justify-between items-baseline mb-12">
+        <div className="mb-8">
           <motion.div variants={itemVariantsX}>
-            <span className="text-orange-500 font-medium">Каталог</span>
-            <h2 className="text-3xl font-bold text-gray-900">Популярные категории</h2>
-          </motion.div>
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ x: 5 }}
-          >
-            <Link
-              href="/categories"
-              className="text-orange-500 hover:text-orange-600 flex items-center gap-1 transition-colors font-medium group"
-            >
-              Все категории
-              <IoArrowForwardOutline className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            <span className="text-orange-500 text-sm font-medium">Каталог</span>
+            <h2 className="text-2xl font-bold text-gray-900">Популярные категории</h2>
           </motion.div>
         </div>
-        <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {isLoadingCategories ? (
             // Скелетон загрузки
             Array.from({ length: 6 }).map((_, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 h-full flex flex-col animate-pulse"
+                className="bg-white rounded-lg border border-gray-200 p-4 animate-pulse"
               >
-                <div className="h-48 bg-gray-200"></div>
-                <div className="p-6 flex-1">
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                  <div className="flex-1">
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  </div>
                 </div>
               </motion.div>
             ))
@@ -175,39 +164,26 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                 <motion.div
                   key={category.id}
                   variants={itemVariants}
-                  whileHover="hover"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <Link
                     href={`/categories/${category.id}`}
-                    className="group"
+                    className="group block"
                   >
-                    <motion.div
-                      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 h-full flex flex-col"
-                      variants={cardHoverVariants}
-                    >
-                      <div className={`relative h-48 overflow-hidden bg-gradient-to-br ${getCategoryGradient(index)}`}>
-                        <motion.div
-                          className="absolute bottom-0 right-0 p-6 text-white"
-                          variants={iconVariants}
-                        >
-                          <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                            {getCategoryIcon(category.title, category.id)}
-                          </div>
-                        </motion.div>
-                        <h3 className="absolute bottom-6 left-6 font-bold text-2xl text-white z-10 max-w-[70%] leading-tight">
-                          {category.title}
-                        </h3>
+                    <div className="bg-white rounded-lg border border-gray-200 hover:border-orange-400 hover:shadow-md transition-all duration-200 p-4">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${getCategoryGradient(index)} flex items-center justify-center flex-shrink-0 text-white`}>
+                          {getCategoryIcon(category.title, category.id)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors truncate">
+                            {category.title}
+                          </h3>
+                        </div>
+                        <IoArrowForwardOutline className="w-5 h-5 text-gray-400 group-hover:text-orange-500 group-hover:translate-x-1 transition-all flex-shrink-0" />
                       </div>
-                      <div className="p-6 flex-1">
-                        <p className="text-gray-700 mb-4">
-                          {getCategoryDescription(category.title)}
-                        </p>
-                        <span className="text-orange-500 font-medium inline-flex items-center text-sm group-hover:underline">
-                          Перейти в категорию
-                          <IoArrowForwardOutline className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                      </div>
-                    </motion.div>
+                    </div>
                   </Link>
                 </motion.div>
               );
