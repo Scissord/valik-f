@@ -62,23 +62,23 @@ export const Header = () => {
 
               <Link
                 href={totalItems === 0 && loaded ? "/empty" : "/cart"}
-                className="hidden md:block p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                className="hidden md:block transition-colors duration-200 group"
               >
-                <div className="relative">
+                <div className="relative flex items-center justify-center">
                   {loaded && totalItems > 0 && (
                     <span className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs rounded-full bg-[#fc640c] text-white font-medium">
                       {totalItems}
                     </span>
                   )}
-                  <IoCartOutline className="w-5 h-5 text-gray-700" />
+                  <IoCartOutline className="w-5 h-5 text-gray-700 group-hover:text-[#fc640c]" />
                 </div>
               </Link>
 
               <Link
                 href={user ? "/profile" : "/auth/login"}
-                className="hidden md:block p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                className="hidden md:block transition-colors duration-200 group"
               >
-                <IoPersonOutline className="w-5 h-5 text-gray-700" />
+                <IoPersonOutline className="w-5 h-5 text-gray-700 group-hover:text-[#fc640c]" />
               </Link>
             </div>
           </div>

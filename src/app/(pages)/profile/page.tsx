@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -36,7 +36,9 @@ const buildFormState = (user: User | null): FormState => ({
   email: user?.email ?? "",
   full_name: user?.full_name ?? "",
   phone: user?.phone ?? "",
-  birth_date: user?.birth_date ? new Date(user.birth_date).toISOString().split("T")[0] : "",
+  birth_date: user?.birth_date
+    ? new Date(user.birth_date).toISOString().split("T")[0]
+    : "",
   gender: (user?.gender as FormState["gender"]) ?? "",
   address: user?.address ?? "",
 });
@@ -49,12 +51,19 @@ export default function ProfilePage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<FormState>(() => buildFormState(user));
-  const [statusMessage, setStatusMessage] = useState<StatusMessage | null>(null);
+  const [formData, setFormData] = useState<FormState>(() =>
+    buildFormState(user)
+  );
+  const [statusMessage, setStatusMessage] = useState<StatusMessage | null>(
+    null
+  );
 
   useEffect(() => {
     const checkUser = async () => {
-      const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("accessToken")
+          : null;
 
       if (token && !user) {
         await getProfile();
@@ -70,23 +79,15 @@ export default function ProfilePage() {
     setFormData(buildFormState(user));
   }, [user]);
 
-  const initials = useMemo(() => {
-    const fullName = formData.full_name.trim();
-    if (!fullName) return "?";
-    const parts = fullName.split(" ").filter(Boolean);
-    if (parts.length === 1) {
-      return parts[0][0]?.toUpperCase() ?? "?";
-    }
-    return `${parts[0][0] ?? ""}${parts[1][0] ?? ""}`.toUpperCase();
-  }, [formData.full_name]);
-
   const handleLogout = () => {
     logout();
     router.push("/");
   };
 
   const handleInputChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    event: ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -101,7 +102,9 @@ export default function ProfilePage() {
     try {
       const payload = {
         ...formData,
-        birth_date: formData.birth_date ? new Date(formData.birth_date).getTime() : null,
+        birth_date: formData.birth_date
+          ? new Date(formData.birth_date).getTime()
+          : null,
       };
 
       await UserAPI.update(user.id, payload);
@@ -110,7 +113,10 @@ export default function ProfilePage() {
       setStatusMessage({ type: "success", text: "Изменения сохранены" });
     } catch {
       console.error("Failed to update profile");
-      setStatusMessage({ type: "error", text: "Не удалось сохранить изменения" });
+      setStatusMessage({
+        type: "error",
+        text: "Не удалось сохранить изменения",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -118,10 +124,12 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-24">
-        <div className="space-y-3 text-center text-gray-400">
-          <div className="h-16 w-16 rounded-full bg-gray-200 mx-auto animate-pulse" />
-          <p className="text-sm">Загружаем профиль...</p>
+      <div className="bg-white min-h-screen pt-24 pb-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex items-center justify-center min-h-[60vh]">
+          <div className="space-y-3 text-center text-gray-400">
+            <div className="h-16 w-16 rounded-full bg-gray-200 mx-auto animate-pulse" />
+            <p className="text-sm">Загружаем профиль...</p>
+          </div>
         </div>
       </div>
     );
@@ -129,46 +137,42 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-24 pb-16 px-4">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-10 text-center space-y-6 max-w-md w-full">
-          <div className="mx-auto h-20 w-20 rounded-full bg-orange-100 flex items-center justify-center text-orange-500">
-            <IoPersonCircleOutline className="h-10 w-10" />
+      <div className="bg-white min-h-screen pt-24 pb-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-10 text-center space-y-6 max-w-md w-full">
+            <div className="mx-auto h-20 w-20 rounded-full bg-orange-100 flex items-center justify-center text-orange-500">
+              <IoPersonCircleOutline className="h-10 w-10" />
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Войдите в аккаунт
+            </h2>
+            <p className="text-sm text-gray-600">
+              Личный кабинет доступен только авторизованным пользователям. После
+              входа вы сможете просматривать и редактировать свои данные.
+            </p>
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-3 text-white text-sm font-medium transition hover:bg-orange-600"
+            >
+              Перейти к авторизации
+            </Link>
           </div>
-          <h2 className="text-2xl font-semibold text-gray-900">Войдите в аккаунт</h2>
-          <p className="text-sm text-gray-600">
-            Личный кабинет доступен только авторизованным пользователям. После входа вы сможете просматривать и редактировать свои данные.
-          </p>
-          <Link
-            href="/auth/login"
-            className="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-3 text-white text-sm font-medium transition hover:bg-orange-600"
-          >
-            Перейти к авторизации
-          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 md:p-8 flex flex-col gap-6">
-          <div className="flex flex-col md:flex-row md:items-start gap-6">
-            <div className="flex flex-col items-center gap-4">
-              <div className="h-24 w-24 rounded-full bg-orange-100 flex items-center justify-center text-3xl font-semibold text-orange-500">
-                {initials}
-              </div>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-100 px-5 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-200"
-              >
-                <IoLogOutOutline className="h-4 w-4" />
-                Выйти из аккаунта
-              </button>
-            </div>
+    <div className="bg-white min-h-screen pt-24 pb-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Личный кабинет</h1>
+          <p className="mt-2 text-gray-600">Профиль и история заказов</p>
+        </div>
 
-            <div className="flex-1 space-y-6">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1.2fr)]">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 md:p-8 flex flex-col gap-6">
+            <div className="space-y-6">
               {statusMessage && (
                 <div
                   className={`rounded-xl border px-4 py-3 text-sm ${
@@ -190,36 +194,42 @@ export default function ProfilePage() {
                     value={formData.full_name}
                     onChange={handleInputChange}
                     placeholder="Введите ФИО"
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100 resize-none"
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100 resize-none"
                   />
                 </label>
 
                 <label className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-gray-600">Email</span>
+                  <span className="text-sm font-medium text-gray-600">
+                    Email
+                  </span>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="example@mail.ru"
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                   />
                 </label>
 
                 <label className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-gray-600">Телефон</span>
+                  <span className="text-sm font-medium text-gray-600">
+                    Телефон
+                  </span>
                   <input
                     type="tel"
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="Например, +7 900 000-00-00"
-                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                   />
                 </label>
 
                 <label className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-gray-600">Дата рождения</span>
+                  <span className="text-sm font-medium text-gray-600">
+                    Дата рождения
+                  </span>
                   <input
                     type="date"
                     name="birth_date"
@@ -236,7 +246,7 @@ export default function ProfilePage() {
                       name="gender"
                       value={formData.gender}
                       onChange={handleInputChange}
-                    className="w-full appearance-none rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                      className="w-full appearance-none rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                     >
                       {genderOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -249,13 +259,15 @@ export default function ProfilePage() {
                 </label>
 
                 <label className="sm:col-span-2 flex flex-col gap-2">
-                  <span className="text-sm font-medium text-gray-600">Адрес доставки</span>
+                  <span className="text-sm font-medium text-gray-600">
+                    Адрес доставки
+                  </span>
                   <textarea
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="Укажите город, улицу, дом и квартиру"
-                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                    className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100 resize-none"
                   />
                 </label>
               </div>
@@ -273,11 +285,21 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 md:p-8">
+            <OrderHistory />
+          </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mt-6">
-
-          <OrderHistory />
+        <div className="mt-8 flex justify-end">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-100 px-5 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-200"
+          >
+            <IoLogOutOutline className="h-4 w-4" />
+            Выйти из аккаунта
+          </button>
         </div>
       </div>
     </div>
