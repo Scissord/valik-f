@@ -61,7 +61,7 @@ export const Header = () => {
               </div>
 
               <Link
-                href={totalItems === 0 && loaded ? "/empty" : "/cart"}
+                href="/cart"
                 className="hidden md:block transition-colors duration-200 group"
               >
                 <div className="relative flex items-center justify-center">

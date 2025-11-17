@@ -102,35 +102,57 @@ export const ProductItem = memo(({ product }: Props) => {
         </Link>
         
         {/* Цена и кнопка */}
-        <div className="flex items-center justify-between">
-          <div className="text-lg font-bold text-gray-900">
-            {typeof product.price === "number"
-              ? product.price.toLocaleString("ru-RU")
-              : "0"} ₸
+        <div className="mt-2 flex items-center justify-between gap-3">
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-500">Цена</span>
+            <div className="text-lg font-semibold text-gray-900">
+              {typeof product.price === "number"
+                ? product.price.toLocaleString("ru-RU")
+                : "0"}{" "}
+              ₸
+            </div>
           </div>
-          
-          <button 
+
+          <button
             onClick={handleAddToCart}
             disabled={isAddingToCart}
-            className={`p-2 rounded-lg transition-colors ${
-              isAddingToCart 
-                ? 'bg-green-500 text-white' 
-                : 'bg-orange-500 hover:bg-orange-600 text-white'
+            className={`inline-flex items-center justify-center gap-1 rounded-full px-3 py-2 text-xs sm:text-sm font-medium transition-colors ${
+              isAddingToCart
+                ? "bg-green-500 text-white"
+                : "bg-orange-500 hover:bg-orange-600 text-white"
             }`}
           >
             {isAddingToCart ? (
-              <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
             ) : (
-              <IoCartOutline className="h-4 w-4" />
+              <>
+                <IoCartOutline className="h-4 w-4" />
+                <span>В корзину</span>
+              </>
             )}
           </button>
         </div>
         
         {/* Дополнительная информация */}
-        <div className="mt-3 pt-3 border-t border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="mt-3 pt-3 border-t border-gray-100 hidden group-hover:block">
           <div className="space-y-1 text-xs text-gray-500">
             {product.category && (
               <div className="flex justify-between">

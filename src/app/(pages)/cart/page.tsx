@@ -144,7 +144,7 @@ export default function CartPage() {
   return (
     <div className="bg-white min-h-screen pt-24 pb-16">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 border-l-4 border-orange-500 pl-4">Корзина</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Корзина</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Левая колонка с товарами */}
@@ -153,14 +153,6 @@ export default function CartPage() {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-gray-800">Товары в корзине ({summary.count})</h2>
               <div className="flex items-center gap-4">
-                <button
-                  onClick={updatePricesFromBackend}
-                  disabled={isUpdatingPrices}
-                  className="text-gray-500 hover:text-orange-500 flex items-center gap-1"
-                >
-                  <IoSyncOutline className={`w-4 h-4 ${isUpdatingPrices ? 'animate-spin' : ''}`} />
-                  <span className="text-sm">Обновить цены</span>
-                </button>
                 <Link href="/products" className="text-orange-500 hover:text-orange-600 flex items-center gap-1">
                   <FaArrowLeft className="w-4 h-4" />
                   Продолжить покупки
