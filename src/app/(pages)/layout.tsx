@@ -10,8 +10,8 @@ export default function ShopLayout({
 }) {
   const pathname = usePathname();
   
-  // Only apply sidebar padding on /products and /product/{id} pages
-  const shouldShowSidebar = pathname === '/products' || pathname.startsWith('/product/');
+  // Показываем сайдбар и добавляем отступ только на странице списка товаров
+  const shouldShowSidebar = pathname === '/products';
   
   return (
     <>

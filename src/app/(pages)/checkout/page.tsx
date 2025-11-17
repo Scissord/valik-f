@@ -1,8 +1,8 @@
 // "use client";
 
 // import { useRouter } from "next/navigation";
-// import { useCartStore } from "@/store";
-// import { createOrder } from "@/api";
+// import { useCartStore } from "@/lib/legacy";
+// import { createOrder } from "@/lib/legacy";
 // import { useForm } from "react-hook-form";
 // import clsx from "clsx";
 // import { useState } from "react";

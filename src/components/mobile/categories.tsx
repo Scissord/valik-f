@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { GoodCategory } from '@/interfaces';
-import { getCategories } from '@/api';
+import { GoodCategory, getCategories } from '@/lib/legacy';
 import Link from 'next/link';
 import { 
   IoConstructOutline, IoHomeOutline, IoCarOutline

@@ -1,7 +1,7 @@
 // import Image from "next/image";
 // import { PayPalButton, Title } from "@/components";
 // import { getOrderByID } from "@/actions";
-// import { currencyFormat } from "@/util";
+// import { currencyFormat } from "@/lib/legacy";
 // import { redirect } from "next/navigation";
 // import { EstadoOrden } from "../ui/EstadoOrden";
 

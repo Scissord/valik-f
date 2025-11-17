@@ -3,7 +3,7 @@ import { Pagination, ProductGrid, Breadcrumbs, BreadcrumbItem } from "@/componen
 // import { notFound } from "next/navigation";
 import Link from "next/link";
 import { IoCartOutline } from "react-icons/io5";
-import { getProductsForCategory, getCategories } from '@/api'
+import { getProductsForCategory, getCategories } from '@/lib/legacy'
 
 type Props = {
   params: Promise<{ slug: string }>;

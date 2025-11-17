@@ -1,13 +1,11 @@
 export const revalidate = 604800; //7 dias
 
 // import { getProductBySlug } from "@/actions";
-import { ProductMobileSlidesShow, ProductSlidesShow } from "@/components";
-import { AddToCart } from "@/components/product/addToCart/addToCart";
+import { ProductMobileSlidesShow, ProductSlidesShow, AddToCart } from "@/components";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProduct } from "@/api";
+import { getProduct, Product } from "@/lib/legacy";
 import { titleFont } from "@/config/fonts";
-import { Product } from "@/interfaces";
 
 type Props = {
   params: Promise<{ slug: string }>;

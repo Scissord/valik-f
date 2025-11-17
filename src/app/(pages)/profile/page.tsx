@@ -9,10 +9,8 @@ import {
   IoPersonCircleOutline,
   IoSaveOutline,
 } from "react-icons/io5";
-import { OrderHistory } from "@/components/profile/OrderHistory";
-import { useUserStore } from "@/store";
-import { UserAPI } from "@/api";
-import { User } from "@/interfaces";
+import { OrderHistory } from "@/components";
+import { useUserStore, UserAPI, User } from "@/lib/legacy";
 
 type FormState = {
   email: string;

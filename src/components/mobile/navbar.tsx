@@ -6,7 +6,7 @@ import {
   IoCartOutline, IoCart, 
   IoPersonOutline, IoPerson
 } from "react-icons/io5";
-import { useUserStore } from "@/store";
+import { useUserStore } from "@/lib/legacy";
 
 export const MobileNavbar = () => {
   const pathname = usePathname();

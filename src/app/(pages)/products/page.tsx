@@ -1,6 +1,5 @@
 ﻿import { Pagination, ProductGrid } from "@/components";
-import { getProductsForMainPage } from '@/api';
-import { Product } from "@/interfaces/product.interface";
+import { getProductsForMainPage, Product } from '@/lib/legacy';
 import Link from "next/link";
 import { IoCartOutline } from "react-icons/io5";
 import { FaArrowLeft } from "react-icons/fa6";

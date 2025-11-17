@@ -1,9 +1,8 @@
 "use client";
 
-import { getProductsForMainPage, getCategories } from '@/api';
+import { getProductsForMainPage, getCategories, Product, GoodCategory } from '@/lib/legacy';
 import { useEffect, useState } from "react";
-import { Product, GoodCategory } from "@/interfaces";
-import { HeroSection, ProductsSection, CategoriesSection } from "@/components/landing";
+import { HeroSection, ProductsSection, CategoriesSection } from "@/components";
 
 
 
