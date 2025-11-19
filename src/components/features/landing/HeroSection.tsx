@@ -24,7 +24,7 @@ const itemVariants: Variants = {
 export const HeroSection = () => {
   return (
     <section className="relative overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-8 md:pb-20 text-center relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-20 pb-8 md:pb-20 text-center relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"

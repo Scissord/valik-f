@@ -1,127 +1,129 @@
 import { ReactNode } from 'react';
-import { 
+import {
   IoLayersOutline
 } from "react-icons/io5";
-import { 
-  FaToolbox, 
-  FaScrewdriver, 
-  FaPaintRoller, 
+import {
+  FaToolbox,
+  FaScrewdriver,
+  FaPaintRoller,
   FaPlug,
   FaFaucet,
   FaCar
 } from "react-icons/fa";
-import { 
-  GiBrickWall, 
+import {
+  GiBrickWall,
   GiHeatHaze,
   GiWoodBeam
 } from "react-icons/gi";
-import { 
-  MdWallpaper, 
-  MdOutlineLayers, 
-  MdOutlineDoorFront, 
+import {
+  MdWallpaper,
+  MdOutlineLayers,
+  MdOutlineDoorFront,
   MdChair,
-  MdAgriculture, 
-  MdHomeRepairService, 
-  MdStyle, 
+  MdAgriculture,
+  MdHomeRepairService,
+  MdStyle,
   MdMicrowave
 } from "react-icons/md";
 
 // Функция для получения иконки категории по названию или ID
+const ICON_CLASS = "w-8 h-8";
+
 export const getCategoryIcon = (categoryName: string, _categoryId?: string): ReactNode => {
   const name = categoryName.toLowerCase();
   
   // Обои
   if (name.includes('обои')) {
-    return <MdWallpaper className="w-6 h-6" />;
+    return <MdWallpaper className={ICON_CLASS} />;
   }
   
   // Инструменты
   if (name.includes('инструмент')) {
-    return <FaToolbox className="w-6 h-6" />;
+    return <FaToolbox className={ICON_CLASS} />;
   }
   
   // Отделочные материалы (проверяем первыми, так как более специфичные)
   if (name.includes('отделочн')) {
-    return <GiWoodBeam className="w-6 h-6" />;
+    return <GiWoodBeam className={ICON_CLASS} />;
   }
   
   // Строительные материалы
   if (name.includes('строительн') || name.includes('кирпич') || name.includes('блок')) {
-    return <GiBrickWall className="w-6 h-6" />;
+    return <GiBrickWall className={ICON_CLASS} />;
   }
   
   // Покрытия для пола
   if (name.includes('покрытия для пола') || name.includes('пол')) {
-    return <MdOutlineLayers className="w-6 h-6" />;
+    return <MdOutlineLayers className={ICON_CLASS} />;
   }
   
   // Кафель
   if (name.includes('кафель') || name.includes('плитк')) {
-    return <MdWallpaper className="w-6 h-6" />;
+    return <MdWallpaper className={ICON_CLASS} />;
   }
   
   // Двери и фурнитура
   if (name.includes('двер') || name.includes('фурнитур')) {
-    return <MdOutlineDoorFront className="w-6 h-6" />;
+    return <MdOutlineDoorFront className={ICON_CLASS} />;
   }
   
   // Мебель
   if (name.includes('мебель')) {
-    return <MdChair className="w-6 h-6" />;
+    return <MdChair className={ICON_CLASS} />;
   }
   
   // Краски, лаки, клей
   if (name.includes('краск') || name.includes('лак') || name.includes('клей')) {
-    return <FaPaintRoller className="w-6 h-6" />;
+    return <FaPaintRoller className={ICON_CLASS} />;
   }
   
   // Крепёж
   if (name.includes('крепёж') || name.includes('крепеж')) {
-    return <FaScrewdriver className="w-6 h-6" />;
+    return <FaScrewdriver className={ICON_CLASS} />;
   }
   
   // Сантехника
   if (name.includes('сантехник')) {
-    return <FaFaucet className="w-6 h-6" />;
+    return <FaFaucet className={ICON_CLASS} />;
   }
   
   // Электротовары
   if (name.includes('электр')) {
-    return <FaPlug className="w-6 h-6" />;
+    return <FaPlug className={ICON_CLASS} />;
   }
   
   // Водоснабжение, отопление и вентиляция
   if (name.includes('водоснабжен') || name.includes('отоплен') || name.includes('вентиляц')) {
-    return <GiHeatHaze className="w-6 h-6" />;
+    return <GiHeatHaze className={ICON_CLASS} />;
   }
   
   // Оборудование
   if (name.includes('оборудован')) {
-    return <MdHomeRepairService className="w-6 h-6" />;
+    return <MdHomeRepairService className={ICON_CLASS} />;
   }
   
   // Декор
   if (name.includes('декор')) {
-    return <MdStyle className="w-6 h-6" />;
+    return <MdStyle className={ICON_CLASS} />;
   }
   
   // Бытовая техника
   if (name.includes('техник') || name.includes('быт')) {
-    return <MdMicrowave className="w-6 h-6" />;
+    return <MdMicrowave className={ICON_CLASS} />;
   }
   
   // Сад и огород
   if (name.includes('сад') || name.includes('огород') || name.includes('дача')) {
-    return <MdAgriculture className="w-6 h-6" />;
+    return <MdAgriculture className={ICON_CLASS} />;
   }
   
   // Автотовары
   if (name.includes('авто') || name.includes('машин')) {
-    return <FaCar className="w-6 h-6" />;
+    return <FaCar className={ICON_CLASS} />;
   }
   
   // По умолчанию
-  return <IoLayersOutline className="w-6 h-6" />;
+  return <IoLayersOutline className={ICON_CLASS} />;
 };
 
 // Функция для получения единого минималистичного фона с оранжевыми оттенками

@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { IoArrowForwardOutline } from "react-icons/io5";
 import { motion, Variants } from "framer-motion";
 import { GoodCategory } from "@/lib/legacy";
 import { getCategoryIcon, getCategoryGradient } from "@/lib/legacy";
+import { useEffect, useRef } from "react";
 
 interface CategoriesSectionProps {
   categories: GoodCategory[];
@@ -31,10 +31,33 @@ const itemVariantsX: Variants = {
 };
 
 export const CategoriesSection = ({ categories, isLoadingCategories }: CategoriesSectionProps) => {
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const resetScroll = () => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollLeft = 0;
+      }
+    };
+
+    resetScroll();
+    window.addEventListener("pageshow", resetScroll);
+
+    return () => {
+      window.removeEventListener("pageshow", resetScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isLoadingCategories && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollLeft = 0;
+    }
+  }, [isLoadingCategories, categories.length]);
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <motion.section
-        className="py-16"
+        className="pt-10 pb-16"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -47,7 +70,10 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
           </motion.div>
         </div>
         <div className="relative -mx-4 sm:-mx-6 lg:-mx-8">
-          <div className="overflow-x-auto px-4 sm:px-6 lg:px-8 pb-4 scrollbar-thin scrollbar-thin-orange">
+          <div
+            ref={scrollContainerRef}
+            className="overflow-x-auto px-4 sm:px-6 lg:px-8 pb-4 scrollbar-thin scrollbar-thin-orange"
+          >
             {isLoadingCategories ? (
               <div className="flex gap-4 w-max">
                 {Array.from({ length: 6 }).map((_, index) => (
@@ -81,17 +107,14 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                         href={`/categories/${category.id}`}
                         className="group block h-full"
                       >
-                        <div className="bg-white rounded-xl border border-gray-200 hover:border-orange-400 hover:shadow-md transition-all duration-200 p-4 h-full flex flex-col justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${getCategoryGradient(index)} flex items-center justify-center flex-shrink-0 text-white`}>
-                              {getCategoryIcon(category.title, category.id)}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors truncate">
-                                {category.title}
-                              </h3>
-                            </div>
-                            <IoArrowForwardOutline className="w-5 h-5 text-gray-400 group-hover:text-orange-500 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                        <div className="bg-white rounded-xl border border-gray-200 hover:border-orange-400 hover:shadow-md transition-all duration-200 p-6 h-full flex flex-col items-center text-center gap-4">
+                          <div className="w-16 h-16 flex items-center justify-center text-orange-500 text-4xl">
+                            {getCategoryIcon(category.title, category.id)}
+                          </div>
+                          <div className="flex-1 flex items-end">
+                            <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors leading-snug">
+                              {category.title}
+                            </h3>
                           </div>
                         </div>
                       </Link>

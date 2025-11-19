@@ -6,7 +6,7 @@ export const Footer = () => {
   return (
     <footer className="bg-white border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Логотип и описание */}
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="inline-block">
@@ -30,45 +30,6 @@ export const Footer = () => {
                 <FaTiktok className="h-6 w-6" />
               </a>
             </div>
-          </div>
-
-          {/* Категории */}
-          <div className="col-span-1">
-            <h3 className="text-sm font-semibold text-gray-900 tracking-wider uppercase">
-              Категории
-            </h3>
-            <ul className="mt-4 space-y-2">
-              <li>
-                <Link href="/categories/tools" className="text-sm text-gray-600 hover:text-[#fc640c]">
-                  Инструменты
-                </Link>
-              </li>
-              <li>
-                <Link href="/categories/materials" className="text-sm text-gray-600 hover:text-[#fc640c]">
-                  Строительные материалы
-                </Link>
-              </li>
-              <li>
-                <Link href="/categories/fasteners" className="text-sm text-gray-600 hover:text-[#fc640c]">
-                  Крепёж и метизы
-                </Link>
-              </li>
-              <li>
-                <Link href="/categories/plumbing" className="text-sm text-gray-600 hover:text-[#fc640c]">
-                  Сантехника
-                </Link>
-              </li>
-              <li>
-                <Link href="/categories/finishing" className="text-sm text-gray-600 hover:text-[#fc640c]">
-                  Отделочные материалы
-                </Link>
-              </li>
-              <li>
-                <Link href="/categories" className="text-sm text-gray-600 hover:text-[#fc640c]">
-                  Все категории
-                </Link>
-              </li>
-            </ul>
           </div>
 
           {/* Информация */}
