@@ -227,7 +227,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
         console.time("[INDEX] Время создания индексов");
 
         // Запрос на создание индексов
-        const response = await fetch("http://localhost:8080/search/create_index");
+        const response = await fetch(`${baseURL}/search/create_index`);
 
         console.log(`[INDEX] Статус запроса: ${response.status} ${response.statusText}`);
 

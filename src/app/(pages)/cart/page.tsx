@@ -11,6 +11,8 @@ import { IoCartOutline, IoAddCircleOutline, IoRemoveCircleOutline } from "react-
 import { currencyFormat } from "@/lib/legacy";
 import { useShallow } from 'zustand/react/shallow';
 
+const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
 export default function CartPage() {
   const [loaded, setLoaded] = useState(false);
   const [isUpdatingPrices, setIsUpdatingPrices] = useState(false);
@@ -51,7 +53,7 @@ export default function CartPage() {
         cart.map(async (item) => {
           try {
             // Запрос к бэкенду для получения актуальной цены
-            const response = await fetch(`http://localhost:8080/products/${item.id}`);
+            const response = await fetch(`${baseURL}/products/${item.id}`);
             if (!response.ok) return item;
 
             const productData = await response.json();
@@ -147,120 +149,120 @@ export default function CartPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Корзина</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Левая колонка с товарами */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">Товары в корзине ({summary.count})</h2>
-              <div className="flex items-center gap-4">
-                <Link href="/products" className="text-orange-500 hover:text-orange-600 flex items-center gap-1">
-                  <FaArrowLeft className="w-4 h-4" />
-                  Продолжить покупки
-                </Link>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              {Object.entries(groupedCart).map(([date, products]) => (
-                <div key={date}>
-                  <h3 className="text-md font-semibold text-gray-600 mb-3 pb-2 border-b border-gray-200">
-                    Добавлено: {date}
-                  </h3>
-                  <div className="divide-y divide-gray-100">
-                    {products.map((product) => (
-                      <div key={`${product.id}-${product.added_at}`} className="py-6 flex flex-col sm:flex-row gap-4">
-                        <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-24 h-24 flex items-center justify-center">
-                          <Image
-                            src={product.images?.[0] || "/placeholder.jpg"}
-                            width={80}
-                            height={80}
-                            alt={product.title}
-                            className="object-contain"
-                          />
-                        </div>
-                        <div className="flex-grow">
-                          <Link href={`/product/${product.id}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
-                            {product.title}
-                          </Link>
-                          <div className="mt-1 text-sm text-gray-500">
-                            Артикул: {product.articul}
-                          </div>
-                          <div className="mt-4 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                              <div className="flex items-center border border-gray-200 rounded-lg">
-                                <button
-                                  onClick={() => updateProductQuantity(product, Math.max(1, product.quantity - 1))}
-                                  className="p-2 text-gray-500 hover:text-orange-500"
-                                  disabled={product.quantity <= 1}
-                                >
-                                  <IoRemoveCircleOutline className="w-5 h-5" />
-                                </button>
-                                <span className="px-3 py-1 font-medium">{product.quantity}</span>
-                                <button
-                                  onClick={() => updateProductQuantity(product, product.quantity + 1)}
-                                  className="p-2 text-gray-500 hover:text-orange-500"
-                                >
-                                  <IoAddCircleOutline className="w-5 h-5" />
-                                </button>
-                              </div>
-                              <button
-                                onClick={() => deleteProduct(product)}
-                                className="text-red-500 hover:text-red-600 p-2"
-                              >
-                                <FaRegTrashCan className="w-4 h-4" />
-                              </button>
-                            </div>
-                            <div className="font-semibold text-lg">
-                              <div className="text-right">
-                                {currencyFormat(product.price * product.quantity)}
-                              </div>
-                              <div className="text-xs text-gray-500 text-right">
-                                {currencyFormat(product.price)} за шт.
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+          {/* Левая колонка с товарами */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-semibold text-gray-800">Товары в корзине ({summary.count})</h2>
+                <div className="flex items-center gap-4">
+                  <Link href="/products" className="text-orange-500 hover:text-orange-600 flex items-center gap-1">
+                    <FaArrowLeft className="w-4 h-4" />
+                    Продолжить покупки
+                  </Link>
                 </div>
-              ))}
+              </div>
+
+              <div className="space-y-6">
+                {Object.entries(groupedCart).map(([date, products]) => (
+                  <div key={date}>
+                    <h3 className="text-md font-semibold text-gray-600 mb-3 pb-2 border-b border-gray-200">
+                      Добавлено: {date}
+                    </h3>
+                    <div className="divide-y divide-gray-100">
+                      {products.map((product) => (
+                        <div key={`${product.id}-${product.added_at}`} className="py-6 flex flex-col sm:flex-row gap-4">
+                          <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-24 h-24 flex items-center justify-center">
+                            <Image
+                              src={product.images?.[0] || "/placeholder.jpg"}
+                              width={80}
+                              height={80}
+                              alt={product.title}
+                              className="object-contain"
+                            />
+                          </div>
+                          <div className="flex-grow">
+                            <Link href={`/product/${product.id}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
+                              {product.title}
+                            </Link>
+                            <div className="mt-1 text-sm text-gray-500">
+                              Артикул: {product.articul}
+                            </div>
+                            <div className="mt-4 flex items-center justify-between">
+                              <div className="flex items-center gap-4">
+                                <div className="flex items-center border border-gray-200 rounded-lg">
+                                  <button
+                                    onClick={() => updateProductQuantity(product, Math.max(1, product.quantity - 1))}
+                                    className="p-2 text-gray-500 hover:text-orange-500"
+                                    disabled={product.quantity <= 1}
+                                  >
+                                    <IoRemoveCircleOutline className="w-5 h-5" />
+                                  </button>
+                                  <span className="px-3 py-1 font-medium">{product.quantity}</span>
+                                  <button
+                                    onClick={() => updateProductQuantity(product, product.quantity + 1)}
+                                    className="p-2 text-gray-500 hover:text-orange-500"
+                                  >
+                                    <IoAddCircleOutline className="w-5 h-5" />
+                                  </button>
+                                </div>
+                                <button
+                                  onClick={() => deleteProduct(product)}
+                                  className="text-red-500 hover:text-red-600 p-2"
+                                >
+                                  <FaRegTrashCan className="w-4 h-4" />
+                                </button>
+                              </div>
+                              <div className="font-semibold text-lg">
+                                <div className="text-right">
+                                  {currencyFormat(product.price * product.quantity)}
+                                </div>
+                                <div className="text-xs text-gray-500 text-right">
+                                  {currencyFormat(product.price)} за шт.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Правая колонка с итогами */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">Сводка заказа</h2>
+          {/* Правая колонка с итогами */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+              <h2 className="text-xl font-semibold text-gray-800 mb-6">Сводка заказа</h2>
 
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Товары ({summary.count})</span>
-                <span>{currencyFormat(summary.total)}</span>
+              <div className="space-y-3 mb-6">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Товары ({summary.count})</span>
+                  <span>{currencyFormat(summary.total)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Доставка</span>
+                  <span className="text-blue-600">По согласованию</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Доставка</span>
-                <span className="text-blue-600">По согласованию</span>
+
+              <div className="border-t border-gray-100 pt-4 mb-6">
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-semibold">Итого</span>
+                  <span className="text-xl font-bold">{currencyFormat(summary.total)}</span>
+                </div>
               </div>
+
+              <button
+                onClick={() => setIsCheckoutModalOpen(true)}
+                disabled={cart.length === 0}
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Оформить заказ
+              </button>
             </div>
-
-            <div className="border-t border-gray-100 pt-4 mb-6">
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-semibold">Итого</span>
-                <span className="text-xl font-bold">{currencyFormat(summary.total)}</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setIsCheckoutModalOpen(true)}
-              disabled={cart.length === 0}
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-4 rounded-lg font-medium transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Оформить заказ
-            </button>
           </div>
-        </div>
         </div>
 
         {/* Checkout Modal */}
