@@ -32,7 +32,7 @@ export class HttpClient {
 
         // Add request timestamp for debugging
         (config as any).metadata = { startTime: new Date() };
-        
+
         return config;
       },
       (error) => {
@@ -77,7 +77,7 @@ export class HttpClient {
 
   private async handleTokenRefresh(): Promise<boolean> {
     try {
-      const refreshToken = typeof window !== 'undefined' 
+      const refreshToken = typeof window !== 'undefined'
         ? localStorage.getItem(APP_CONFIG.storage.refreshToken)
         : null;
 
@@ -91,14 +91,14 @@ export class HttpClient {
       });
 
       const { accessToken, refreshToken: newRefreshToken } = response.data;
-      
+
       if (typeof window !== 'undefined') {
         localStorage.setItem(APP_CONFIG.storage.accessToken, accessToken);
         localStorage.setItem(APP_CONFIG.storage.refreshToken, newRefreshToken);
       }
 
       return true;
-    } catch (_error) {
+    } catch {
       this.clearAuthTokens();
       return false;
     }

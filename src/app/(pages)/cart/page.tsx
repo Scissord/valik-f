@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
 import { FaRegTrashCan, FaArrowLeft } from "react-icons/fa6";
-import { IoSyncOutline } from "react-icons/io5";
+
 import { IoCartOutline, IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import { currencyFormat } from "@/lib/legacy";
 import { useShallow } from 'zustand/react/shallow';

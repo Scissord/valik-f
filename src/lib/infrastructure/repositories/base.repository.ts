@@ -12,16 +12,16 @@ export interface IBaseRepository<T, TCreate = Partial<T>, TUpdate = Partial<T>> 
   delete(id: string): Promise<boolean>;
 }
 
-export abstract class BaseRepository<T, TCreate = Partial<T>, TUpdate = Partial<T>> 
+export abstract class BaseRepository<T, TCreate = Partial<T>, TUpdate = Partial<T>>
   implements IBaseRepository<T, TCreate, TUpdate> {
-  
+
   protected abstract readonly endpoint: string;
-  
-  constructor(protected readonly httpClient: HttpClient) {}
+
+  constructor(protected readonly httpClient: HttpClient) { }
 
   async findAll(params?: PaginationParams): Promise<PaginatedResponse<T>> {
     const queryParams = new URLSearchParams();
-    
+
     if (params) {
       queryParams.append('page', params.page.toString());
       queryParams.append('limit', params.limit.toString());
@@ -32,7 +32,7 @@ export abstract class BaseRepository<T, TCreate = Partial<T>, TUpdate = Partial<
     const response = await this.httpClient.get<PaginatedResponse<T>>(
       `${this.endpoint}?${queryParams.toString()}`
     );
-    
+
     return response.data;
   }
 
@@ -62,7 +62,7 @@ export abstract class BaseRepository<T, TCreate = Partial<T>, TUpdate = Partial<
     try {
       await this.httpClient.delete(`${this.endpoint}/${id}`);
       return true;
-    } catch (_error) {
+    } catch {
       return false;
     }
   }
