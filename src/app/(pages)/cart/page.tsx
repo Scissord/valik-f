@@ -1,7 +1,7 @@
 'use client';
 
 import { CheckoutModal } from "@/components";
-import { useCartStore } from "@/lib/legacy";
+import { useCartStore, CartItem } from "@/lib/legacy";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
@@ -12,6 +12,107 @@ import { currencyFormat } from "@/lib/legacy";
 import { useShallow } from 'zustand/react/shallow';
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
+interface CartItemRowProps {
+  product: CartItem;
+  updateProductQuantity: (product: CartItem, quantity: number) => void;
+  deleteProduct: (product: CartItem) => void;
+}
+
+const CartItemRow = ({ product, updateProductQuantity, deleteProduct }: CartItemRowProps) => {
+  const [localQuantity, setLocalQuantity] = useState(product.quantity.toString());
+
+  useEffect(() => {
+    setLocalQuantity(product.quantity.toString());
+  }, [product.quantity]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setLocalQuantity(value);
+    }
+  };
+
+  const handleBlur = () => {
+    let newQuantity = parseInt(localQuantity, 10);
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      newQuantity = 1;
+    }
+    setLocalQuantity(newQuantity.toString());
+    if (newQuantity !== product.quantity) {
+      updateProductQuantity(product, newQuantity);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleBlur();
+    }
+  };
+
+  return (
+    <div className="py-6 flex flex-col sm:flex-row gap-4">
+      <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-24 h-24 flex items-center justify-center">
+        <Image
+          src={product.images?.[0] || "/placeholder.jpg"}
+          width={80}
+          height={80}
+          alt={product.title}
+          className="object-contain"
+        />
+      </div>
+      <div className="flex-grow">
+        <Link href={`/product/${product.id}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
+          {product.title}
+        </Link>
+        <div className="mt-1 text-sm text-gray-500">
+          Артикул: {product.articul}
+        </div>
+        <div className="mt-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center border border-gray-200 rounded-lg">
+              <button
+                onClick={() => updateProductQuantity(product, Math.max(1, product.quantity - 1))}
+                className="p-2 text-gray-500 hover:text-orange-500"
+                disabled={product.quantity <= 1}
+              >
+                <IoRemoveCircleOutline className="w-5 h-5" />
+              </button>
+              <input
+                type="text"
+                value={localQuantity}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                className="w-12 text-center border-x border-gray-200 py-1 focus:outline-none focus:ring-1 focus:ring-orange-500"
+              />
+              <button
+                onClick={() => updateProductQuantity(product, product.quantity + 1)}
+                className="p-2 text-gray-500 hover:text-orange-500"
+              >
+                <IoAddCircleOutline className="w-5 h-5" />
+              </button>
+            </div>
+            <button
+              onClick={() => deleteProduct(product)}
+              className="text-red-500 hover:text-red-600 p-2"
+            >
+              <FaRegTrashCan className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="font-semibold text-lg">
+            <div className="text-right">
+              {currencyFormat(product.price * product.quantity)}
+            </div>
+            <div className="text-xs text-gray-500 text-right">
+              {currencyFormat(product.price)} за шт.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function CartPage() {
   const [loaded, setLoaded] = useState(false);
@@ -170,59 +271,12 @@ export default function CartPage() {
                     </h3>
                     <div className="divide-y divide-gray-100">
                       {products.map((product) => (
-                        <div key={`${product.id}-${product.added_at}`} className="py-6 flex flex-col sm:flex-row gap-4">
-                          <div className="flex-shrink-0 bg-gray-50 rounded-lg p-2 w-24 h-24 flex items-center justify-center">
-                            <Image
-                              src={product.images?.[0] || "/placeholder.jpg"}
-                              width={80}
-                              height={80}
-                              alt={product.title}
-                              className="object-contain"
-                            />
-                          </div>
-                          <div className="flex-grow">
-                            <Link href={`/product/${product.id}`} className="text-lg font-medium text-gray-900 hover:text-orange-500 transition-colors">
-                              {product.title}
-                            </Link>
-                            <div className="mt-1 text-sm text-gray-500">
-                              Артикул: {product.articul}
-                            </div>
-                            <div className="mt-4 flex items-center justify-between">
-                              <div className="flex items-center gap-4">
-                                <div className="flex items-center border border-gray-200 rounded-lg">
-                                  <button
-                                    onClick={() => updateProductQuantity(product, Math.max(1, product.quantity - 1))}
-                                    className="p-2 text-gray-500 hover:text-orange-500"
-                                    disabled={product.quantity <= 1}
-                                  >
-                                    <IoRemoveCircleOutline className="w-5 h-5" />
-                                  </button>
-                                  <span className="px-3 py-1 font-medium">{product.quantity}</span>
-                                  <button
-                                    onClick={() => updateProductQuantity(product, product.quantity + 1)}
-                                    className="p-2 text-gray-500 hover:text-orange-500"
-                                  >
-                                    <IoAddCircleOutline className="w-5 h-5" />
-                                  </button>
-                                </div>
-                                <button
-                                  onClick={() => deleteProduct(product)}
-                                  className="text-red-500 hover:text-red-600 p-2"
-                                >
-                                  <FaRegTrashCan className="w-4 h-4" />
-                                </button>
-                              </div>
-                              <div className="font-semibold text-lg">
-                                <div className="text-right">
-                                  {currencyFormat(product.price * product.quantity)}
-                                </div>
-                                <div className="text-xs text-gray-500 text-right">
-                                  {currencyFormat(product.price)} за шт.
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        <CartItemRow
+                          key={`${product.id}-${product.added_at}`}
+                          product={product}
+                          updateProductQuantity={updateProductQuantity}
+                          deleteProduct={deleteProduct}
+                        />
                       ))}
                     </div>
                   </div>

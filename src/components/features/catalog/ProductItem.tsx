@@ -17,29 +17,29 @@ export const ProductItem = memo(({ product }: Props) => {
     if (!url || url.trim() === '' || url === 'h' || url.length < 3) {
       return "/placeholder.jpg";
     }
-    
+
     // Если это уже полный URL (http/https), возвращаем как есть
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
     }
-    
+
     // Если URL начинается с /, возвращаем как есть
     if (url.startsWith('/')) {
       return url;
     }
-    
+
     // Если это относительный путь, добавляем /
     return `/${url}`;
   };
 
   const defaultImage = getValidImageUrl(product.images?.[0]);
-  const hoverImage = getValidImageUrl(product.images?.[1]) !== "/placeholder.jpg" 
-    ? getValidImageUrl(product.images?.[1]) 
+  const hoverImage = getValidImageUrl(product.images?.[1]) !== "/placeholder.jpg"
+    ? getValidImageUrl(product.images?.[1])
     : defaultImage;
 
   const [displayImage, setDisplayImage] = useState(defaultImage);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  
+
   const addProductToCart = useCartStore((state) => state.addProductToCart);
 
   useEffect(() => {
@@ -49,17 +49,17 @@ export const ProductItem = memo(({ product }: Props) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     setIsAddingToCart(true);
-    
+
     const cartProduct: CartItem = {
       ...product,
       quantity: 1,
       image: getValidImageUrl(product.images?.[0])
     };
-    
+
     addProductToCart(cartProduct);
-    
+
     setTimeout(() => {
       setIsAddingToCart(false);
     }, 500);
@@ -79,7 +79,7 @@ export const ProductItem = memo(({ product }: Props) => {
             onMouseEnter={() => setDisplayImage(hoverImage)}
             onMouseLeave={() => setDisplayImage(defaultImage)}
           />
-          
+
           {/* Бейдж бренда */}
           {product.brand && (
             <div className="absolute top-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -88,11 +88,11 @@ export const ProductItem = memo(({ product }: Props) => {
           )}
         </div>
       </Link>
-      
+
       {/* Контент карточки */}
       <div className="p-4">
         {/* Название товара */}
-        <Link 
+        <Link
           href={`/product/${product.id}`}
           className="block mb-3"
         >
@@ -100,7 +100,7 @@ export const ProductItem = memo(({ product }: Props) => {
             {product.title}
           </h3>
         </Link>
-        
+
         {/* Цена и кнопка */}
         <div className="mt-2 flex items-center justify-between gap-3">
           <div className="flex flex-col">
@@ -116,11 +116,10 @@ export const ProductItem = memo(({ product }: Props) => {
           <button
             onClick={handleAddToCart}
             disabled={isAddingToCart}
-            className={`inline-flex items-center justify-center gap-1 rounded-full px-3 py-2 text-xs sm:text-sm font-medium transition-colors ${
-              isAddingToCart
+            className={`inline-flex items-center justify-center gap-1 rounded-full px-3 py-2 text-xs sm:text-sm font-medium transition-colors ${isAddingToCart
                 ? "bg-green-500 text-white"
                 : "bg-orange-500 hover:bg-orange-600 text-white"
-            }`}
+              }`}
           >
             {isAddingToCart ? (
               <svg
@@ -145,12 +144,12 @@ export const ProductItem = memo(({ product }: Props) => {
             ) : (
               <>
                 <IoCartOutline className="h-4 w-4" />
-                <span>В корзину</span>
+                <span className="hidden sm:inline">В корзину</span>
               </>
             )}
           </button>
         </div>
-        
+
         {/* Дополнительная информация */}
         <div className="mt-3 pt-3 border-t border-gray-100 hidden group-hover:block">
           <div className="space-y-1 text-xs text-gray-500">

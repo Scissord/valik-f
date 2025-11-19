@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { IoCartOutline, IoPersonOutline } from "react-icons/io5";
 import Logo from "./logo";
 import Search from "./search";
+import { MobileCategoryMenu } from "./MobileCategoryMenu";
 
 // Простая реализация debounce
 const debounce = (fn: (...args: any[]) => void, ms = 100) => {
@@ -59,6 +60,8 @@ export const Header = () => {
               <div className="md:hidden">
                 <Search isMobile={true} />
               </div>
+
+              <MobileCategoryMenu />
 
               <Link
                 href="/cart"
