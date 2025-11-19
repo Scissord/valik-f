@@ -156,3 +156,21 @@ body {
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background-color: #d1d1d1;
 }
+
+.scrollbar-thin-orange::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+.scrollbar-thin-orange::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin-orange::-webkit-scrollbar-thumb {
+  background-color: #fb923c;
+  border-radius: 9999px;
+}
+
+.scrollbar-thin-orange::-webkit-scrollbar-thumb:hover {
+  background-color: #f97316;
+}

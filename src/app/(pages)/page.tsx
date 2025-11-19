@@ -4,8 +4,6 @@ import { getProductsForMainPage, getCategories, Product, GoodCategory } from '@/
 import { useEffect, useState } from "react";
 import { HeroSection, ProductsSection, CategoriesSection } from "@/components";
 
-
-
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<GoodCategory[]>([]);
@@ -26,11 +24,10 @@ export default function Home() {
         const categoriesResult = await getCategories();
 
         if (categoriesResult && categoriesResult.length > 0) {
-          // Берем только родительские категории (без parent_id) и первые 6
-          const parentCategories = categoriesResult
-            .filter(category => !category.parent_id)
-            .slice(0, 6);
+          const parentCategories = categoriesResult.filter(category => !category.parent_id);
           setCategories(parentCategories);
+        } else {
+          setCategories([]);
         }
       } catch (error) {
         console.error("Ошибка при загрузке данных:", error);
@@ -45,9 +42,9 @@ export default function Home() {
   return (
     <div className="bg-gray-50 pt-24 pb-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <ProductsSection products={products} />
-        <HeroSection />
         <CategoriesSection categories={categories} isLoadingCategories={isLoadingCategories} />
+        <HeroSection />
+        <ProductsSection products={products} />
       </div>
     </div>
   );
