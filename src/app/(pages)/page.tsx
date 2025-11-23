@@ -2,7 +2,7 @@
 
 import { getProductsForMainPage, getCategories, Product, GoodCategory } from '@/lib/legacy';
 import { useEffect, useState } from "react";
-import { HeroSection, ProductsSection, CategoriesSection } from "@/components";
+import { ProductsSection, CategoriesSection } from "@/components";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -43,7 +43,6 @@ export default function Home() {
     <div className="bg-gray-50 pt-24 pb-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <CategoriesSection categories={categories} isLoadingCategories={isLoadingCategories} />
-        <HeroSection />
         <ProductsSection products={products} />
       </div>
     </div>

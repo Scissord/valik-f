@@ -79,10 +79,10 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                 {Array.from({ length: 6 }).map((_, index) => (
                   <div
                     key={index}
-                    className="flex-none w-56 sm:w-60 lg:w-64 bg-white rounded-lg border border-gray-200 p-4 animate-pulse"
+                    className="flex-none w-40 sm:w-44 lg:w-48 bg-white rounded-lg border border-gray-200 p-3 animate-pulse"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-200 rounded-lg" />
+                      <div className="w-9 h-9 bg-gray-200 rounded-lg" />
                       <div className="flex-1">
                         <div className="h-4 bg-gray-200 rounded w-3/4" />
                       </div>
@@ -101,18 +101,18 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                   return (
                     <div
                       key={category.id}
-                      className="flex-none w-56 sm:w-60 lg:w-64 snap-start"
+                      className="flex-none w-40 sm:w-44 lg:w-48 snap-start"
                     >
                       <Link
                         href={`/categories/${category.id}`}
                         className="group block h-full"
                       >
-                        <div className="bg-white rounded-xl border border-gray-200 hover:border-orange-400 hover:shadow-md transition-all duration-200 p-6 h-full flex flex-col items-center text-center gap-4">
-                          <div className="w-16 h-16 flex items-center justify-center text-orange-500 text-4xl">
+                        <div className="bg-white rounded-xl border border-gray-200 hover:border-orange-400 hover:shadow-md transition-all duration-200 p-4 h-full flex flex-col items-center text-center gap-2.5">
+                          <div className="w-12 h-12 flex items-center justify-center text-orange-500 text-2xl">
                             {getCategoryIcon(category.title, category.id)}
                           </div>
                           <div className="flex-1 flex items-end">
-                            <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors leading-snug">
+                            <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors leading-snug text-sm">
                               {category.title}
                             </h3>
                           </div>
