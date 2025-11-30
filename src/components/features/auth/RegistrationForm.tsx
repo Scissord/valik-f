@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import Link from 'next/link';
-import { IoAlertCircleOutline, IoMailOutline, IoLockClosedOutline, IoPersonOutline, IoArrowForwardOutline, IoCallOutline } from 'react-icons/io5';
+import { IoAlertCircleOutline, IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
 
 const registerSchema = z.object({
@@ -21,6 +21,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export const RegistrationForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const {
@@ -67,119 +68,127 @@ export const RegistrationForm = () => {
                 </div>
             </div>
         )}
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-            <div className="mb-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col space-y-6">
+            <div className="space-y-5">
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <IoPersonOutline className="h-5 w-5" />
-                </div>
                 <input
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  id="reg-login"
                   type="text"
-                  placeholder="Логин"
+                  placeholder=" "
+                  className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("login")}
                 />
+                <label
+                  htmlFor="reg-login"
+                  className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
+                >
+                  Логин
+                </label>
               </div>
               {errors.login && (
-                <p className="text-red-500 text-sm mt-1">{errors.login.message}</p>
+                <p className="text-sm text-red-500">{errors.login.message}</p>
               )}
-            </div>
 
-            <div className="mb-5">
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <IoMailOutline className="h-5 w-5" />
-                </div>
                 <input
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  id="reg-email"
                   type="email"
-                  placeholder="Email"
+                  placeholder=" "
+                  className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("email")}
                 />
+                <label
+                  htmlFor="reg-email"
+                  className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
+                >
+                  Email
+                </label>
               </div>
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                <p className="text-sm text-red-500">{errors.email.message}</p>
               )}
-            </div>
 
-            <div className="mb-5">
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <IoPersonOutline className="h-5 w-5" />
-                </div>
                 <input
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  id="reg-name"
                   type="text"
-                  placeholder="Полное имя"
+                  placeholder=" "
+                  className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("full_name")}
                 />
+                <label
+                  htmlFor="reg-name"
+                  className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
+                >
+                  Полное имя
+                </label>
               </div>
               {errors.full_name && (
-                <p className="text-red-500 text-sm mt-1">{errors.full_name.message}</p>
+                <p className="text-sm text-red-500">{errors.full_name.message}</p>
               )}
-            </div>
 
-            <div className="mb-5">
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <IoCallOutline className="h-5 w-5" />
-                </div>
                 <input
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  id="reg-phone"
                   type="tel"
-                  placeholder="Номер телефона"
+                  placeholder=" "
+                  className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("phone")}
                 />
+                <label
+                  htmlFor="reg-phone"
+                  className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
+                >
+                  Номер телефона
+                </label>
               </div>
               {errors.phone && (
-                <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                <p className="text-sm text-red-500">{errors.phone.message}</p>
               )}
-            </div>
 
-            <div className="mb-5">
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <IoLockClosedOutline className="h-5 w-5" />
-                </div>
                 <input
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-                  type="password"
-                  placeholder="Пароль"
+                  id="reg-password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder=" "
+                  className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("password")}
                 />
+                <label
+                  htmlFor="reg-password"
+                  className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
+                >
+                  Пароль
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-500 transition hover:text-gray-900"
+                  aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+                >
+                  {showPassword ? <IoEyeOffOutline className="h-5 w-5" /> : <IoEyeOutline className="h-5 w-5" />}
+                </button>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                <p className="text-sm text-red-500">{errors.password.message}</p>
               )}
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting || !isValid}
-              className={`bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${(!isValid || isSubmitting) ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className="w-full rounded-2xl border border-orange-500 bg-orange-500 py-3 text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
-              <IoArrowForwardOutline className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center my-6">
-              <div className="flex-1 bg-gray-200 h-0.5 rounded"></div>
-              <div className="px-3 text-gray-500 text-sm">Или</div>
-              <div className="flex-1 bg-gray-200 h-0.5 rounded" />
-            </div>
-
-            <Link
-              href="/auth/login"
-              className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors text-center"
-            >
-              У меня уже есть аккаунт
-            </Link>
-
-            <div className="mt-4 text-center">
-              <Link href="/" className="text-orange-500 hover:text-orange-600 text-sm">
-                Вернуться на главную
+            <p className="text-center text-sm text-gray-600">
+              Уже есть аккаунт?{' '}
+              <Link href="/auth/login" className="text-orange-500 underline">
+                Войдите
               </Link>
-            </div>
+            </p>
+
         </form>
     </>
   );

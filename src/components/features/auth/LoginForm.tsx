@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { login, UserLogin } from "@/lib/legacy";
-import { IoInformationOutline, IoMailOutline, IoLockClosedOutline, IoArrowForwardOutline } from "react-icons/io5";
 import { useUserStore } from "@/lib/legacy";
 
 export const LoginForm = () => {
   const router = useRouter();
   const [responseErrors, setResponseErrors] = useState<{ msg: string }[] | null>([]);
+  const [showPassword, setShowPassword] = useState(false);
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
 
@@ -39,89 +40,82 @@ export const LoginForm = () => {
     register,
     formState: { errors, isValid },
     reset,
-  } = useForm<UserLogin>();
+  } = useForm<UserLogin>({ mode: "onChange" });
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col w-full"
+      className="flex w-full flex-col space-y-6"
     >
-      <div className="mb-5">
+      <div className="space-y-5">
         <div className="relative">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-            <IoMailOutline className="h-5 w-5" />
-          </div>
           <input
-            className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+            id="login"
             type="text"
-            placeholder="Логин"
-            {...register("login", { required: "Укажите ваш логин!" })}
+            placeholder=" "
+            className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
+            {...register("login", { required: "Укажите ваш логин" })}
           />
+          <label
+            htmlFor="login"
+            className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
+          >
+            Логин
+          </label>
         </div>
         {errors.login && (
-          <p className="text-red-500 text-sm mt-1">{errors.login.message}</p>
+          <p className="text-sm text-red-500">{errors.login.message}</p>
         )}
-      </div>
 
-      <div className="mb-5">
         <div className="relative">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-            <IoLockClosedOutline className="h-5 w-5" />
-          </div>
           <input
-            className="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-            type="password"
-            placeholder="Пароль"
-            {...register("password", { required: "Укажите ваш пароль!" })}
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder=" "
+            className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
+            {...register("password", { required: "Укажите пароль" })}
           />
+          <label
+            htmlFor="password"
+            className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
+          >
+            Пароль
+          </label>
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-500 transition hover:text-gray-900"
+            aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+          >
+            {showPassword ? <IoEyeOffOutline className="h-5 w-5" /> : <IoEyeOutline className="h-5 w-5" />}
+          </button>
         </div>
         {errors.password && (
-          <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+          <p className="text-sm text-red-500">{errors.password.message}</p>
         )}
       </div>
 
-      <div
-        className="flex h-8 items-end space-x-1"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {responseErrors && responseErrors.length > 0 && (
-          <div className="flex flex-row mb-2">
-            <IoInformationOutline className="h-5 w-5 text-red-500" />
-            <p className="text-sm text-red-500 ml-1">
-              Неверно введенные данные!
-            </p>
-          </div>
-        )}
-      </div>
+      {responseErrors && responseErrors.length > 0 && (
+        <p className="text-sm text-red-500" aria-live="polite">
+          Неверно введенные данные
+        </p>
+      )}
 
       <button
         type="submit"
-        className={`bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${!isValid ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className="w-full rounded-2xl border border-orange-500 bg-orange-500 py-3 text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-40"
         disabled={!isValid}
       >
         Войти
-        <IoArrowForwardOutline className="w-5 h-5" />
       </button>
 
-      <div className="flex items-center my-6">
-        <div className="flex-1 bg-gray-200 h-0.5 rounded"></div>
-        <div className="px-3 text-gray-500 text-sm">Или</div>
-        <div className="flex-1 bg-gray-200 h-0.5 rounded" />
-      </div>
-
-      <Link
-        href="/auth/registration"
-        className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors text-center"
-      >
-        Создать новую учетную запись
-      </Link>
-
-      <div className="mt-4 text-center hidden lg:block">
-        <Link href="/" className="text-orange-500 hover:text-orange-600 text-sm">
-          Вернуться на главную
+      <p className="text-center text-sm text-gray-600">
+        Нет аккаунта?{' '}
+        <Link href="/auth/registration" className="text-orange-500 underline">
+          Зарегистрируйтесь
         </Link>
-      </div>
+      </p>
+
     </form>
   );
 };
