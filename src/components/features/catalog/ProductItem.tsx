@@ -12,23 +12,19 @@ interface Props {
 }
 
 export const ProductItem = memo(({ product }: Props) => {
-  // Проверяем и очищаем URL изображений
   const getValidImageUrl = (url: string | undefined) => {
     if (!url || url.trim() === '' || url === 'h' || url.length < 3) {
       return "/placeholder.jpg";
     }
 
-    // Если это уже полный URL (http/https), возвращаем как есть
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
     }
 
-    // Если URL начинается с /, возвращаем как есть
     if (url.startsWith('/')) {
       return url;
     }
 
-    // Если это относительный путь, добавляем /
     return `/${url}`;
   };
 
@@ -66,8 +62,7 @@ export const ProductItem = memo(({ product }: Props) => {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-      {/* Изображение товара */}
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden transition-shadow duration-300 group">
       <Link href={`/product/${product.id}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-gray-50">
           <ProductImage
@@ -79,19 +74,10 @@ export const ProductItem = memo(({ product }: Props) => {
             onMouseEnter={() => setDisplayImage(hoverImage)}
             onMouseLeave={() => setDisplayImage(defaultImage)}
           />
-
-          {/* Бейдж бренда */}
-          {product.brand && (
-            <div className="absolute top-3 left-3 bg-black/70 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {product.brand}
-            </div>
-          )}
         </div>
       </Link>
 
-      {/* Контент карточки */}
       <div className="p-4">
-        {/* Название товара */}
         <Link
           href={`/product/${product.id}`}
           className="block mb-3"
@@ -101,7 +87,6 @@ export const ProductItem = memo(({ product }: Props) => {
           </h3>
         </Link>
 
-        {/* Цена и кнопка */}
         <div className="mt-2 flex items-center justify-between gap-3">
           <div className="flex flex-col">
             <span className="text-xs text-gray-500">Цена</span>
@@ -116,14 +101,11 @@ export const ProductItem = memo(({ product }: Props) => {
           <button
             onClick={handleAddToCart}
             disabled={isAddingToCart}
-            className={`inline-flex items-center justify-center gap-1 rounded-full px-3 py-2 text-xs sm:text-sm font-medium transition-colors ${isAddingToCart
-                ? "bg-green-500 text-white"
-                : "bg-orange-500 hover:bg-orange-600 text-white"
-              }`}
+            className="text-orange-500 hover:text-orange-600 transition-colors p-1"
           >
             {isAddingToCart ? (
               <svg
-                className="animate-spin h-4 w-4"
+                className="animate-spin h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
               >
@@ -142,16 +124,12 @@ export const ProductItem = memo(({ product }: Props) => {
                 ></path>
               </svg>
             ) : (
-              <>
-                <IoCartOutline className="h-4 w-4" />
-                <span className="hidden sm:inline">В корзину</span>
-              </>
+              <IoCartOutline className="h-6 w-6" />
             )}
           </button>
         </div>
 
-        {/* Дополнительная информация */}
-        <div className="mt-3 pt-3 border-t border-gray-100 hidden group-hover:block">
+        <div className="mt-3 pt-3 border-t border-gray-100">
           <div className="space-y-1 text-xs text-gray-500">
             {product.category && (
               <div className="flex justify-between">

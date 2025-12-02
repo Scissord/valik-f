@@ -8,7 +8,14 @@ import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { login, UserLogin } from "@/lib/legacy";
 import { useUserStore } from "@/lib/legacy";
 
-export const LoginForm = () => {
+interface LoginFormProps {
+  idPrefix?: string;
+}
+
+const makeId = (prefix: string, field: string) =>
+  (prefix ? `${prefix}-${field}` : field);
+
+export const LoginForm = ({ idPrefix = "" }: LoginFormProps) => {
   const router = useRouter();
   const [responseErrors, setResponseErrors] = useState<{ msg: string }[] | null>([]);
   const [showPassword, setShowPassword] = useState(false);
@@ -50,14 +57,14 @@ export const LoginForm = () => {
       <div className="space-y-5">
         <div className="relative">
           <input
-            id="login"
+            id={makeId(idPrefix, "login")}
             type="text"
             placeholder=" "
             className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
             {...register("login", { required: "Укажите ваш логин" })}
           />
           <label
-            htmlFor="login"
+            htmlFor={makeId(idPrefix, "login")}
             className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
           >
             Логин
@@ -69,14 +76,14 @@ export const LoginForm = () => {
 
         <div className="relative">
           <input
-            id="password"
+            id={makeId(idPrefix, "password")}
             type={showPassword ? "text" : "password"}
             placeholder=" "
             className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
             {...register("password", { required: "Укажите пароль" })}
           />
           <label
-            htmlFor="password"
+            htmlFor={makeId(idPrefix, "password")}
             className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
           >
             Пароль

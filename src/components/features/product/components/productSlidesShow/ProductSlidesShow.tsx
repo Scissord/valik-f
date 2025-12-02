@@ -8,7 +8,7 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "./slideShow.css";
-import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper/modules";
+import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { ProductImage } from "@/components";
 import { IoExpand, IoClose } from "react-icons/io5";
 
@@ -45,83 +45,66 @@ export const ProductSlidesShow = ({ images, title, className }: Props) => {
   return (
     <>
       <div className={className}>
-        <div className="space-y-2">
-          <div className="relative">
-            <Swiper
-              style={
-                {
-                  "--swiper-navigation-color": "#fff",
-                  "--swiper-pagination-color": "#fff",
-                } as React.CSSProperties
-              }
-              spaceBetween={10}
-              navigation={true}
-              autoplay={{ delay: 2500 }}
-              thumbs={{ swiper: thumbsSwiper }}
-              modules={[FreeMode, Navigation, Thumbs, Autoplay]}
-              className="mySwiper2"
-              onSlideChange={(swiper) => setCurrentImageIndex(swiper.activeIndex)}
-            >
-              {images.map((image, index) => (
-                <SwiperSlide key={image}>
-                  <div 
-                    className="relative cursor-pointer flex items-center justify-center bg-gray-50 rounded-lg"
-                    style={{ height: '400px' }}
-                    onClick={() => openFullscreen(index)}
+        <div className="flex gap-4">
+          {/* Thumbnails on the left */}
+          {images.length > 1 && (
+            <div className="flex flex-col gap-2 w-20">
+              {images.map((image, index) => {
+                if (index === currentImageIndex) return null;
+                return (
+                  <div
+                    key={image}
+                    className="cursor-pointer rounded-lg overflow-hidden border-2 border-transparent hover:border-orange-400 transition-all"
+                    onClick={() => setCurrentImageIndex(index)}
                   >
                     <ProductImage
-                      className="rounded-lg max-w-full max-h-full"
+                      className="rounded-lg object-cover w-20 h-20"
                       url={image}
-                      width={1200}
-                      height={900}
+                      width={80}
+                      height={80}
                       title={title}
                     />
-                    <div 
-                      className="absolute top-2 right-2 p-2 rounded-full transition-all"
-                      style={{
-                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                        color: '#ffffff'
-                      }}
-                    >
-                      <IoExpand className="w-4 h-4" />
-                    </div>
                   </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-          
-          <Swiper
-            onSwiper={setThumbsSwiper}
-            spaceBetween={10}
-            slidesPerView={4}
-            freeMode={true}
-            watchSlidesProgress={true}
-            modules={[FreeMode, Navigation, Thumbs]}
-            className="mySwiper"
-          >
-            {images.map((image, index) => (
-              <SwiperSlide key={image}>
-                <div className="cursor-pointer" onClick={() => openFullscreen(index)}>
-                  <ProductImage
-                    className="rounded-lg object-fill"
-                    url={image}
-                    width={1024}
-                    height={800}
-                    title={title}
-                  />
+                );
+              })}
+            </div>
+          )}
+
+          {/* Main image */}
+          <div className="flex-1">
+            <div className="relative">
+              <div
+                className="relative cursor-pointer flex items-center justify-center bg-gray-50 rounded-lg"
+                style={{ height: '400px' }}
+                onClick={() => openFullscreen(currentImageIndex)}
+              >
+                <ProductImage
+                  className="rounded-lg max-w-full max-h-full"
+                  url={images[currentImageIndex]}
+                  width={1200}
+                  height={900}
+                  title={title}
+                />
+                <div
+                  className="absolute top-2 right-2 p-2 rounded-full transition-all"
+                  style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    color: '#ffffff'
+                  }}
+                >
+                  <IoExpand className="w-4 h-4" />
                 </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Полноэкранный просмотр */}
       {isFullscreen && createPortal(
-        <div 
+        <div
           className="fixed inset-0 flex items-center justify-center p-4"
-          style={{ 
+          style={{
             backgroundColor: 'rgba(0, 0, 0, 0.8)',
             backdropFilter: 'blur(8px)',
             zIndex: 2147483647
@@ -182,7 +165,7 @@ export const ProductSlidesShow = ({ images, title, className }: Props) => {
 
             {/* Индикатор */}
             {images.length > 1 && (
-              <div 
+              <div
                 className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-full"
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.2)',

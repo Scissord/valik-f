@@ -8,7 +8,11 @@ interface SearchResult {
   type: string;
   price?: number;
   slug?: string;
+  image?: string;
+  category?: string;
 }
+
+
 
 interface SearchProps {
   isMobile?: boolean;
@@ -130,42 +134,65 @@ const Search = ({ isMobile = false }: SearchProps) => {
 
       // Обработка и преобразование результатов
       const processedResults: SearchResult[] = [];
+      const seenKeys = new Map<string, number>();
+
+      const addResult = (item: any, type: string) => {
+        const uniqueKey = `${type}-${item.id}`;
+
+        let image = undefined;
+        let category = undefined;
+
+        if (type === 'product') {
+          if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+            image = item.images[0];
+          } else if (typeof item.images === 'string') {
+            image = item.images;
+          }
+
+          if (item.category) {
+            category = typeof item.category === 'object' ? item.category.title : item.category;
+          }
+        }
+
+        if (seenKeys.has(uniqueKey)) {
+          const index = seenKeys.get(uniqueKey)!;
+          const existing = processedResults[index];
+
+          if (!existing.image && image) {
+            existing.image = image;
+          }
+          if (!existing.category && category) {
+            existing.category = category;
+          }
+        } else {
+          const index = processedResults.length;
+          seenKeys.set(uniqueKey, index);
+
+          processedResults.push({
+            id: item.id,
+            title: item.title,
+            type: type,
+            price: item.price,
+            slug: item.id,
+            image,
+            category
+          });
+        }
+      };
 
       if (data.products && Array.isArray(data.products)) {
         console.log(`[SEARCH] Найдено продуктов: ${data.products.length}`);
-        data.products.forEach((product: any) => {
-          processedResults.push({
-            id: product.id,
-            title: product.title,
-            type: 'product',
-            price: product.price,
-            slug: product.id
-          });
-        });
+        data.products.forEach((product: any) => addResult(product, 'product'));
       }
 
       if (data.categories && Array.isArray(data.categories)) {
         console.log(`[SEARCH] Найдено категорий: ${data.categories.length}`);
-        data.categories.forEach((category: any) => {
-          processedResults.push({
-            id: category.id,
-            title: category.title,
-            type: 'category',
-            slug: category.id
-          });
-        });
+        data.categories.forEach((category: any) => addResult(category, 'category'));
       }
 
       if (data.brands && Array.isArray(data.brands)) {
         console.log(`[SEARCH] Найдено брендов: ${data.brands.length}`);
-        data.brands.forEach((brand: any) => {
-          processedResults.push({
-            id: brand.id,
-            title: brand.title,
-            type: 'brand',
-            slug: brand.id
-          });
-        });
+        data.brands.forEach((brand: any) => addResult(brand, 'brand'));
       }
 
       console.log(`[SEARCH] Всего обработано результатов: ${processedResults.length}`);
@@ -298,17 +325,17 @@ const Search = ({ isMobile = false }: SearchProps) => {
     `,
     container: `
       relative flex items-center
-      justify-between bg-white
-      rounded-full border
-      ${isFocused ? 'border-[#ff8040] shadow-md' : 'border-[#fc640c]'} 
-      transition-all duration-300 ease-in-out
-      ${isMobile ? 'w-full' : isFocused ? 'w-[320px]' : 'w-[300px]'}
+      bg-white
+      rounded-lg border
+      ${isFocused ? 'border-[#ff8040]' : 'border-gray-300'} 
+      transition-all duration-200 ease-in-out
+      ${isMobile ? 'w-full' : 'w-full max-w-lg'}
       z-50
     `,
     input: `
       border-none outline-none
       text-black text-base
-      pl-4 py-2 w-full
+      px-4 py-2 w-full
       placeholder:text-gray-400
     `,
     icon: `
@@ -324,17 +351,15 @@ const Search = ({ isMobile = false }: SearchProps) => {
       }
     `,
     resultItem: `
-      px-4 py-2 hover:bg-gray-50
-      cursor-pointer text-sm
+      px-4 py-3 hover:bg-gray-50
+      cursor-pointer
     `,
     resultItemProduct: `
-      border-l-4 border-blue-500
     `,
     resultItemCategory: `
-      border-l-4 border-green-500
     `,
     resultItemBrand: `
-      border-l-4 border-orange-500
+
     `,
     resultTitle: `
       font-medium text-gray-800
@@ -405,16 +430,32 @@ const Search = ({ isMobile = false }: SearchProps) => {
                         : result.type === 'category'
                           ? css.resultItemCategory
                           : css.resultItemBrand
-                        }`}
+                        } flex items-center gap-3`}
                     >
-                      <div className={css.resultTitle}>{result.title}</div>
-                      <div className={css.resultType}>
-                        {result.type === 'product'
-                          ? `Товар ${result.price ? `• ${result.price.toLocaleString('ru-RU')} ₸` : ''}`
-                          : result.type === 'category'
-                            ? 'Категория'
-                            : 'Бренд'
-                        }
+                      {result.image && (
+                        <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-gray-100">
+                          <img
+                            src={result.image}
+                            alt={result.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div>
+                        <div className={css.resultTitle}>{result.title}</div>
+                        <div className={css.resultType}>
+                          {result.type === 'product' ? (
+                            <span className="flex items-center gap-1">
+                              {result.category && <span className="text-gray-500">{result.category} •</span>}
+                              <span>Товар</span>
+                              {result.price && <span className="font-medium text-gray-900">• {result.price.toLocaleString('ru-RU')} ₸</span>}
+                            </span>
+                          ) : result.type === 'category' ? (
+                            'Категория'
+                          ) : (
+                            'Бренд'
+                          )}
+                        </div>
                       </div>
                     </div>
                   </Link>
@@ -472,16 +513,32 @@ const Search = ({ isMobile = false }: SearchProps) => {
                     : result.type === 'category'
                       ? css.resultItemCategory
                       : css.resultItemBrand
-                    }`}
+                    } flex items-center gap-3`}
                 >
-                  <div className={css.resultTitle}>{result.title}</div>
-                  <div className={css.resultType}>
-                    {result.type === 'product'
-                      ? `Товар ${result.price ? `• ${result.price.toLocaleString('ru-RU')} ₸` : ''}`
-                      : result.type === 'category'
-                        ? 'Категория'
-                        : 'Бренд'
-                    }
+                  {result.image && (
+                    <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-gray-100">
+                      <img
+                        src={result.image}
+                        alt={result.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <div className={css.resultTitle}>{result.title}</div>
+                    <div className={css.resultType}>
+                      {result.type === 'product' ? (
+                        <span className="flex items-center gap-1">
+                          {result.category && <span className="text-gray-500">{result.category} •</span>}
+                          <span>Товар</span>
+                          {result.price && <span className="font-medium text-gray-900">• {result.price.toLocaleString('ru-RU')} ₸</span>}
+                        </span>
+                      ) : result.type === 'category' ? (
+                        'Категория'
+                      ) : (
+                        'Бренд'
+                      )}
+                    </div>
                   </div>
                 </div>
               </Link>

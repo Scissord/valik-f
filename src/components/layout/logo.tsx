@@ -4,12 +4,11 @@ import Link from "next/link";
 const Logo = () => {
   return (
     <Link href="/" className="flex items-center">
-      <Image 
+      <Image
         src="/logo.svg"
         alt="Valik.kz"
-        width={120}
-        height={40}
-        style={{ height: 'auto' }}
+        width={90}
+        height={30}
         priority
       />
     </Link>

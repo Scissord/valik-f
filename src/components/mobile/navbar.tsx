@@ -1,16 +1,13 @@
 'use client';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  IoHomeOutline, IoHome, 
-  IoCartOutline, IoCart, 
-  IoPersonOutline, IoPerson
+import {
+  IoHomeOutline, IoHome,
+  IoCartOutline, IoCart,
 } from "react-icons/io5";
-import { useUserStore } from "@/lib/legacy";
 
 export const MobileNavbar = () => {
   const pathname = usePathname();
-  const user = useUserStore((state) => state.user);
 
   // Базовые элементы навигации для всех пользователей
   const navItems = [
@@ -26,12 +23,6 @@ export const MobileNavbar = () => {
       href: "/cart",
       activeIcon: <IoCart className="h-6 w-6" />,
       inactiveIcon: <IoCartOutline className="h-6 w-6" />,
-    },
-    {
-      name: "Профиль",
-      href: user ? "/profile" : "/auth/login",
-      activeIcon: <IoPerson className="h-6 w-6" />,
-      inactiveIcon: <IoPersonOutline className="h-6 w-6" />,
     }
   ];
 

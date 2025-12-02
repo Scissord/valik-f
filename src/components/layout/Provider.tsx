@@ -31,13 +31,14 @@ export const Provider = ({ children }: Props) => {
   
   // Проверяем, находимся ли мы на странице авторизации или регистрации
   const isAuthPage = pathname?.startsWith('/auth');
-  const shouldShowGlobalComponents = !isAuthPage && !isNotFoundPage;
+  const shouldShowAIAssistant = !isAuthPage && !isNotFoundPage;
+  const shouldShowMobileNavbar = !isNotFoundPage;
   
   return (
     <AIAssistantProvider>
       {children}
-      {shouldShowGlobalComponents && <AIAssistant />}
-      {shouldShowGlobalComponents && <MobileNavbar />}
+      {shouldShowAIAssistant && <AIAssistant />}
+      {shouldShowMobileNavbar && <MobileNavbar />}
     </AIAssistantProvider>
   );
 };

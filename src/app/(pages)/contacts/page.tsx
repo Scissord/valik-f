@@ -1,6 +1,6 @@
 'use client';
 
-import { IoMailOutline, IoPhonePortraitOutline, IoLocationOutline, IoLogoInstagram, IoLogoTiktok } from "react-icons/io5";
+import { IoLogoInstagram, IoLogoTiktok } from "react-icons/io5";
 import { motion, Variants } from 'framer-motion';
 
 export default function ContactsPage() {
@@ -16,96 +16,88 @@ export default function ContactsPage() {
   };
 
   const itemVariants: Variants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 12, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.5, ease: "easeOut" },
+      transition: { duration: 0.4, ease: "easeOut" },
     },
   };
-
-  const iconVariants: Variants = {
-    hidden: { scale: 0.8, opacity: 0 },
-    visible: { 
-      scale: 1, 
-      opacity: 1,
-      transition: { duration: 0.5, ease: "easeOut" }
-    },
-    hover: { 
-      scale: 1.1,
-      transition: { duration: 0.3 }
-    }
-  };
-
 
   return (
-    <div className="bg-gray-50 pt-24 pb-8">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <div className="bg-gray-50 pt-32 pb-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
         <motion.div 
-          className="text-center mb-16"
+          className="mb-10"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">Наши контакты</motion.h1>
-          <motion.p variants={itemVariants} className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+          <motion.h1 variants={itemVariants} className="text-2xl md:text-3xl font-semibold text-gray-900">
+            Контакты
+          </motion.h1>
+          <motion.p variants={itemVariants} className="mt-3 text-sm text-gray-600 max-w-xl">
             Мы всегда на связи и готовы ответить на ваши вопросы.
           </motion.p>
-          <motion.p variants={itemVariants} className="mt-2 text-sm text-gray-500">
+          <motion.p variants={itemVariants} className="mt-2 text-xs text-gray-500">
             Товарищество с ограниченной ответственностью &quot;1R-tech&quot;
           </motion.p>
         </motion.div>
 
         <motion.div 
-          className="grid md:grid-cols-3 gap-8 mb-16"
+          className="mb-12 space-y-3 text-sm text-gray-700"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          <motion.div variants={itemVariants} whileHover="hover" className="bg-white rounded-2xl shadow-sm p-8 text-center flex flex-col items-center">
-            <motion.div variants={iconVariants} className="bg-orange-100 text-orange-500 rounded-full p-5 mb-5 inline-flex">
-              <IoLocationOutline className="w-8 h-8" />
-            </motion.div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Наш адрес</h3>
-            <p className="text-gray-600 text-sm">Казахстан, Туркестанская область, Сайрамский район, село Айтеке Би, улица №1, дом 1078, п.и. 160806</p>
-          </motion.div>
-          <motion.div variants={itemVariants} whileHover="hover" className="bg-white rounded-2xl shadow-sm p-8 text-center flex flex-col items-center">
-            <motion.div variants={iconVariants} className="bg-orange-100 text-orange-500 rounded-full p-5 mb-5 inline-flex">
-              <IoPhonePortraitOutline className="w-8 h-8" />
-            </motion.div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Телефон</h3>
-            <a href="tel:+77758616810" className="text-gray-600 hover:text-orange-500 transition-colors">+7 (775) 861-68-10</a>
-          </motion.div>
-          <motion.div variants={itemVariants} whileHover="hover" className="bg-white rounded-2xl shadow-sm p-8 text-center flex flex-col items-center">
-            <motion.div variants={iconVariants} className="bg-orange-100 text-orange-500 rounded-full p-5 mb-5 inline-flex">
-              <IoMailOutline className="w-8 h-8" />
-            </motion.div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Email</h3>
-            <a href="mailto:valik.kazakhstan@gmail.com" className="text-gray-600 hover:text-orange-500 transition-colors">valik.kazakhstan@gmail.com</a>
-          </motion.div>
+          <motion.p variants={itemVariants}>
+            <span className="font-medium">Адрес:</span>{" "}
+            Казахстан, Туркестанская область, Сайрамский район, село Айтеке Би,
+            улица №1, дом 1078, п.и. 160806.
+          </motion.p>
+          <motion.p variants={itemVariants}>
+            <span className="font-medium">Телефон:</span>{" "}
+            <a
+              href="tel:+77758616810"
+              className="hover:text-orange-500 transition-colors"
+            >
+              +7 (775) 861-68-10
+            </a>
+          </motion.p>
+          <motion.p variants={itemVariants}>
+            <span className="font-medium">Email:</span>{" "}
+            <a
+              href="mailto:valik.kazakhstan@gmail.com"
+              className="hover:text-orange-500 transition-colors"
+            >
+              valik.kazakhstan@gmail.com
+            </a>
+          </motion.p>
         </motion.div>
         
         <motion.div 
-            className="text-center mb-16"
+            className="mb-10"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
             variants={containerVariants}
         >
-            <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-800">Мы в социальных сетях</motion.h2>
-            <motion.div variants={itemVariants} className="flex justify-center gap-6 mt-6">
-                <motion.a whileHover={{y: -5}} href="https://www.instagram.com/valik_kazakhstan?igsh=MXh1cHp3NDg2eTNzcw==" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-orange-500 transition-colors">
-                    <IoLogoInstagram className="w-10 h-10" />
+            <motion.h2 variants={itemVariants} className="text-base font-semibold text-gray-900">
+              Социальные сети
+            </motion.h2>
+            <motion.div variants={itemVariants} className="flex gap-4 mt-4">
+                <motion.a whileHover={{y: -2}} href="https://www.instagram.com/valik_kazakhstan?igsh=MXh1cHp3NDg2eTNzcw==" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-orange-500 transition-colors">
+                    <IoLogoInstagram className="w-7 h-7" />
                 </motion.a>
-                <motion.a whileHover={{y: -5}} href="https://www.tiktok.com/@valik.kz?_t=ZM-8yLfIXHnYfe&_r=1" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-orange-500 transition-colors">
-                    <IoLogoTiktok className="w-10 h-10" />
+                <motion.a whileHover={{y: -2}} href="https://www.tiktok.com/@valik.kz?_t=ZM-8yLfIXHnYfe&_r=1" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-orange-500 transition-colors">
+                    <IoLogoTiktok className="w-7 h-7" />
                 </motion.a>
             </motion.div>
         </motion.div>
 
         <motion.div 
-            className="bg-white rounded-2xl shadow-lg overflow-hidden"
+            className="bg-white rounded-xl border border-gray-100 overflow-hidden"
             initial={{opacity: 0, y: 50}}
             whileInView={{opacity: 1, y: 0}}
             viewport={{ once: true, amount: 0.2 }}

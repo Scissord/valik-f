@@ -18,7 +18,13 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export const RegistrationForm = () => {
+interface RegistrationFormProps {
+  idPrefix?: string;
+}
+
+const makeId = (prefix: string, field: string) => (prefix ? `${prefix}-${field}` : field);
+
+export const RegistrationForm = ({ idPrefix = "" }: RegistrationFormProps) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -72,14 +78,14 @@ export const RegistrationForm = () => {
             <div className="space-y-5">
               <div className="relative">
                 <input
-                  id="reg-login"
+                  id={makeId(idPrefix, "login")}
                   type="text"
                   placeholder=" "
                   className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("login")}
                 />
                 <label
-                  htmlFor="reg-login"
+                  htmlFor={makeId(idPrefix, "login")}
                   className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
                 >
                   Логин
@@ -91,14 +97,14 @@ export const RegistrationForm = () => {
 
               <div className="relative">
                 <input
-                  id="reg-email"
+                  id={makeId(idPrefix, "email")}
                   type="email"
                   placeholder=" "
                   className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("email")}
                 />
                 <label
-                  htmlFor="reg-email"
+                  htmlFor={makeId(idPrefix, "email")}
                   className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
                 >
                   Email
@@ -110,14 +116,14 @@ export const RegistrationForm = () => {
 
               <div className="relative">
                 <input
-                  id="reg-name"
+                  id={makeId(idPrefix, "name")}
                   type="text"
                   placeholder=" "
                   className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("full_name")}
                 />
                 <label
-                  htmlFor="reg-name"
+                  htmlFor={makeId(idPrefix, "name")}
                   className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
                 >
                   Полное имя
@@ -129,14 +135,14 @@ export const RegistrationForm = () => {
 
               <div className="relative">
                 <input
-                  id="reg-phone"
+                  id={makeId(idPrefix, "phone")}
                   type="tel"
                   placeholder=" "
                   className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("phone")}
                 />
                 <label
-                  htmlFor="reg-phone"
+                  htmlFor={makeId(idPrefix, "phone")}
                   className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
                 >
                   Номер телефона
@@ -148,14 +154,14 @@ export const RegistrationForm = () => {
 
               <div className="relative">
                 <input
-                  id="reg-password"
+                  id={makeId(idPrefix, "password")}
                   type={showPassword ? 'text' : 'password'}
                   placeholder=" "
                   className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
                   {...register("password")}
                 />
                 <label
-                  htmlFor="reg-password"
+                  htmlFor={makeId(idPrefix, "password")}
                   className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
                 >
                   Пароль

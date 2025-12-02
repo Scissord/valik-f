@@ -174,3 +174,13 @@ body {
 .scrollbar-thin-orange::-webkit-scrollbar-thumb:hover {
   background-color: #f97316;
 }
+
+/* Скрыть скроллбар, но оставить прокрутку */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE и Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

@@ -3,15 +3,18 @@ import { titleFont } from "@/config/fonts";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-16 sm:px-6 flex items-center justify-center">
-      <div className="mx-auto flex w-full max-w-lg flex-col gap-6">
-        <header className="text-left">
-          <h1 className={`${titleFont.className} text-3xl text-gray-900`}>Вход в аккаунт</h1>
+    <div className="min-h-[calc(100vh-160px)] flex items-center justify-center">
+      <div className="w-full max-w-2xl px-4 sm:px-6 lg:px-12 py-10">
+        <header className="mb-6 sm:mb-8">
+          <h1 className={`${titleFont.className} text-3xl sm:text-4xl text-gray-900`}>
+            Вход в аккаунт
+          </h1>
+          <p className="text-sm sm:text-base text-gray-500 mt-2">
+            Введите учётные данные, чтобы продолжить покупки
+          </p>
         </header>
 
-        <section className="rounded-[32px] border border-gray-200 p-6 sm:p-10">
-          <LoginForm />
-        </section>
+        <LoginForm idPrefix="desktop" />
       </div>
     </div>
   );
