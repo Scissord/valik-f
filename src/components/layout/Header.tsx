@@ -70,11 +70,11 @@ export const Header = () => {
 
             <div className="flex items-center gap-3 sm:gap-4">
               <a
-                href="https://t.me/valik_kazakhstan"
+                href="https://t.me/Valikkzbot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-700 hover:text-[#fc640c] transition-colors duration-200"
-                aria-label="Открыть Telegram"
+                aria-label="Открыть Telegram-бота Valik.kz"
               >
                 <FaTelegram className="h-4 w-4 sm:h-5 sm:w-5" />
               </a>

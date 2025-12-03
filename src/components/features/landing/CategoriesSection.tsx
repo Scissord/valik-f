@@ -28,18 +28,18 @@ interface CategoriesSectionProps {
 const getCategoryImage = (category: GoodCategory) => {
   const title = category.title.toLowerCase();
 
-  if (title.includes("инструменты")) return "/category/Инструменты.jpg";
-  if (title.includes("мебель")) return "/category/Мебель.jpg";
-  if (title.includes("сантехника")) return "/category/Сантехника.jpg";
-  if (title.includes("сад")) return "/category/Сад.jpg";
-  if (title.includes("оборудование")) return "/category/Обарудование.jpg";
-  if (title.includes("авто")) return "/category/Авто.jpg";
-  if (title.includes("электро")) return "/category/Электротовары.jpg";
-  if (title.includes("строительные материалы")) return "/category/Строительные материалы.jpg";
-  if (title.includes("крепёж")) return "/category/Крепеж.jpg";
-  if (title.includes("бытовая техника")) return "/category/Бытовая техника.jpg";
+  if (title.includes("инструменты")) return "/category/instrumenty.jpg";
+  if (title.includes("мебель")) return "/category/mebel.jpg";
+  if (title.includes("сантехника")) return "/category/santehnika.jpg";
+  if (title.includes("сад")) return "/category/sad.jpg";
+  if (title.includes("оборудование")) return "/category/oborudovanie.jpg";
+  if (title.includes("авто")) return "/category/auto.jpg";
+  if (title.includes("электро")) return "/category/elektrotovary.jpg";
+  if (title.includes("строительные материалы")) return "/category/stroitelnye-materialy.jpg";
+  if (title.includes("крепёж")) return "/category/krepezh.jpg";
+  if (title.includes("бытовая техника")) return "/category/bytovaya-tehnika.jpg";
 
-  return "/category/Мебель.jpg";
+  return "/category/mebel.jpg";
 };
 
 const getCategoryIcon = (category: GoodCategory): IconType => {
@@ -66,15 +66,6 @@ const containerVariants: Variants = {
     transition: {
       staggerChildren: 0.1,
     },
-  },
-};
-
-const itemVariantsX: Variants = {
-  hidden: { x: -20, opacity: 0 },
-  visible: {
-    x: 0,
-    opacity: 1,
-    transition: { duration: 0.5, ease: "easeOut" },
   },
 };
 
@@ -111,8 +102,8 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
   };
 
   return (
-    <section className="pt-16 pb-12">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="pt-10 pb-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -232,6 +223,7 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                             fill
                             sizes="160px"
                             priority
+                            unoptimized
                             className="absolute inset-0 w-full h-full object-cover transition duration-200 group-hover:brightness-90"
                           />
                           <div className="absolute inset-x-0 top-0 px-2.5 pt-2 pb-4">

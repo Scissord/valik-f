@@ -82,7 +82,7 @@ export const ProductItem = memo(({ product }: Props) => {
           href={`/product/${product.id}`}
           className="block mb-3"
         >
-          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-orange-600 transition-colors">
+          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 min-h-[48px] hover:text-orange-600 transition-colors">
             {product.title}
           </h3>
         </Link>

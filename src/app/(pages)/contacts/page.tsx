@@ -25,8 +25,8 @@ export default function ContactsPage() {
   };
 
   return (
-    <div className="bg-gray-50 pt-25 pb-10">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+    <div className="bg-gray-50 pt-24 pb-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div 
           className="mb-10"
           variants={containerVariants}

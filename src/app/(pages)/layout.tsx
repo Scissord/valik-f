@@ -29,7 +29,7 @@ export default function ShopLayout({
       <SideBar />
       <div className={shouldShowSidebar ? "md:pl-60" : ""}>
         <main
-          className={`min-h-screen ${mainPaddingClass}`}
+          className={`min-h-screen bg-white ${mainPaddingClass}`}
         >
           {children}
         </main>

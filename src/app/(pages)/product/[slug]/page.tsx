@@ -4,7 +4,6 @@ import { ProductMobileSlidesShow, ProductSlidesShow, AddToCart } from "@/compone
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProduct, Product } from "@/lib/legacy";
-import { titleFont } from "@/config/fonts";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -67,8 +66,8 @@ export default async function ProductPage({ params }: Props) {
     };
 
     return (
-      <div className="min-h-screen bg-gray-50 pt-15">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-8">
+      <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-sm text-gray-500 mb-6">
             <span className="hover:text-orange-600 cursor-pointer">Главная</span> /
             <span className="hover:text-orange-600 cursor-pointer"> {adaptedProduct.category}</span> /

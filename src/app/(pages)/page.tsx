@@ -40,7 +40,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="bg-gray-50 pt-15 pb-8">
+    <div className="bg-gray-50 pt-24 pb-12">
       <CategoriesSection categories={categories} isLoadingCategories={isLoadingCategories} />
       <ProductsSection products={products} />
     </div>

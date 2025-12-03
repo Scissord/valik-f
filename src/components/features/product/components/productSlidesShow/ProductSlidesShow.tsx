@@ -1,14 +1,6 @@
 "use client";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Swiper as SwiperObject } from "swiper";
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/navigation";
-import "swiper/css/thumbs";
-import "./slideShow.css";
-import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { ProductImage } from "@/components";
 import { IoExpand, IoClose } from "react-icons/io5";
 
@@ -19,7 +11,6 @@ interface Props {
 }
 
 export const ProductSlidesShow = ({ images, title, className }: Props) => {
-  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperObject>();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -79,7 +70,7 @@ export const ProductSlidesShow = ({ images, title, className }: Props) => {
                 onClick={() => openFullscreen(currentImageIndex)}
               >
                 <ProductImage
-                  className="rounded-lg max-w-full max-h-full"
+                  className="rounded-lg max-w-full max-h-full object-contain"
                   url={images[currentImageIndex]}
                   width={1200}
                   height={900}

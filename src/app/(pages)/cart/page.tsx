@@ -205,7 +205,7 @@ export default function CartPage() {
   if (!loaded) {
     return (
       <div className="bg-white min-h-screen pt-24 pb-16">
-        <div className="container mx-auto px-4 py-16 flex justify-center items-center min-h-[60vh]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
             <p className="text-lg text-gray-600">Загрузка корзины...</p>
           </div>
@@ -221,7 +221,7 @@ export default function CartPage() {
 
   return (
     <div className="bg-white min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-4">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Корзина</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

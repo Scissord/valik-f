@@ -65,7 +65,7 @@ export const ProductMobileSlidesShow = ({
                 onClick={() => openFullscreen(index)}
               >
                 <ProductImage
-                  className="rounded-lg max-w-full max-h-full"
+                  className="rounded-lg max-w-full max-h-full object-contain"
                   url={image}
                   width={800}
                   height={600}

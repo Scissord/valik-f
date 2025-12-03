@@ -29,7 +29,7 @@ const itemVariants: Variants = {
 
 export const ProductsSection = ({ products }: ProductsSectionProps) => {
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <motion.section
         className="relative pb-12 md:pb-16"
         variants={containerVariants}

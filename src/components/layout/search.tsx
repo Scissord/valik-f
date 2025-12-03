@@ -1,6 +1,7 @@
 import { IoSearchOutline, IoCloseOutline } from "react-icons/io5";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface SearchResult {
   id: string;
@@ -434,10 +435,13 @@ const Search = ({ isMobile = false }: SearchProps) => {
                     >
                       {result.image && (
                         <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-gray-100">
-                          <img
+                          <Image
                             src={result.image}
                             alt={result.title}
-                            className="w-full h-full object-cover"
+                            fill
+                            sizes="40px"
+                            className="object-cover"
+                            unoptimized
                           />
                         </div>
                       )}
@@ -517,10 +521,13 @@ const Search = ({ isMobile = false }: SearchProps) => {
                 >
                   {result.image && (
                     <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-gray-100">
-                      <img
+                      <Image
                         src={result.image}
                         alt={result.title}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                        unoptimized
                       />
                     </div>
                   )}

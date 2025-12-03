@@ -59,8 +59,8 @@ export default async function ProductPage({
   }
 
   return (
-    <div className="min-h-screen bg-white pt-6">
-      <div className="container mx-auto px-4 py-4">
+    <div className="min-h-screen bg-white pt-20 pb-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
       {/* Хлебные крошки */}
       <Breadcrumbs items={breadcrumbItems} className="mb-4" />
 
@@ -91,25 +91,16 @@ export default async function ProductPage({
           <Pagination totalPages={totalPages} />
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center text-center py-20">
-          <div className="relative mb-6">
-            <div className="absolute inset-0 bg-orange-100/60 rounded-full blur-3xl scale-125" />
-            <div className="relative bg-white border border-gray-200 rounded-full p-7">
-              <IoCartOutline className="w-16 h-16 text-orange-400" />
-            </div>
+        <div className="flex flex-col items-center justify-start text-center min-h-[55vh] translate-y-[40%]">
+          <div className="mb-6 sm:mb-8">
+            <IoCartOutline className="w-12 h-12 sm:w-16 sm:h-16 text-orange-400" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-3 sm:mb-4">
             Товары временно недоступны
           </h2>
-          <p className="text-gray-600 max-w-lg">
+          <p className="text-gray-600 mb-6 sm:mb-8 max-w-md text-sm sm:text-base">
             Мы уже работаем над обновлением ассортимента. Попробуйте заглянуть позже или вернитесь к общему каталогу.
           </p>
-          <Link
-            href="/products"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 font-medium shadow-sm transition hover:from-orange-600 hover:to-orange-500"
-          >
-            Смотреть все товары
-          </Link>
         </div>
       )}
       </div>
