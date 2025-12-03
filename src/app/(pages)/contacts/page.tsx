@@ -25,7 +25,7 @@ export default function ContactsPage() {
   };
 
   return (
-    <div className="bg-gray-50 pt-32 pb-10">
+    <div className="bg-gray-50 pt-25 pb-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
         <motion.div 
           className="mb-10"
