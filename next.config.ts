@@ -19,9 +19,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
+
   // webpack: (config, { isServer }) => {
   //   // Добавляем псевдоним для @prisma/client
   //   config.resolve.alias = {
