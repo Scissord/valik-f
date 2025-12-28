@@ -14,7 +14,7 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
   const [order, setOrder] = useState<IOrder>(initialOrder);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | number) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("ru-RU");
   };
@@ -123,23 +123,23 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
               <div key={item.id} className="flex items-center space-x-4 bg-white p-3 rounded-lg">
                 <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 relative">
                   <Image
-                    src={item.product.images?.[0] || "/placeholder.jpg"}
-                    alt={item.product.name}
+                    src={item.product?.images?.[0] || "/imgs/placeholder.png"}
+                    alt={item.product?.title || "Товар"}
                     fill
                     className="object-cover"
                   />
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-gray-800">{item.product.name}</p>
+                  <p className="font-medium text-gray-800">{item.product?.title}</p>
                   <p className="text-sm text-gray-500 line-clamp-2">
-                    {item.product.title}
+                    {item.product?.title}
                   </p>
                   <div className="flex justify-between items-center mt-2">
                     <p className="text-sm text-gray-700">
                       Количество: <span className="font-medium">{item.quantity}</span>
                     </p>
                     <p className="text-sm font-medium text-gray-900">
-                      {item.product.price} ₸
+                      {item.product?.price} ₸
                     </p>
                   </div>
                 </div>
@@ -153,6 +153,20 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
                 <p className="text-sm font-medium text-gray-700">Адрес доставки:</p>
                 <p className="text-sm text-gray-600">{order.address}</p>
               </div>
+
+              {order.full_name && (
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Имя:</p>
+                  <p className="text-sm text-gray-600">{order.full_name}</p>
+                </div>
+              )}
+
+              {order.phone && (
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Телефон:</p>
+                  <p className="text-sm text-gray-600">{order.phone}</p>
+                </div>
+              )}
 
               {order.additional_info && (
                 <div>

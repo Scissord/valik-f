@@ -7,8 +7,9 @@ interface Props {
   className?: React.StyleHTMLAttributes<HTMLImageElement>["className"];
   width: number;
   height: number;
-  onMouseEnter?:()=>void;
-  onMouseLeave?:()=>void
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  priority?: boolean;
 }
 //"rounded w-20 h-20 object-cover"
 export const ProductImage = ({
@@ -18,13 +19,14 @@ export const ProductImage = ({
   width,
   height,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
+  priority = false
 }: Props) => {
   // Определяем источник изображения
   const localSrc = url && url !== "undefined" && url !== "null"
-    ? url.startsWith("http") || url.startsWith("/products/")
-        ? url
-        : `/products/${url}`
+    ? url.startsWith("http") || url.startsWith("/")
+      ? url
+      : `/products/${url}`
     : "/imgs/placeholder.png";
 
   return (
@@ -37,6 +39,7 @@ export const ProductImage = ({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       unoptimized={true}
+      priority={priority}
       onError={(e) => {
         const target = e.target as HTMLImageElement;
         target.onerror = null;

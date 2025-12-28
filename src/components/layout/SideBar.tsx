@@ -66,14 +66,14 @@ export const SideBar = () => {
     path: string[] = []
   ): string[] | null {
     for (const category of tree) {
-      if (category.id === targetId) {
-        return [...path, category.id];
+      if (String(category.id) === targetId) {
+        return [...path, String(category.id)];
       }
 
       if (category.children && category.children.length > 0) {
         const result = findParent(category.children, targetId, [
           ...path,
-          category.id,
+          String(category.id),
         ]);
         if (result) return result;
       }
@@ -206,10 +206,10 @@ export const SideBar = () => {
     category: GoodCategory,
     level = 0
   ): ReactElement => {
-    const isExpanded = expandedCategories.includes(category.id);
+    const isExpanded = expandedCategories.includes(String(category.id));
     const hasChildren = category.children && category.children.length > 0;
     const currentCategoryId = getCurrentCategoryId();
-    const isActive = currentCategoryId === category.id;
+    const isActive = currentCategoryId === String(category.id);
     const icon = getCategoryIcon(category.title);
 
     const paddingClasses = ["px-3", "pl-6 pr-3", "pl-9 pr-3", "pl-12 pr-3"];
@@ -221,10 +221,9 @@ export const SideBar = () => {
           className={`
             group flex items-center gap-2 py-2 rounded-lg border
             ${paddingClass}
-            ${
-              isActive
-                ? "border-orange-200 bg-orange-50 text-orange-600 font-semibold"
-                : "border-transparent hover:border-gray-200 hover:bg-gray-50"
+            ${isActive
+              ? "border-orange-200 bg-orange-50 text-orange-600 font-semibold"
+              : "border-transparent hover:border-gray-200 hover:bg-gray-50"
             }
             transition-all duration-200
           `}
@@ -263,7 +262,7 @@ export const SideBar = () => {
               onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                toggleCategory(category.id);
+                toggleCategory(String(category.id));
               }}
               className={`
                 flex h-7 w-7 items-center justify-center rounded-md
@@ -272,9 +271,8 @@ export const SideBar = () => {
               `}
             >
               <IoChevronDownOutline
-                className={`h-4 w-4 transition-transform ${
-                  isExpanded ? "rotate-180" : ""
-                }`}
+                className={`h-4 w-4 transition-transform ${isExpanded ? "rotate-180" : ""
+                  }`}
               />
             </button>
           )}

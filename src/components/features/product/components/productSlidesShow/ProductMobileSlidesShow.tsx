@@ -60,7 +60,7 @@ export const ProductMobileSlidesShow = ({
         >
           {images.map((image, index) => (
             <SwiperSlide key={image}>
-              <div 
+              <div
                 className="relative cursor-pointer flex items-center justify-center bg-gray-50 rounded-lg h-full"
                 onClick={() => openFullscreen(index)}
               >
@@ -70,8 +70,9 @@ export const ProductMobileSlidesShow = ({
                   width={800}
                   height={600}
                   title={title}
+                  priority={index === 0}
                 />
-                <div 
+                <div
                   className="absolute top-2 right-2 p-2 rounded-full transition-all"
                   style={{
                     backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -88,9 +89,9 @@ export const ProductMobileSlidesShow = ({
 
       {/* Полноэкранный просмотр */}
       {isFullscreen && createPortal(
-        <div 
+        <div
           className="fixed inset-0 flex items-center justify-center p-4"
-          style={{ 
+          style={{
             backgroundColor: 'rgba(0, 0, 0, 0.8)',
             backdropFilter: 'blur(8px)',
             zIndex: 2147483647
@@ -151,7 +152,7 @@ export const ProductMobileSlidesShow = ({
 
             {/* Индикатор */}
             {images.length > 1 && (
-              <div 
+              <div
                 className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-full"
                 style={{
                   backgroundColor: 'rgba(255, 255, 255, 0.2)',

@@ -3,8 +3,7 @@
  * These functions use native fetch and work on the server
  */
 
-import type { Product } from "@/legacy/interfaces/product.interface";
-import type { GoodCategory } from "@/legacy/interfaces/good_category";
+import type { Product, GoodCategory } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 

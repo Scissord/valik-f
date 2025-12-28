@@ -9,8 +9,7 @@ import { EmptyCartState } from '@/components/features/cart/EmptyCartState';
 import { CartItemCard } from '@/components/features/cart/CartItemCard';
 import { CartSummary } from '@/components/features/cart/CartSummary';
 import { useCartStore } from '@/lib/legacy';
-
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+import api from "@/services/api/axios";
 
 export default function CartPage() {
   const [loaded, setLoaded] = useState(false);
@@ -38,10 +37,11 @@ export default function CartPage() {
       const updatedCart = await Promise.all(
         cart.map(async (item) => {
           try {
-            const response = await fetch(`${baseURL}/products/${item.id}`);
-            if (!response.ok) return item;
+            // ...
 
-            const productData = await response.json();
+
+            const response = await api.get(`/products/${item.id}`);
+            const productData = response.data;
             if (productData.price !== item.price) {
               return { ...item, price: productData.price };
             }

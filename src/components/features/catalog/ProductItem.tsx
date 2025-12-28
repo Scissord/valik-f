@@ -1,11 +1,10 @@
 "use client";
 import { ProductImage } from "@/components";
-import { Product } from "@/lib/legacy";
+import { Product, CartItem } from "@/lib/legacy";
 import Link from "next/link";
 import React, { useState, memo, useEffect } from "react";
 import { IoCartOutline } from "react-icons/io5";
 import { useCartStore } from "@/lib/legacy";
-import { CartItem } from "@/lib/legacy";
 
 interface Props {
   product: Product;
@@ -14,7 +13,7 @@ interface Props {
 export const ProductItem = memo(({ product }: Props) => {
   const getValidImageUrl = (url: string | undefined) => {
     if (!url || url.trim() === '' || url === 'h' || url.length < 3) {
-      return "/placeholder.jpg";
+      return "/imgs/placeholder.png";
     }
 
     if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -29,7 +28,7 @@ export const ProductItem = memo(({ product }: Props) => {
   };
 
   const defaultImage = getValidImageUrl(product.images?.[0]);
-  const hoverImage = getValidImageUrl(product.images?.[1]) !== "/placeholder.jpg"
+  const hoverImage = getValidImageUrl(product.images?.[1]) !== "/imgs/placeholder.png"
     ? getValidImageUrl(product.images?.[1])
     : defaultImage;
 
@@ -50,8 +49,7 @@ export const ProductItem = memo(({ product }: Props) => {
 
     const cartProduct: CartItem = {
       ...product,
-      quantity: 1,
-      image: getValidImageUrl(product.images?.[0])
+      quantity: 1
     };
 
     addProductToCart(cartProduct);
@@ -134,7 +132,9 @@ export const ProductItem = memo(({ product }: Props) => {
             {product.category && (
               <div className="flex justify-between">
                 <span>Категория:</span>
-                <span className="font-medium">{product.category}</span>
+                <span className="font-medium">
+                  {typeof product.category === 'object' ? product.category.title : product.category}
+                </span>
               </div>
             )}
             {product.unit && (

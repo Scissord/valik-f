@@ -70,7 +70,7 @@ export const CartItemCard = ({ product, updateProductQuantity, deleteProduct }: 
                     <Link href={`/product/${product.id}`} className="flex-shrink-0">
                         <div className="w-20 h-20 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center">
                             <Image
-                                src={product.images?.[0] || "/placeholder.jpg"}
+                                src={product.images?.[0] || "/imgs/placeholder.png"}
                                 width={80}
                                 height={80}
                                 alt={product.title}

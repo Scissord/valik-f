@@ -10,6 +10,8 @@ export interface SearchResult {
     category?: string;
 }
 
+import api from "@/services/api/axios";
+
 const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 interface UseSearchOptions {
@@ -36,13 +38,8 @@ export const useSearch = (options: UseSearchOptions = {}) => {
 
         setIsLoading(true);
         try {
-            const response = await fetch(`${baseURL}/search?q=${encodeURIComponent(query)}`);
-
-            if (!response.ok) {
-                throw new Error(`Ошибка поиска: ${response.status}`);
-            }
-
-            const data = await response.json();
+            const response = await api.get(`${baseURL}/search?q=${encodeURIComponent(query)}`);
+            const data = response.data;
 
             // Обработка и преобразование результатов
             const processedResults: SearchResult[] = [];

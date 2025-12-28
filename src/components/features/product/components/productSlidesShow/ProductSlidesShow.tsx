@@ -75,6 +75,7 @@ export const ProductSlidesShow = ({ images, title, className }: Props) => {
                   width={1200}
                   height={900}
                   title={title}
+                  priority={true}
                 />
                 <div
                   className="absolute top-2 right-2 p-2 rounded-full transition-all"
