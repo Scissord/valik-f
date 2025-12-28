@@ -31,7 +31,7 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <motion.section
-        className="relative pb-12 md:pb-16"
+        className="relative pb-6 md:pb-12"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -82,9 +82,6 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
             )}
           </motion.div>
         </div>
-
-        {/* Subtle gradient accent at the bottom (no header background) */}
-        <div className="pointer-events-none absolute inset-x-0 -bottom-6 h-12 bg-gradient-to-t from-gray-50/80 to-transparent" />
       </motion.section>
     </div>
   );

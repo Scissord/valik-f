@@ -4,7 +4,7 @@ import { CategoriesSection, ProductsSection } from "@/components";
 export default async function Home() {
   // Данные загружаются на сервере — HTML приходит уже готовый!
   const [productsData, allCategories] = await Promise.all([
-    fetchProductsForMainPage(1, 8),
+    fetchProductsForMainPage(1, 50),
     fetchCategories(),
   ]);
 
@@ -12,7 +12,7 @@ export default async function Home() {
   const categories = allCategories.filter((cat) => !cat.parent_id);
 
   return (
-    <div className="bg-gray-50 pt-24 pb-12">
+    <div className="bg-white pt-24 pb-12">
       <CategoriesSection categories={categories} isLoadingCategories={false} />
       <ProductsSection products={products} />
     </div>

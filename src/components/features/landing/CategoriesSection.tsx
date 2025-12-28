@@ -71,8 +71,10 @@ const containerVariants: Variants = {
 
 export const CategoriesSection = ({ categories, isLoadingCategories }: CategoriesSectionProps) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const mobileScrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [mobileScrollProgress, setMobileScrollProgress] = useState(0); // 0, 1, or 2
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -101,8 +103,22 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
     });
   };
 
+  const handleMobileScroll = () => {
+    if (!mobileScrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = mobileScrollRef.current;
+    const maxScroll = scrollWidth - clientWidth;
+    if (maxScroll <= 0) {
+      setMobileScrollProgress(0);
+      return;
+    }
+    const progress = scrollLeft / maxScroll;
+    if (progress < 0.33) setMobileScrollProgress(0);
+    else if (progress < 0.66) setMobileScrollProgress(1);
+    else setMobileScrollProgress(2);
+  };
+
   return (
-    <section className="pt-10 pb-12">
+    <section className="pt-4 sm:pt-10 pb-4 sm:pb-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={containerVariants}
@@ -114,6 +130,8 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
           <div className="sm:hidden mb-4">
             <div className="relative">
               <div
+                ref={mobileScrollRef}
+                onScroll={handleMobileScroll}
                 className="grid grid-rows-2 auto-cols-max grid-flow-col gap-x-2 gap-y-2 overflow-x-auto pb-3 no-scrollbar px-1"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
               >
@@ -132,16 +150,16 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
 
                 {isLoadingCategories
                   ? Array.from({ length: 7 }).map((_, index) => (
-                      <div
-                        key={index}
-                        className="flex-none w-20 flex flex-col items-center text-center"
-                      >
-                        <div className="w-14 h-14 rounded-full bg-gray-100 animate-pulse" />
-                        <div className="mt-2 h-3 w-12 rounded-full bg-gray-100 animate-pulse" />
-                      </div>
-                    ))
+                    <div
+                      key={index}
+                      className="flex-none w-20 flex flex-col items-center text-center"
+                    >
+                      <div className="w-14 h-14 rounded-full bg-gray-100 animate-pulse" />
+                      <div className="mt-2 h-3 w-12 rounded-full bg-gray-100 animate-pulse" />
+                    </div>
+                  ))
                   : categories.length > 0
-                  ? [...categories].reverse().map((category) => {
+                    ? [...categories].reverse().map((category) => {
                       const Icon = getCategoryIcon(category);
                       return (
                         <Link
@@ -158,7 +176,16 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                         </Link>
                       );
                     })
-                  : null}
+                    : null}
+              </div>
+
+              {/* Scroll indicator */}
+              <div className="flex justify-center mt-2">
+                <div className="flex items-center gap-1">
+                  <div className={`h-1 rounded-full transition-all duration-200 ${mobileScrollProgress === 0 ? 'w-6 bg-orange-400' : 'w-2 bg-gray-300'}`}></div>
+                  <div className={`h-1 rounded-full transition-all duration-200 ${mobileScrollProgress === 1 ? 'w-6 bg-orange-400' : 'w-2 bg-gray-300'}`}></div>
+                  <div className={`h-1 rounded-full transition-all duration-200 ${mobileScrollProgress === 2 ? 'w-6 bg-orange-400' : 'w-2 bg-gray-300'}`}></div>
+                </div>
               </div>
             </div>
           </div>
@@ -170,11 +197,10 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                 <button
                   onClick={() => handleScroll("left")}
                   disabled={!canScrollLeft}
-                  className={`p-2 rounded-full border transition-all duration-200 ${
-                    !canScrollLeft
-                      ? "border-gray-100 text-gray-300 cursor-not-allowed"
-                      : "border-gray-200 text-gray-700 hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50"
-                  }`}
+                  className={`p-2 rounded-full border transition-all duration-200 ${!canScrollLeft
+                    ? "border-gray-100 text-gray-300 cursor-not-allowed"
+                    : "border-gray-200 text-gray-700 hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50"
+                    }`}
                   aria-label="Назад"
                 >
                   <IoChevronBackOutline className="w-5 h-5" />
@@ -182,11 +208,10 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                 <button
                   onClick={() => handleScroll("right")}
                   disabled={!canScrollRight}
-                  className={`p-2 rounded-full border transition-all duration-200 ${
-                    !canScrollRight
-                      ? "border-gray-100 text-gray-300 cursor-not-allowed"
-                      : "border-gray-200 text-gray-700 hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50"
-                  }`}
+                  className={`p-2 rounded-full border transition-all duration-200 ${!canScrollRight
+                    ? "border-gray-100 text-gray-300 cursor-not-allowed"
+                    : "border-gray-200 text-gray-700 hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50"
+                    }`}
                   aria-label="Вперед"
                 >
                   <IoChevronForwardOutline className="w-5 h-5" />

@@ -16,7 +16,7 @@ export default function ShopLayout({
 
   // Показываем сайдбар и добавляем отступ только на странице списка товаров
   const shouldShowSidebar = pathname === '/products';
-  
+
   const mainPaddingClass = isAuthPage
     ? ""
     : isLandingPage
@@ -29,7 +29,7 @@ export default function ShopLayout({
       <SideBar />
       <div className={shouldShowSidebar ? "md:pl-60" : ""}>
         <main
-          className={`min-h-screen bg-white ${mainPaddingClass}`}
+          className={`lg:min-h-screen bg-white ${mainPaddingClass}`}
         >
           {children}
         </main>

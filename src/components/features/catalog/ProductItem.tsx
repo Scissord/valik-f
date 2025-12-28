@@ -62,7 +62,7 @@ export const ProductItem = memo(({ product }: Props) => {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden transition-shadow duration-300 group">
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden group">
       <Link href={`/product/${product.id}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-gray-50">
           <ProductImage
@@ -80,14 +80,14 @@ export const ProductItem = memo(({ product }: Props) => {
       <div className="p-4">
         <Link
           href={`/product/${product.id}`}
-          className="block mb-3"
+          className="block mb-2.5"
         >
-          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 min-h-[48px] hover:text-orange-600 transition-colors">
+          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-orange-600 transition-colors">
             {product.title}
           </h3>
         </Link>
 
-        <div className="mt-2 flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex flex-col">
             <span className="text-xs text-gray-500">Цена</span>
             <div className="text-lg font-semibold text-gray-900">
@@ -129,7 +129,7 @@ export const ProductItem = memo(({ product }: Props) => {
           </button>
         </div>
 
-        <div className="mt-3 pt-3 border-t border-gray-100">
+        <div className="mt-1">
           <div className="space-y-1 text-xs text-gray-500">
             {product.category && (
               <div className="flex justify-between">

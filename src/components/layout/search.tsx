@@ -1,5 +1,6 @@
 import { IoSearchOutline, IoCloseOutline } from "react-icons/io5";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -44,6 +45,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
   const [_indexCreated, setIndexCreated] = useState(false);
   const [_indexError, setIndexError] = useState<string | null>(null);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const [placeholder, setPlaceholder] = useState("Найти на Valik.kz");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -247,6 +249,11 @@ const Search = ({ isMobile = false }: SearchProps) => {
     }
   }, [showMobileSearch]);
 
+  // Проверка что компонент смонтирован (для Portal)
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Инициализация индексов Elasticsearch при первом запуске
   useEffect(() => {
     const _initSearchIndex = async () => {
@@ -306,12 +313,12 @@ const Search = ({ isMobile = false }: SearchProps) => {
 
   const css = {
     mobileOverlay: `
-      fixed inset-0 bg-black/30 z-50
+      fixed inset-0 bg-black/40 z-[100]
       transition-opacity duration-300 ease-in-out backdrop-blur-sm
       ${showMobileSearch ? 'opacity-100' : 'opacity-0 pointer-events-none'}
     `,
     mobileContainer: `
-      fixed top-0 left-0 right-0 bg-white p-4 z-50
+      fixed top-0 left-0 right-0 bg-white p-4 z-[100]
       shadow-lg transition-transform duration-300 ease-in-out
       ${showMobileSearch ? 'translate-y-0' : '-translate-y-full'}
     `,
@@ -347,7 +354,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
     `,
     resultsContainer: `
       ${isMobile
-        ? 'fixed left-4 right-4 top-[72px] bg-white mt-2 py-2 rounded-lg shadow-lg max-h-[60vh] overflow-y-auto border border-gray-200 z-50'
+        ? 'fixed left-4 right-4 top-[120px] bg-white mt-2 py-2 rounded-lg shadow-lg max-h-[50vh] overflow-y-auto border border-gray-200 z-[100]'
         : 'absolute top-full left-0 right-0 bg-white mt-2 py-2 rounded-lg shadow-lg max-h-[400px] overflow-y-auto border border-gray-200 z-50'
       }
     `,
@@ -376,7 +383,7 @@ const Search = ({ isMobile = false }: SearchProps) => {
 
   // Мобильная версия с полноэкранным поиском
   if (isMobile) {
-    return (
+    const mobileContent = (
       <>
         <div className={css.mobileOverlay} onClick={toggleMobileSearch}></div>
         <div className={css.mobileContainer}>
@@ -476,6 +483,12 @@ const Search = ({ isMobile = false }: SearchProps) => {
         </div>
       </>
     );
+
+    // Используем Portal для рендеринга вне хедера
+    if (isMounted) {
+      return createPortal(mobileContent, document.body);
+    }
+    return null;
   }
 
   // Десктопная версия

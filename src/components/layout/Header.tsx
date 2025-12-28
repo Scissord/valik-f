@@ -47,8 +47,8 @@ export const Header = () => {
     >
       <div
         className={`bg-white border-b border-gray-200 overflow-hidden transition-all duration-300 max-h-20 opacity-100 ${isScrolled
-            ? "md:max-h-0 md:opacity-0"
-            : "md:max-h-20 md:opacity-100"
+          ? "md:max-h-0 md:opacity-0"
+          : "md:max-h-20 md:opacity-100"
           }`}
       >
         <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -135,10 +135,10 @@ export const Header = () => {
 
               <Link
                 href={user ? "/profile" : "/auth/login"}
-                className="flex items-center gap-2 transition-colors duration-200 group"
+                className="hidden md:flex items-center gap-2 transition-colors duration-200 group"
               >
                 <IoPersonOutline className="w-5 h-5 text-gray-700 group-hover:text-[#fc640c]" />
-                <span className="hidden md:inline text-sm text-gray-700 group-hover:text-[#fc640c]">
+                <span className="text-sm text-gray-700 group-hover:text-[#fc640c]">
                   {user ? "Профиль" : "Войти"}
                 </span>
               </Link>
