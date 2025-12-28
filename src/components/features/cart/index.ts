@@ -1,2 +1,4 @@
 // Cart Feature Components
-export { ProductInCart } from './ProductInCart';
+export { CartItemCard } from './CartItemCard';
+export { CartSummary } from './CartSummary';
+export { EmptyCartState } from './EmptyCartState';
