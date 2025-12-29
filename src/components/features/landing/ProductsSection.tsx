@@ -34,8 +34,7 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
         className="relative pb-6 md:pb-12"
         variants={containerVariants}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
+        animate="visible"
       >
         {/* Header */}
         <div className="relative z-10">
