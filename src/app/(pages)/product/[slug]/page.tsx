@@ -75,11 +75,19 @@ export default async function ProductPage({ params }: Props) {
     return (
       <div className="min-h-screen bg-white pt-24 pb-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-sm text-gray-500 mb-6">
-            <span className="hover:text-orange-600 cursor-pointer">Главная</span> /
-            <span className="hover:text-orange-600 cursor-pointer"> {renderValue(adaptedProduct.category)}</span> /
-            <span className="text-gray-700"> {adaptedProduct.title}</span>
-          </div>
+          <nav className="text-sm text-gray-500 mb-6 flex items-center flex-wrap gap-1">
+            <a href="/" className="hover:text-orange-600 transition-colors">Главная</a>
+            <span>/</span>
+            {product.category_id && (
+              <>
+                <a href={`/categories/${product.category_id}`} className="hover:text-orange-600 transition-colors">
+                  {renderValue(adaptedProduct.category)}
+                </a>
+                <span>/</span>
+              </>
+            )}
+            <span className="text-gray-700">{adaptedProduct.title}</span>
+          </nav>
 
           <div className="grid lg:grid-cols-2 gap-8 mb-12">
             <div>
