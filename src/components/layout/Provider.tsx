@@ -28,12 +28,13 @@ export const Provider = ({ children }: Props) => {
     // Очистка при размонтировании
     return () => observer.disconnect();
   }, [pathname]); // Перезапускаем эффект при смене пути
-  
+
   // Проверяем, находимся ли мы на странице авторизации или регистрации
   const isAuthPage = pathname?.startsWith('/auth');
-  const shouldShowAIAssistant = !isAuthPage && !isNotFoundPage;
+  // Скрываем виджет ассистента на главной (там полноценный чат), на /v2 и на страницах авторизации
+  const shouldShowAIAssistant = !isAuthPage && !isNotFoundPage && pathname !== '/' && pathname !== '/v2';
   const shouldShowMobileNavbar = !isNotFoundPage;
-  
+
   return (
     <AIAssistantProvider>
       {children}
