@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, ReactElement, useState, useCallback, useEffect } from "react";
+import React, { ReactNode, ReactElement, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GoodCategory } from "@/lib/legacy";
@@ -171,7 +171,7 @@ export const CategoryTree = ({ categories }: Props) => {
                     <Link
                         href={`/categories/${category.id}`}
                         className="flex flex-1 items-center gap-4 min-w-0"
-                        onClick={(e) => {
+                        onClick={() => {
                             // Если есть дети, клик по строке раскрывает список (если мобильный UX)
                             // Но лучше ссылка на категорию
                         }}

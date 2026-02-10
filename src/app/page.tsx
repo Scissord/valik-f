@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IoSend, IoArrowForward, IoChatbubblesOutline, IoStorefrontOutline, IoAdd, IoTimeOutline, IoTrashOutline, IoSparkles, IoFlash, IoRocket, IoConstruct } from 'react-icons/io5';
+import { IoSend, IoMenuOutline, IoCloseOutline, IoAddCircleOutline, IoTrashBinOutline, IoStorefront } from 'react-icons/io5';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAIAssistant } from '@/components/features/ai-assistant/ai-context';
-import { useUserStore, formatMessageTime, formatChatTime } from '@/lib/legacy';
+import { useUserStore, formatMessageTime } from '@/lib/legacy';
 
 export default function AIHomePage() {
     const {
@@ -15,7 +15,6 @@ export default function AIHomePage() {
         currentChatId,
         isLoading,
         sendMessage,
-        loadChats,
         loadChatHistory,
         createNewChat,
         deleteChat
@@ -23,27 +22,22 @@ export default function AIHomePage() {
 
     const user = useUserStore((state) => state.user);
     const [inputValue, setInputValue] = useState('');
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [borderAngle, setBorderAngle] = useState(0);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
+    const inputWrapRef = useRef<HTMLDivElement>(null);
 
-    // Initialize sidebar state based on screen size
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setIsSidebarOpen(window.innerWidth >= 1024);
-        }
-    }, []);
+    const handleInputWrapMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const el = inputWrapRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const angle = (Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180) / Math.PI;
+        setBorderAngle(angle);
+    };
 
-    // Track mouse for interactive background
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            setMousePosition({ x: e.clientX, y: e.clientY });
-        };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, []);
-
-    // Auto-scroll to bottom
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isLoading]);
@@ -51,325 +45,228 @@ export default function AIHomePage() {
     const handleSendMessage = async (msg?: string) => {
         const textToSend = typeof msg === 'string' ? msg : inputValue;
         if (!textToSend.trim() || isLoading) return;
-
-        // Clear input immediately for better UX if it was typed
         if (typeof msg !== 'string') setInputValue('');
-
         await sendMessage(textToSend);
     };
 
-    // Quick prompt suggestions with icons
-    const suggestions = [
-        { icon: IoConstruct, text: "Помоги рассчитать фундамент", color: "from-blue-500 to-cyan-500" },
-        { icon: IoFlash, text: "Какой утеплитель лучше?", color: "from-yellow-500 to-orange-500" },
-        { icon: IoRocket, text: "Собери корзину для ремонта", color: "from-purple-500 to-pink-500" },
-        { icon: IoSparkles, text: "Как правильно клеить обои?", color: "from-green-500 to-emerald-500" }
+    const quickActions = [
+        { icon: "🏗️", text: "Рассчитать материалы" },
+        { icon: "🔍", text: "Найти товар" },
+        { icon: "📋", text: "Составить смету" },
+        { icon: "💡", text: "Консультация" }
     ];
 
     return (
-        <div className="flex h-screen overflow-hidden font-sans relative bg-gradient-to-br from-slate-50 via-orange-50/30 to-amber-50/50">
+        <div className="min-h-screen min-w-full text-gray-800 overflow-hidden bg-gradient-to-br from-orange-100 via-amber-50 to-orange-200" style={{ backgroundAttachment: 'fixed' }}>
 
-            {/* Interactive Background Gradient that follows mouse */}
-            <div
-                className="fixed inset-0 pointer-events-none transition-opacity duration-1000"
-                style={{
-                    background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(251,146,60,0.15), transparent 40%)`,
-                }}
-            />
+            {/* Top Navigation */}
+            <header className="fixed top-0 left-0 right-0 z-50 px-4 py-4">
+                <div className="max-w-6xl mx-auto flex items-center justify-between backdrop-blur-xl bg-white/70 rounded-2xl px-6 py-3 border border-orange-200/50 shadow-lg shadow-orange-100/50">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className="p-2 hover:bg-orange-100 rounded-xl transition-colors"
+                        >
+                            {isMenuOpen ? <IoCloseOutline className="w-6 h-6 text-orange-700" /> : <IoMenuOutline className="w-6 h-6 text-orange-700" />}
+                        </button>
+                        <Image src="/logo.svg" alt="Valik.kz" width={100} height={32} className="h-8 w-auto" />
+                    </div>
 
-            {/* Animated floating shapes */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <motion.div
-                    animate={{
-                        y: [0, -20, 0],
-                        rotate: [0, 5, 0],
-                    }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-br from-orange-200/40 to-amber-200/40 rounded-3xl blur-xl"
-                />
-                <motion.div
-                    animate={{
-                        y: [0, 30, 0],
-                        rotate: [0, -10, 0],
-                    }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute bottom-40 left-20 w-40 h-40 bg-gradient-to-br from-orange-300/30 to-red-200/30 rounded-full blur-2xl"
-                />
-                <motion.div
-                    animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.3, 0.5, 0.3],
-                    }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-br from-amber-100/50 to-orange-100/50 rounded-full blur-3xl"
-                />
-            </div>
-
-            {/* Sidebar (History) */}
-            <AnimatePresence>
-                {isSidebarOpen && (
-                    <motion.aside
-                        initial={{ x: -300, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        exit={{ x: -300, opacity: 0 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                        className="fixed inset-y-0 left-0 z-40 w-72 bg-white/80 backdrop-blur-xl border-r border-orange-100 flex flex-col shadow-2xl lg:shadow-none lg:static"
-                    >
-                        <div className="p-4 border-b border-orange-50 flex items-center justify-between">
-                            <div className="flex items-center gap-2 px-2">
-                                <Image
-                                    src="/logo.svg"
-                                    alt="Valik.kz"
-                                    width={120}
-                                    height={40}
-                                    priority
-                                    className="h-10 w-auto"
-                                />
+                    <div className="flex items-center gap-3">
+                        <Link
+                            href="/market"
+                            className="flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white rounded-xl transition-colors text-sm font-medium text-gray-700 border border-orange-200"
+                        >
+                            <IoStorefront className="w-4 h-4 text-orange-600" />
+                            <span className="hidden sm:inline">Магазин</span>
+                        </Link>
+                        {user ? (
+                            <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-orange-100 to-amber-100 rounded-xl border border-orange-300">
+                                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 flex items-center justify-center text-xs font-bold text-white">
+                                    {user.full_name?.[0]?.toUpperCase() || 'U'}
+                                </div>
+                                <span className="text-sm hidden sm:inline text-gray-700">{user.full_name}</span>
                             </div>
-                            <motion.button
-                                whileHover={{ scale: 1.1, rotate: 90 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => createNewChat()}
-                                className="p-2 hover:bg-orange-100 rounded-full transition-colors"
-                                title="Новый чат"
+                        ) : (
+                            <Link
+                                href="/auth/login"
+                                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-xl transition-all text-sm font-medium text-white shadow-lg shadow-orange-300/50"
                             >
-                                <IoAdd className="w-5 h-5 text-orange-600" />
-                            </motion.button>
-                        </div>
+                                Войти
+                            </Link>
+                        )}
+                    </div>
+                </div>
+            </header>
 
-                        <div className="flex-1 overflow-y-auto py-4 px-2 space-y-1 scrollbar-thin">
-                            <div className="px-2 mb-3 text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
-                                <IoTimeOutline className="w-3 h-3" />
-                                История
-                            </div>
-                            {chats.map((chat, index) => (
-                                <motion.button
-                                    key={chat.id}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                    onClick={() => loadChatHistory(chat.id)}
-                                    className={`w-full text-left p-3 rounded-xl flex items-center gap-3 transition-all group ${currentChatId === chat.id
-                                        ? 'bg-gradient-to-r from-orange-100 to-amber-50 text-orange-900 shadow-sm border border-orange-200'
-                                        : 'hover:bg-gray-50 text-gray-700'
-                                        }`}
+            {/* Slide-out Menu */}
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+                            onClick={() => setIsMenuOpen(false)}
+                        />
+                        <motion.aside
+                            initial={{ x: -400, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            exit={{ x: -400, opacity: 0 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            className="fixed left-0 top-0 bottom-0 w-80 z-50 bg-white/95 backdrop-blur-xl border-r border-orange-100 flex flex-col shadow-2xl"
+                        >
+                            <div className="p-6 border-b border-orange-100">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-xl font-bold text-gray-800">История чатов</h2>
+                                    <button
+                                        onClick={() => setIsMenuOpen(false)}
+                                        className="p-2 hover:bg-orange-100 rounded-xl transition-colors"
+                                    >
+                                        <IoCloseOutline className="w-5 h-5 text-gray-600" />
+                                    </button>
+                                </div>
+                                <button
+                                    onClick={() => { createNewChat(); setIsMenuOpen(false); }}
+                                    className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-xl transition-all font-medium text-white shadow-lg shadow-orange-200"
                                 >
-                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${currentChatId === chat.id ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
-                                        <IoChatbubblesOutline className="w-4 h-4" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="truncate text-sm font-medium">{chat.title || 'Новый чат'}</div>
-                                        <div className="flex justify-between items-center mt-1">
-                                            <span className="text-[10px] text-gray-400 truncate max-w-[100px]">
-                                                {chat.lastMessage || 'Нет сообщений'}
-                                            </span>
-                                            {chat.lastTimestamp && (
-                                                <span className="text-[10px] text-gray-300">
-                                                    {formatChatTime(chat.lastTimestamp)}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                    {currentChatId === chat.id && (
-                                        <motion.div
-                                            initial={{ opacity: 0, scale: 0 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            onClick={(e) => { e.stopPropagation(); deleteChat(chat.id); }}
-                                            className="p-1 hover:bg-red-100 rounded text-red-400 hover:text-red-600 transition-colors"
-                                        >
-                                            <IoTrashOutline className="w-3 h-3" />
-                                        </motion.div>
-                                    )}
-                                </motion.button>
-                            ))}
-                            {chats.length === 0 && (
-                                <div className="text-center py-10 text-gray-400 text-sm">
-                                    <IoChatbubblesOutline className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                                    История пуста
-                                </div>
-                            )}
-                        </div>
+                                    <IoAddCircleOutline className="w-5 h-5" />
+                                    Новый чат
+                                </button>
+                            </div>
 
-                        <div className="p-4 border-t border-orange-50">
-                            {user ? (
-                                <div className="flex items-center gap-3 p-2 rounded-xl bg-gradient-to-r from-orange-50 to-amber-50">
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-orange-200">
-                                        {user.full_name?.[0]?.toUpperCase() || 'U'}
+                            <div className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin">
+                                {chats.length === 0 ? (
+                                    <div className="text-center py-10 text-gray-400">
+                                        <Image src="/logo.svg" alt="" width={80} height={26} className="h-10 w-auto mx-auto mb-3 opacity-50" />
+                                        <p>Нет сохранённых чатов</p>
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="text-sm font-medium truncate text-gray-800">{user.full_name}</div>
-                                        <div className="text-xs text-gray-400 truncate">{user.email}</div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <Link href="/auth/login" className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all text-sm font-medium shadow-lg shadow-orange-200">
-                                    <IoSparkles className="w-4 h-4" />
-                                    Войти
-                                </Link>
-                            )}
-                        </div>
-                    </motion.aside>
+                                ) : (
+                                    chats.map((chat) => (
+                                        <button
+                                            key={chat.id}
+                                            onClick={() => { loadChatHistory(chat.id); setIsMenuOpen(false); }}
+                                            className={`w-full text-left p-4 rounded-xl transition-all group ${currentChatId === chat.id
+                                                ? 'bg-gradient-to-r from-orange-100 to-amber-100 border border-orange-300'
+                                                : 'hover:bg-orange-50 border border-transparent'
+                                                }`}
+                                        >
+                                            <div className="flex items-start justify-between gap-2">
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-medium truncate text-gray-800">{chat.title || 'Новый чат'}</div>
+                                                    <div className="text-xs text-gray-400 truncate mt-1">{chat.lastMessage || 'Пустой чат'}</div>
+                                                </div>
+                                                {currentChatId === chat.id && (
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); deleteChat(chat.id); }}
+                                                        className="p-1 hover:bg-red-100 rounded text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        <IoTrashBinOutline className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </button>
+                                    ))
+                                )}
+                            </div>
+                        </motion.aside>
+                    </>
                 )}
             </AnimatePresence>
 
-            {/* Main Chat Area */}
-            <main className="flex-1 flex flex-col relative h-full">
-                {/* Header Overlay */}
-                <header className="absolute top-0 left-0 right-0 z-10 p-4 md:p-6 flex justify-between items-center bg-gradient-to-b from-white/90 via-white/60 to-transparent backdrop-blur-sm">
-                    <div className="mr-4">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="p-2 rounded-xl hover:bg-orange-100 transition-colors bg-white/80 shadow-sm border border-orange-100"
+            {/* Main Content */}
+            <main className="relative min-h-screen flex flex-col pt-24 pb-32">
+                <div className="flex-1 max-w-4xl mx-auto w-full px-4 overflow-y-auto">
+
+                    {/* Empty State */}
+                    {messages.length <= 1 && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="text-center py-16"
                         >
-                            <IoChatbubblesOutline className="w-6 h-6 text-orange-600" />
-                        </motion.button>
-                    </div>
-                    <div className="ml-auto">
-                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                            <Link
-                                href="/market"
-                                className="group flex items-center gap-2 bg-white/90 backdrop-blur-md border border-orange-200 hover:border-orange-400 shadow-lg hover:shadow-xl px-5 py-2.5 rounded-full transition-all duration-300"
-                            >
-                                <IoStorefrontOutline className="w-5 h-5 text-orange-500 group-hover:text-orange-600 transition-colors" />
-                                <span className="font-medium text-gray-700 group-hover:text-orange-600 text-sm">Перейти в магазин</span>
-                                <IoArrowForward className="w-4 h-4 text-orange-400 group-hover:translate-x-1 transition-transform" />
-                            </Link>
-                        </motion.div>
-                    </div>
-                </header>
-
-                {/* Messages Container */}
-                <div className="flex-1 overflow-y-auto px-4 pt-24 pb-40 md:px-20 lg:px-40 xl:px-60 scroll-smooth scrollbar-hide">
-                    <div className="max-w-4xl mx-auto space-y-6">
-
-                        {/* Welcome / Empty State */}
-                        {messages.length <= 1 && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5 }}
-                                className="text-center py-10 md:py-16"
-                            >
-                                {/* Animated AI Icon */}
-                                <motion.div
-                                    className="relative w-28 h-28 mx-auto mb-8"
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 rounded-[2rem] blur-xl opacity-60" />
-                                    <motion.div
-                                        className="relative w-full h-full bg-gradient-to-br from-orange-500 via-amber-500 to-orange-600 rounded-[2rem] flex items-center justify-center shadow-2xl"
-                                        animate={{ rotate: -360 }}
-                                        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                                    >
-                                        <motion.div
-                                            animate={{ scale: [1, 1.2, 1] }}
-                                            transition={{ duration: 2, repeat: Infinity }}
-                                        >
-                                            <IoSparkles className="w-14 h-14 text-white drop-shadow-lg" />
-                                        </motion.div>
-                                    </motion.div>
-                                </motion.div>
-
-                                <motion.h1
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.2 }}
-                                    className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight"
-                                >
-                                    Привет! Я <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Valik AI</span>
-                                </motion.h1>
-                                <motion.p
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3 }}
-                                    className="text-gray-500 max-w-lg mx-auto mb-12 text-lg"
-                                >
-                                    Ваш персональный AI-ассистент. Помогу выбрать материалы, рассчитать смету или найти нужный товар.
-                                </motion.p>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-                                    {suggestions.map((suggestion, idx) => (
-                                        <motion.button
-                                            key={idx}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.4 + idx * 0.1 }}
-                                            whileHover={{ scale: 1.02, y: -2 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            onClick={() => handleSendMessage(suggestion.text)}
-                                            className="p-4 bg-white/80 backdrop-blur-sm border border-gray-100 rounded-2xl hover:border-orange-300 hover:shadow-xl hover:shadow-orange-100/50 transition-all text-left group flex items-center gap-4"
-                                        >
-                                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${suggestion.color} flex items-center justify-center shadow-lg`}>
-                                                <suggestion.icon className="w-5 h-5 text-white" />
-                                            </div>
-                                            <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors flex-1">{suggestion.text}</span>
-                                            <IoArrowForward className="w-4 h-4 text-gray-300 group-hover:text-orange-500 group-hover:translate-x-1 transition-all" />
-                                        </motion.button>
-                                    ))}
+                            <div className="w-24 h-24 mx-auto mb-8 relative flex items-center justify-center">
+                                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-amber-400 rounded-3xl opacity-50 blur-xl" />
+                                <div className="relative w-full h-full bg-white/90 rounded-3xl flex items-center justify-center shadow-2xl shadow-orange-300/50 p-3">
+                                    <Image src="/logo.svg" alt="Valik.kz" width={72} height={72} className="w-full h-full object-contain" />
                                 </div>
-                            </motion.div>
-                        )}
+                            </div>
 
-                        {/* Chat Messages */}
+                            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">
+                                Привет! Я Valik AI
+                            </h1>
+                            <p className="text-lg text-gray-600 max-w-md mx-auto mb-12">
+                                Ваш умный помощник по строительству и ремонту. Задайте любой вопрос!
+                            </p>
+
+                            {/* Quick Actions */}
+                            <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
+                                {quickActions.map((action, idx) => (
+                                    <motion.button
+                                        key={idx}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: idx * 0.1 }}
+                                        onClick={() => handleSendMessage(action.text)}
+                                        className="flex items-center gap-2 px-5 py-3 bg-white/80 hover:bg-white border border-orange-200 hover:border-orange-400 rounded-2xl transition-all group shadow-sm hover:shadow-md"
+                                    >
+                                        <span className="text-xl">{action.icon}</span>
+                                        <span className="font-medium text-gray-700 group-hover:text-orange-600">{action.text}</span>
+                                    </motion.button>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* Messages */}
+                    <div className="space-y-6 py-4">
                         {messages.filter(m => m.id !== 'initial-greeting' || messages.length === 1).map((msg, idx) => (
                             <motion.div
                                 key={msg.id || idx}
-                                initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                transition={{ duration: 0.3 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 className={`flex gap-4 ${msg.isUser ? 'justify-end' : 'justify-start'}`}
                             >
                                 {!msg.isUser && (
-                                    <motion.div
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-amber-500 flex-shrink-0 flex items-center justify-center shadow-lg shadow-orange-200"
-                                    >
-                                        <IoSparkles className="w-5 h-5 text-white" />
-                                    </motion.div>
+                                    <div className="w-10 h-10 rounded-2xl bg-white flex-shrink-0 flex items-center justify-center shadow-lg border border-orange-100 overflow-hidden p-1">
+                                        <Image src="/logo.svg" alt="" width={36} height={36} className="w-full h-full object-contain" />
+                                    </div>
                                 )}
-                                <div className={`max-w-[85%] md:max-w-[75%] space-y-1 ${msg.isUser ? 'items-end flex flex-col' : ''}`}>
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        className={`
-                                            p-4 rounded-2xl shadow-sm text-base leading-relaxed
-                                            ${msg.isUser
-                                                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-tr-sm shadow-lg shadow-orange-200'
-                                                : 'bg-white/90 backdrop-blur-sm border border-gray-100 text-gray-800 rounded-tl-sm'
-                                            }
-                                        `}
-                                    >
+                                <div className={`max-w-[80%] ${msg.isUser ? 'order-first' : ''}`}>
+                                    <div className={`
+                                        p-4 rounded-2xl text-base leading-relaxed
+                                        ${msg.isUser
+                                            ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-tr-sm shadow-lg shadow-orange-200'
+                                            : 'bg-white/90 backdrop-blur-sm border border-orange-100 text-gray-800 rounded-tl-sm shadow-sm'
+                                        }
+                                    `}>
                                         {msg.text}
-                                    </motion.div>
-                                    <span className="text-[11px] text-gray-400 px-1 opacity-70">
-                                        {msg.isUser ? 'Вы' : 'AI Assistant'} • {formatMessageTime(msg.timestamp)}
-                                    </span>
+                                    </div>
+                                    <div className={`text-xs text-gray-400 mt-2 ${msg.isUser ? 'text-right' : 'text-left'}`}>
+                                        {formatMessageTime(msg.timestamp)}
+                                    </div>
                                 </div>
                             </motion.div>
                         ))}
 
+                        {/* Loading indicator */}
                         {isLoading && (
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 className="flex gap-4 justify-start"
                             >
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-amber-500 flex-shrink-0 flex items-center justify-center shadow-lg shadow-orange-200">
-                                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
-                                        <IoSparkles className="w-5 h-5 text-white" />
-                                    </motion.div>
+                                <div className="w-10 h-10 rounded-2xl bg-white flex-shrink-0 flex items-center justify-center shadow-lg border border-orange-100 overflow-hidden p-1 animate-pulse">
+                                    <Image src="/logo.svg" alt="" width={36} height={36} className="w-full h-full object-contain" />
                                 </div>
-                                <div className="bg-white/90 backdrop-blur border border-gray-100 p-4 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-3">
+                                <div className="bg-white/90 backdrop-blur-sm border border-orange-100 p-4 rounded-2xl rounded-tl-sm flex items-center gap-2 shadow-sm">
                                     <div className="flex gap-1">
-                                        <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 0.6, repeat: Infinity }} className="w-2 h-2 bg-orange-400 rounded-full" />
-                                        <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }} className="w-2 h-2 bg-amber-400 rounded-full" />
-                                        <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }} className="w-2 h-2 bg-orange-400 rounded-full" />
+                                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" />
+                                        <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce [animation-delay:0.15s]" />
+                                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce [animation-delay:0.3s]" />
                                     </div>
-                                    <span className="text-gray-400 text-sm">Думаю...</span>
+                                    <span className="text-gray-400 text-sm ml-2">Думаю...</span>
                                 </div>
                             </motion.div>
                         )}
@@ -379,48 +276,50 @@ export default function AIHomePage() {
                 </div>
 
                 {/* Input Area */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-white via-white/95 to-transparent">
-                    <div className="max-w-3xl mx-auto relative">
-                        <motion.div
-                            className="absolute -inset-1 bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 rounded-3xl opacity-30 blur-xl"
-                            animate={{ opacity: [0.2, 0.4, 0.2] }}
-                            transition={{ duration: 3, repeat: Infinity }}
-                        />
-                        <div className="relative bg-white rounded-2xl shadow-2xl border border-orange-100 flex items-end p-2 md:p-3 overflow-hidden">
-                            <textarea
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                        e.preventDefault();
-                                        handleSendMessage();
-                                    }
-                                }}
-                                placeholder="Спросите о товарах, ремонте или строительстве..."
-                                className="w-full max-h-32 min-h-[50px] bg-transparent border-none outline-none focus:outline-none focus:ring-0 ring-0 resize-none py-3 px-3 text-gray-700 placeholder:text-gray-400 font-medium leading-relaxed"
-                                disabled={isLoading}
-                            />
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => handleSendMessage()}
-                                disabled={!inputValue.trim() || isLoading}
-                                className={`
-                                    mb-1 mr-1 p-3 rounded-xl flex items-center justify-center transition-all duration-300
-                                    ${inputValue.trim() && !isLoading
-                                        ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-200 hover:shadow-xl'
-                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'}
-                                `}
-                            >
-                                <IoSend className="w-5 h-5" />
-                            </motion.button>
+                <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-orange-200/90 via-amber-100/70 to-transparent">
+                    <div className="max-w-3xl mx-auto">
+                        <div
+                            ref={inputWrapRef}
+                            onMouseMove={handleInputWrapMouseMove}
+                            onMouseLeave={() => setBorderAngle(0)}
+                            className="relative rounded-2xl p-[2px] shadow-xl shadow-orange-100/50 transition-[background] duration-150"
+                            style={{
+                                background: `conic-gradient(from ${borderAngle}deg at 50% 50%, #ea580c, #fb923c, #fdba74, #f97316, #ea580c)`,
+                            }}
+                        >
+                            <div className="relative flex items-end gap-2 rounded-[14px] bg-white/95 backdrop-blur-xl py-2 px-2">
+                                <textarea
+                                    ref={inputRef}
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            handleSendMessage();
+                                        }
+                                    }}
+                                    placeholder="Напишите сообщение..."
+                                    rows={1}
+                                    className="flex-1 bg-transparent border-none outline-none resize-none py-3 px-4 text-gray-800 placeholder:text-gray-400 max-h-32"
+                                    disabled={isLoading}
+                                />
+                                <button
+                                    onClick={() => handleSendMessage()}
+                                    disabled={!inputValue.trim() || isLoading}
+                                    className={`p-3 rounded-xl transition-all duration-300 ${inputValue.trim() && !isLoading
+                                        ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-200 hover:scale-105 active:scale-95'
+                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                        }`}
+                                >
+                                    <IoSend className="w-5 h-5" />
+                                </button>
+                            </div>
                         </div>
-                        <div className="text-center mt-3">
-                            <p className="text-xs text-gray-400 font-medium">AI может допускать ошибки. Проверяйте информацию о товарах.</p>
-                        </div>
+                        <p className="text-center text-xs text-gray-400 mt-3">
+                            AI может ошибаться. Проверяйте важную информацию.
+                        </p>
                     </div>
                 </div>
-
             </main>
         </div>
     );

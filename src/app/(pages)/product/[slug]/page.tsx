@@ -2,6 +2,7 @@ export const revalidate = 604800;
 
 import { ProductMobileSlidesShow, ProductSlidesShow, AddToCart } from "@/components";
 import { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProduct, Product } from "@/lib/legacy";
 
@@ -76,13 +77,13 @@ export default async function ProductPage({ params }: Props) {
       <div className="min-h-screen bg-white pt-24 pb-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           <nav className="text-sm text-gray-500 mb-6 flex items-center flex-wrap gap-1">
-            <a href="/" className="hover:text-orange-600 transition-colors">Главная</a>
+            <Link href="/" className="hover:text-orange-600 transition-colors">Главная</Link>
             <span>/</span>
             {product.category_id && (
               <>
-                <a href={`/categories/${product.category_id}`} className="hover:text-orange-600 transition-colors">
+                <Link href={`/categories/${product.category_id}`} className="hover:text-orange-600 transition-colors">
                   {renderValue(adaptedProduct.category)}
-                </a>
+                </Link>
                 <span>/</span>
               </>
             )}
