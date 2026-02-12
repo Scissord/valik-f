@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IoSend, IoMenuOutline, IoCloseOutline, IoAddCircleOutline, IoTrashBinOutline, IoStorefront } from 'react-icons/io5';
+import { IoSend, IoMenuOutline, IoCloseOutline, IoAddOutline, IoTrashOutline, IoStorefrontOutline, IoPersonCircleOutline, IoSparkles, IoCalculatorOutline, IoSearchOutline, IoDocumentTextOutline, IoBulbOutline } from 'react-icons/io5';
+import { HiBars3BottomLeft, HiOutlineShoppingBag, HiXMark, HiPlus, HiOutlineTrash } from 'react-icons/hi2';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAIAssistant } from '@/components/features/ai-assistant/ai-context';
@@ -23,24 +24,15 @@ export default function AIHomePage() {
     const user = useUserStore((state) => state.user);
     const [inputValue, setInputValue] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [borderAngle, setBorderAngle] = useState(0);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
-    const inputWrapRef = useRef<HTMLDivElement>(null);
-
-    const handleInputWrapMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        const el = inputWrapRef.current;
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const angle = (Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180) / Math.PI;
-        setBorderAngle(angle);
-    };
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, isLoading]);
+        // Only scroll if there's actual conversation happening
+        if (messages.length > 1 || isLoading) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages.length, isLoading]);
 
     const handleSendMessage = async (msg?: string) => {
         const textToSend = typeof msg === 'string' ? msg : inputValue;
@@ -50,56 +42,17 @@ export default function AIHomePage() {
     };
 
     const quickActions = [
-        { icon: "🏗️", text: "Рассчитать материалы" },
-        { icon: "🔍", text: "Найти товар" },
-        { icon: "📋", text: "Составить смету" },
-        { icon: "💡", text: "Консультация" }
+        { icon: <IoCalculatorOutline />, text: "Рассчитать материалы" },
+        { icon: <IoSearchOutline />, text: "Найти товар" },
+        { icon: <IoDocumentTextOutline />, text: "Составить смету" },
+        { icon: <IoBulbOutline />, text: "Консультация" }
     ];
 
+    const hasUserMessages = messages.some(m => m.isUser);
+
     return (
-        <div className="min-h-screen min-w-full text-gray-800 overflow-hidden bg-gradient-to-br from-orange-100 via-amber-50 to-orange-200" style={{ backgroundAttachment: 'fixed' }}>
-
-            {/* Top Navigation */}
-            <header className="fixed top-0 left-0 right-0 z-50 px-4 py-4">
-                <div className="max-w-6xl mx-auto flex items-center justify-between backdrop-blur-xl bg-white/70 rounded-2xl px-6 py-3 border border-orange-200/50 shadow-lg shadow-orange-100/50">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="p-2 hover:bg-orange-100 rounded-xl transition-colors"
-                        >
-                            {isMenuOpen ? <IoCloseOutline className="w-6 h-6 text-orange-700" /> : <IoMenuOutline className="w-6 h-6 text-orange-700" />}
-                        </button>
-                        <Image src="/logo.svg" alt="Valik.kz" width={100} height={32} className="h-8 w-auto" />
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <Link
-                            href="/market"
-                            className="flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white rounded-xl transition-colors text-sm font-medium text-gray-700 border border-orange-200"
-                        >
-                            <IoStorefront className="w-4 h-4 text-orange-600" />
-                            <span className="hidden sm:inline">Магазин</span>
-                        </Link>
-                        {user ? (
-                            <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-orange-100 to-amber-100 rounded-xl border border-orange-300">
-                                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 flex items-center justify-center text-xs font-bold text-white">
-                                    {user.full_name?.[0]?.toUpperCase() || 'U'}
-                                </div>
-                                <span className="text-sm hidden sm:inline text-gray-700">{user.full_name}</span>
-                            </div>
-                        ) : (
-                            <Link
-                                href="/auth/login"
-                                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-xl transition-all text-sm font-medium text-white shadow-lg shadow-orange-300/50"
-                            >
-                                Войти
-                            </Link>
-                        )}
-                    </div>
-                </div>
-            </header>
-
-            {/* Slide-out Menu */}
+        <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-orange-100 transition-colors">
+            {/* Sidebar Overlay */}
             <AnimatePresence>
                 {isMenuOpen && (
                     <>
@@ -107,65 +60,56 @@ export default function AIHomePage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+                            className="fixed inset-0 bg-zinc-900/10 backdrop-blur-[2px] z-40"
                             onClick={() => setIsMenuOpen(false)}
                         />
                         <motion.aside
-                            initial={{ x: -400, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: -400, opacity: 0 }}
-                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                            className="fixed left-0 top-0 bottom-0 w-80 z-50 bg-white/95 backdrop-blur-xl border-r border-orange-100 flex flex-col shadow-2xl"
+                            initial={{ x: -280 }}
+                            animate={{ x: 0 }}
+                            exit={{ x: -280 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed left-0 top-0 bottom-0 w-[280px] z-50 bg-white border-r border-zinc-100 flex flex-col shadow-xl"
                         >
-                            <div className="p-6 border-b border-orange-100">
-                                <div className="flex items-center justify-between mb-6">
-                                    <h2 className="text-xl font-bold text-gray-800">История чатов</h2>
-                                    <button
-                                        onClick={() => setIsMenuOpen(false)}
-                                        className="p-2 hover:bg-orange-100 rounded-xl transition-colors"
-                                    >
-                                        <IoCloseOutline className="w-5 h-5 text-gray-600" />
-                                    </button>
-                                </div>
+                            <div className="p-4 border-b border-zinc-50 flex items-center justify-between">
+                                <span className="font-semibold text-sm tracking-tight">История чатов</span>
+                                <button onClick={() => setIsMenuOpen(false)} className="p-2 hover:bg-zinc-50 rounded-lg">
+                                    <HiXMark className="text-xl" />
+                                </button>
+                            </div>
+
+                            <div className="p-3">
                                 <button
                                     onClick={() => { createNewChat(); setIsMenuOpen(false); }}
-                                    className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-xl transition-all font-medium text-white shadow-lg shadow-orange-200"
+                                    className="w-full flex items-center justify-center gap-2 py-2.5 bg-zinc-900 text-white rounded-xl text-sm font-medium hover:bg-zinc-800 transition-colors shadow-sm"
                                 >
-                                    <IoAddCircleOutline className="w-5 h-5" />
+                                    <HiPlus className="text-lg" />
                                     Новый чат
                                 </button>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin">
+                            <div className="flex-1 overflow-y-auto px-2 space-y-1">
                                 {chats.length === 0 ? (
-                                    <div className="text-center py-10 text-gray-400">
-                                        <Image src="/logo.svg" alt="" width={80} height={26} className="h-10 w-auto mx-auto mb-3 opacity-50" />
-                                        <p>Нет сохранённых чатов</p>
+                                    <div className="text-center py-20 text-zinc-400 flex flex-col items-center">
+                                        <HiOutlineShoppingBag className="text-4xl mb-4 opacity-40" />
+                                        <p className="text-sm">История пуста</p>
                                     </div>
                                 ) : (
                                     chats.map((chat) => (
                                         <button
                                             key={chat.id}
                                             onClick={() => { loadChatHistory(chat.id); setIsMenuOpen(false); }}
-                                            className={`w-full text-left p-4 rounded-xl transition-all group ${currentChatId === chat.id
-                                                ? 'bg-gradient-to-r from-orange-100 to-amber-100 border border-orange-300'
-                                                : 'hover:bg-orange-50 border border-transparent'
-                                                }`}
+                                            className={`w-full group flex items-center justify-between p-3 rounded-xl transition-all text-left ${currentChatId === chat.id ? 'bg-zinc-100' : 'hover:bg-zinc-50'}`}
                                         >
-                                            <div className="flex items-start justify-between gap-2">
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="font-medium truncate text-gray-800">{chat.title || 'Новый чат'}</div>
-                                                    <div className="text-xs text-gray-400 truncate mt-1">{chat.lastMessage || 'Пустой чат'}</div>
-                                                </div>
-                                                {currentChatId === chat.id && (
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); deleteChat(chat.id); }}
-                                                        className="p-1 hover:bg-red-100 rounded text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                    >
-                                                        <IoTrashBinOutline className="w-4 h-4" />
-                                                    </button>
-                                                )}
+                                            <div className="flex-1 min-w-0 pr-2">
+                                                <div className="text-sm font-medium truncate text-zinc-800">{chat.title || 'Без названия'}</div>
+                                                <div className="text-[11px] text-zinc-400 truncate mt-0.5">{chat.lastMessage || 'Пустой чат'}</div>
                                             </div>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); deleteChat(chat.id); }}
+                                                className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all"
+                                            >
+                                                <HiOutlineTrash className="text-sm" />
+                                            </button>
                                         </button>
                                     ))
                                 )}
@@ -175,152 +119,135 @@ export default function AIHomePage() {
                 )}
             </AnimatePresence>
 
-            {/* Main Content */}
-            <main className="relative min-h-screen flex flex-col pt-24 pb-32">
-                <div className="flex-1 max-w-4xl mx-auto w-full px-4 overflow-y-auto">
-
-                    {/* Empty State */}
-                    {messages.length <= 1 && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="text-center py-16"
-                        >
-                            <div className="w-24 h-24 mx-auto mb-8 relative flex items-center justify-center">
-                                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-amber-400 rounded-3xl opacity-50 blur-xl" />
-                                <div className="relative w-full h-full bg-white/90 rounded-3xl flex items-center justify-center shadow-2xl shadow-orange-300/50 p-3">
-                                    <Image src="/logo.svg" alt="Valik.kz" width={72} height={72} className="w-full h-full object-contain" />
-                                </div>
-                            </div>
-
-                            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent">
-                                Привет! Я Valik AI
-                            </h1>
-                            <p className="text-lg text-gray-600 max-w-md mx-auto mb-12">
-                                Ваш умный помощник по строительству и ремонту. Задайте любой вопрос!
-                            </p>
-
-                            {/* Quick Actions */}
-                            <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
-                                {quickActions.map((action, idx) => (
-                                    <motion.button
-                                        key={idx}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: idx * 0.1 }}
-                                        onClick={() => handleSendMessage(action.text)}
-                                        className="flex items-center gap-2 px-5 py-3 bg-white/80 hover:bg-white border border-orange-200 hover:border-orange-400 rounded-2xl transition-all group shadow-sm hover:shadow-md"
-                                    >
-                                        <span className="text-xl">{action.icon}</span>
-                                        <span className="font-medium text-gray-700 group-hover:text-orange-600">{action.text}</span>
-                                    </motion.button>
-                                ))}
-                            </div>
-                        </motion.div>
-                    )}
-
-                    {/* Messages */}
-                    <div className="space-y-6 py-4">
-                        {messages.filter(m => m.id !== 'initial-greeting' || messages.length === 1).map((msg, idx) => (
-                            <motion.div
-                                key={msg.id || idx}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className={`flex gap-4 ${msg.isUser ? 'justify-end' : 'justify-start'}`}
-                            >
-                                {!msg.isUser && (
-                                    <div className="w-10 h-10 rounded-2xl bg-white flex-shrink-0 flex items-center justify-center shadow-lg border border-orange-100 overflow-hidden p-1">
-                                        <Image src="/logo.svg" alt="" width={36} height={36} className="w-full h-full object-contain" />
-                                    </div>
-                                )}
-                                <div className={`max-w-[80%] ${msg.isUser ? 'order-first' : ''}`}>
-                                    <div className={`
-                                        p-4 rounded-2xl text-base leading-relaxed
-                                        ${msg.isUser
-                                            ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-tr-sm shadow-lg shadow-orange-200'
-                                            : 'bg-white/90 backdrop-blur-sm border border-orange-100 text-gray-800 rounded-tl-sm shadow-sm'
-                                        }
-                                    `}>
-                                        {msg.text}
-                                    </div>
-                                    <div className={`text-xs text-gray-400 mt-2 ${msg.isUser ? 'text-right' : 'text-left'}`}>
-                                        {formatMessageTime(msg.timestamp)}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
-
-                        {/* Loading indicator */}
-                        {isLoading && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="flex gap-4 justify-start"
-                            >
-                                <div className="w-10 h-10 rounded-2xl bg-white flex-shrink-0 flex items-center justify-center shadow-lg border border-orange-100 overflow-hidden p-1 animate-pulse">
-                                    <Image src="/logo.svg" alt="" width={36} height={36} className="w-full h-full object-contain" />
-                                </div>
-                                <div className="bg-white/90 backdrop-blur-sm border border-orange-100 p-4 rounded-2xl rounded-tl-sm flex items-center gap-2 shadow-sm">
-                                    <div className="flex gap-1">
-                                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" />
-                                        <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce [animation-delay:0.15s]" />
-                                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce [animation-delay:0.3s]" />
-                                    </div>
-                                    <span className="text-gray-400 text-sm ml-2">Думаю...</span>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        <div ref={messagesEndRef} className="h-4" />
+            {/* Header */}
+            <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-zinc-100 h-14 flex items-center justify-between px-4">
+                <div className="flex items-center gap-3">
+                    <button onClick={() => setIsMenuOpen(true)} className="p-2 hover:bg-zinc-50 rounded-lg transition-colors">
+                        <HiBars3BottomLeft className="text-2xl text-zinc-600" />
+                    </button>
+                    <div className="flex items-center gap-2">
+                        <span className="text-[10px] uppercase tracking-widest font-bold text-orange-500">Valik AI</span>
                     </div>
                 </div>
 
-                {/* Input Area */}
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-orange-200/90 via-amber-100/70 to-transparent">
-                    <div className="max-w-3xl mx-auto">
-                        <div
-                            ref={inputWrapRef}
-                            onMouseMove={handleInputWrapMouseMove}
-                            onMouseLeave={() => setBorderAngle(0)}
-                            className="relative rounded-2xl p-[2px] shadow-xl shadow-orange-100/50 transition-[background] duration-150"
-                            style={{
-                                background: `conic-gradient(from ${borderAngle}deg at 50% 50%, #ea580c, #fb923c, #fdba74, #f97316, #ea580c)`,
-                            }}
-                        >
-                            <div className="relative flex items-end gap-2 rounded-[14px] bg-white/95 backdrop-blur-xl py-2 px-2">
-                                <textarea
-                                    ref={inputRef}
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();
-                                            handleSendMessage();
-                                        }
-                                    }}
-                                    placeholder="Напишите сообщение..."
-                                    rows={1}
-                                    className="flex-1 bg-transparent border-none outline-none resize-none py-3 px-4 text-gray-800 placeholder:text-gray-400 max-h-32"
-                                    disabled={isLoading}
-                                />
-                                <button
-                                    onClick={() => handleSendMessage()}
-                                    disabled={!inputValue.trim() || isLoading}
-                                    className={`p-3 rounded-xl transition-all duration-300 ${inputValue.trim() && !isLoading
-                                        ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-200 hover:scale-105 active:scale-95'
-                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                        }`}
-                                >
-                                    <IoSend className="w-5 h-5" />
-                                </button>
+                <div className="flex items-center gap-2">
+                    <Link href="/market" className="p-2 hover:bg-zinc-50 rounded-lg transition-colors text-zinc-600">
+                        <HiOutlineShoppingBag className="text-xl" />
+                    </Link>
+                    {user ? (
+                        <div className="flex items-center gap-2 p-1 pl-3 pr-1 bg-zinc-50 border border-zinc-100 rounded-full">
+                            <span className="text-xs font-medium text-zinc-600">{user.full_name?.split(' ')[0]}</span>
+                            <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold">
+                                {user.full_name?.[0].toUpperCase()}
                             </div>
                         </div>
-                        <p className="text-center text-xs text-gray-400 mt-3">
-                            AI может ошибаться. Проверяйте важную информацию.
+                    ) : (
+                        <Link href="/auth/login" className="text-xs font-semibold px-4 py-2 bg-zinc-900 text-white rounded-full hover:bg-zinc-800 transition-colors">
+                            Войти
+                        </Link>
+                    )}
+                </div>
+            </header>
+
+            <main className={`max-w-4xl mx-auto w-full flex flex-col px-4 min-h-[calc(100vh-3.5rem)] pb-32 overflow-y-auto`}>
+                {/* Empty State / Welcome Screen */}
+                {!hasUserMessages && (
+                    <div className="flex flex-col items-center justify-center pt-12 pb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 mb-3">
+                            Привет! Чем могу помочь?
+                        </h1>
+                        <p className="text-zinc-500 text-sm sm:text-base max-w-sm mb-12 font-medium">
+                            Ваш персональный ассистент по стройматериалам и ремонту в Valik.kz
                         </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl px-4">
+                            {quickActions.map((action, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => handleSendMessage(action.text)}
+                                    className="flex items-center gap-3 p-4 bg-white border border-zinc-200 hover:border-orange-200 hover:bg-orange-50/10 rounded-2xl transition-all text-left group"
+                                >
+                                    <span className="text-xl text-zinc-400 group-hover:text-orange-500 transition-colors">{action.icon}</span>
+                                    <span className="text-sm font-medium text-zinc-600 group-hover:text-zinc-900">{action.text}</span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
+                )}
+
+                {/* Chat History */}
+                <div className="space-y-10 py-6">
+                    {messages.map((msg, idx) => (
+                        <motion.div
+                            key={msg.id || idx}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-col max-w-2xl mx-auto w-full group"
+                        >
+                            <div className="flex items-center gap-2 mb-2 px-1">
+                                <span className={`text-[11px] font-bold uppercase tracking-wider ${msg.isUser ? 'text-zinc-400' : 'text-orange-500'}`}>
+                                    {msg.isUser ? 'Вы' : 'Valik AI'}
+                                </span>
+                                <span className="text-[10px] text-zinc-300 ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {formatMessageTime(msg.timestamp)}
+                                </span>
+                            </div>
+                            <div className={`
+                                text-[15px] leading-relaxed text-zinc-800 whitespace-pre-wrap px-1
+                                ${msg.isUser ? 'font-medium' : 'font-normal'}
+                            `}>
+                                {msg.text}
+                            </div>
+                        </motion.div>
+                    ))}
+
+                    {/* Loading indicator */}
+                    {isLoading && (
+                        <div className="max-w-2xl mx-auto w-full px-1">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-[11px] font-bold text-orange-500 uppercase tracking-wider animate-pulse">Valik AI думает...</span>
+                            </div>
+                        </div>
+                    )}
+                    <div ref={messagesEndRef} className="h-4" />
                 </div>
             </main>
+
+            {/* Input Fixed Area */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md pt-2 pb-8 px-4">
+                <div className="max-w-2xl mx-auto w-full relative">
+                    <div className="flex items-center bg-white border border-zinc-200 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 focus-within:ring-2 focus-within:ring-orange-100 focus-within:border-orange-200 p-1.5 overflow-hidden">
+                        <textarea
+                            ref={inputRef}
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSendMessage();
+                                }
+                            }}
+                            placeholder="Спросите меня о чем угодно..."
+                            rows={1}
+                            className="flex-1 bg-transparent border-none outline-none resize-none py-2.5 pl-4 pr-2 text-[15px] text-zinc-800 placeholder:text-zinc-400 max-h-48 scrollbar-none"
+                            disabled={isLoading}
+                        />
+                        <button
+                            onClick={() => handleSendMessage()}
+                            disabled={!inputValue.trim() || isLoading}
+                            className={`p-2.5 rounded-full transition-all shrink-0 ${inputValue.trim() && !isLoading
+                                ? 'bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95'
+                                : 'bg-zinc-50 text-zinc-300 cursor-not-allowed'
+                                }`}
+                        >
+                            <IoSend className="text-lg" />
+                        </button>
+                    </div>
+                    <div className="flex justify-center mt-3 text-center px-4">
+                        <span className="text-[10px] text-zinc-400 font-medium">Valik AI может предоставлять неточную информацию. Проверяйте важные данные.</span>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
