@@ -98,7 +98,29 @@ export const CartItemCard = ({ product, updateProductQuantity, deleteProduct }: 
                                 >
                                     <IoRemoveOutline className="w-4 h-4" />
                                 </button>
-                                <span className="w-8 text-center text-sm font-medium">{product.quantity}</span>
+                                <input
+                                    type="text"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
+                                    value={product.quantity}
+                                    onChange={(e) => {
+                                        const newValue = e.target.value.replace(/\D/g, '');
+                                        if (newValue === '') {
+                                            updateProductQuantity(product, 0); // Temporary state, handled on blur
+                                        } else {
+                                            const num = parseInt(newValue);
+                                            if (!isNaN(num)) {
+                                                updateProductQuantity(product, Math.max(1, num));
+                                            }
+                                        }
+                                    }}
+                                    onBlur={(_e) => {
+                                        if (product.quantity < 1) {
+                                            updateProductQuantity(product, 1);
+                                        }
+                                    }}
+                                    className="w-10 text-center text-base font-medium bg-transparent border-none focus:outline-none focus:ring-0 p-0 text-gray-900"
+                                />
                                 <button
                                     onClick={() => updateProductQuantity(product, product.quantity + 1)}
                                     className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-orange-500 transition-colors"

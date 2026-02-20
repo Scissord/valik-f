@@ -4,7 +4,7 @@ import { useCartStore, useUserStore } from "@/lib/legacy";
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import { IoCartOutline, IoPersonOutline, IoLogoWhatsapp } from "react-icons/io5";
+import { IoCartOutline, IoPersonOutline, IoLogoWhatsapp, IoChatbubblesOutline } from "react-icons/io5";
 import { FaTelegram } from "react-icons/fa6";
 import Logo from "./logo";
 import Search from "./search";
@@ -112,7 +112,14 @@ export const Header = () => {
             </div>
 
             <div className="flex items-center space-x-3 md:space-x-6 md:flex-none">
-              <div className="md:hidden">
+              <div className="md:hidden flex items-center gap-3">
+                <Link
+                  href="/"
+                  className="p-2 hover:bg-zinc-50 rounded-lg transition-colors text-[#fc640c]"
+                  aria-label="Открыть AI Ассистент"
+                >
+                  <IoChatbubblesOutline className="w-5 h-5" />
+                </Link>
                 <Search isMobile={true} />
               </div>
 

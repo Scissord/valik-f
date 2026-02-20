@@ -20,7 +20,7 @@ export const MobileNavbar = ({ hidePlaceholder = false }: MobileNavbarProps) => 
   const navItems = [
     {
       name: "Главная",
-      href: "/",
+      href: "/market",
       activeIcon: <IoHome className="h-6 w-6" />,
       inactiveIcon: <IoHomeOutline className="h-6 w-6" />,
     },

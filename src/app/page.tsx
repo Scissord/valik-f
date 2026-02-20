@@ -2,10 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IoSend, IoMenuOutline, IoCloseOutline, IoAddOutline, IoTrashOutline, IoStorefrontOutline, IoPersonCircleOutline, IoSparkles, IoCalculatorOutline, IoSearchOutline, IoDocumentTextOutline, IoBulbOutline } from 'react-icons/io5';
+import { IoSend, IoCalculatorOutline, IoSearchOutline, IoDocumentTextOutline, IoBulbOutline } from 'react-icons/io5';
 import { HiBars3BottomLeft, HiOutlineShoppingBag, HiXMark, HiPlus, HiOutlineTrash } from 'react-icons/hi2';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useAIAssistant } from '@/components/features/ai-assistant/ai-context';
 import { useUserStore, formatMessageTime } from '@/lib/legacy';
 
@@ -77,13 +76,13 @@ export default function AIHomePage() {
                                 </button>
                             </div>
 
-                            <div className="p-3">
+                            <div className="p-3 flex justify-center">
                                 <button
                                     onClick={() => { createNewChat(); setIsMenuOpen(false); }}
-                                    className="w-full flex items-center justify-center gap-2 py-2.5 bg-zinc-900 text-white rounded-xl text-sm font-medium hover:bg-zinc-800 transition-colors shadow-sm"
+                                    className="p-2.5 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-all shadow-sm active:scale-95"
+                                    title="Новый чат"
                                 >
-                                    <HiPlus className="text-lg" />
-                                    Новый чат
+                                    <HiPlus className="text-xl" />
                                 </button>
                             </div>
 
@@ -229,7 +228,7 @@ export default function AIHomePage() {
                             }}
                             placeholder="Спросите меня о чем угодно..."
                             rows={1}
-                            className="flex-1 bg-transparent border-none outline-none resize-none py-2.5 pl-4 pr-2 text-[15px] text-zinc-800 placeholder:text-zinc-400 max-h-48 scrollbar-none"
+                            className="flex-1 bg-transparent border-none outline-none resize-none py-2.5 pl-4 pr-2 text-[16px] text-zinc-800 placeholder:text-zinc-400 max-h-48 scrollbar-none"
                             disabled={isLoading}
                         />
                         <button
