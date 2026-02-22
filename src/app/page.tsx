@@ -63,11 +63,11 @@ export default function AIHomePage() {
                             onClick={() => setIsMenuOpen(false)}
                         />
                         <motion.aside
-                            initial={{ x: -280 }}
+                            initial={{ x: -296 }}
                             animate={{ x: 0 }}
-                            exit={{ x: -280 }}
+                            exit={{ x: -296 }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed left-0 top-0 bottom-0 w-[280px] z-50 bg-white border-r border-zinc-100 flex flex-col shadow-xl"
+                            className="fixed left-2 sm:left-4 top-2 sm:top-4 bottom-2 sm:bottom-4 w-[280px] z-50 bg-white border border-zinc-100 rounded-2xl flex flex-col shadow-2xl overflow-hidden"
                         >
                             <div className="p-4 border-b border-zinc-50 flex items-center justify-between">
                                 <span className="font-semibold text-sm tracking-tight">История чатов</span>
@@ -76,13 +76,14 @@ export default function AIHomePage() {
                                 </button>
                             </div>
 
-                            <div className="p-3 flex justify-center">
+                            <div className="p-4 flex justify-center border-b border-zinc-50/50">
                                 <button
                                     onClick={() => { createNewChat(); setIsMenuOpen(false); }}
-                                    className="p-2.5 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-all shadow-sm active:scale-95"
-                                    title="Новый чат"
+                                    className="w-full py-2.5 px-4 bg-orange-500 text-white font-medium rounded-xl hover:bg-orange-600 transition-all shadow-[0_2px_8px_-2px_rgba(249,115,22,0.6)] active:scale-[0.98] flex items-center justify-center gap-2"
+                                    title="Создать новый чат"
                                 >
-                                    <HiPlus className="text-xl" />
+                                    <HiPlus className="text-lg stroke-2" />
+                                    <span>Создать новый чат</span>
                                 </button>
                             </div>
 

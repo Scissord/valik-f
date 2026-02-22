@@ -46,7 +46,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
 
     try {
       const groupedCart = cart.reduce<CartItem[]>((acc, item) => {
-        const existingItem = acc.find(i => i.id === item.id && i.articul === item.articul);
+        const existingItem = acc.find(i => i.id === item.id && i.article === item.article);
         if (existingItem) {
           existingItem.quantity += item.quantity;
         } else {

@@ -13,7 +13,7 @@ export interface Product {
     brand?: Brand | string;
     unit?: string;
     rating?: number;
-    articul?: string;
+    article?: string | null;
     inStock?: number;
     quantity?: number; // Для использования в корзине
     created_at?: string | number;

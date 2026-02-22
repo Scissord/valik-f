@@ -75,13 +75,13 @@ export const useCartStore = create<State>()(
 
         // Ищем товар в корзине по ID, артикулу и сегодняшней дате
         const productInCart = cart.find(
-          (item) => item.id === product.id && item.articul === product.articul && item.added_at === today
+          (item) => item.id === product.id && item.article === product.article && item.added_at === today
         );
 
         if (productInCart) {
           // Если такой товар, добавленный сегодня, уже есть, обновляем его количество
           const updatedCart = cart.map((item) => {
-            if (item.id === product.id && item.articul === product.articul && item.added_at === today) {
+            if (item.id === product.id && item.article === product.article && item.added_at === today) {
               return { ...item, quantity: item.quantity + (product.quantity || 1) };
             }
             return item;

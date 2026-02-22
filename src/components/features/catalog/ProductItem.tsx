@@ -143,10 +143,10 @@ export const ProductItem = memo(({ product }: Props) => {
                 <span className="font-medium">{product.unit}</span>
               </div>
             )}
-            {product.articul && (
+            {product.article && (
               <div className="flex justify-between">
                 <span>Артикул:</span>
-                <span className="font-mono">{product.articul}</span>
+                <span className="font-mono">{product.article}</span>
               </div>
             )}
           </div>

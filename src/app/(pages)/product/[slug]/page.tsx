@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProduct, Product } from "@/lib/legacy";
+import { ChevronRight, Home, Hash, Star, LayoutGrid, Tag, Scale } from "lucide-react";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -51,7 +52,7 @@ export default async function ProductPage({ params }: Props) {
       brand: typeof product.brand === 'object' && product.brand !== null ? (product.brand as any).title : String(product.brand || 'Не указан'),
       category: typeof product.category === 'object' && product.category !== null ? (product.category as any).title : String(product.category || 'Не указана'),
       unit: typeof product.unit === 'object' && product.unit !== null ? (product.unit as any).title : String(product.unit || 'шт'),
-      articul: product.articul || 'N/A',
+      article: product.article || 'N/A',
       rating: product.rating || 0,
       brand_id: product.brand_id || 0,
       unit_id: product.unit_id || 0,
@@ -74,94 +75,116 @@ export default async function ProductPage({ params }: Props) {
     };
 
     return (
-      <div className="min-h-screen bg-white pt-24 pb-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <nav className="text-sm text-gray-500 mb-6 flex items-center flex-wrap gap-1">
-            <Link href="/" className="hover:text-orange-600 transition-colors">Главная</Link>
-            <span>/</span>
+      <div className="min-h-[100dvh] bg-slate-50 pt-24 pb-4 sm:pb-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8 pb-4 sm:pb-8">
+          {/* Breadcrumbs */}
+          <nav className="text-sm font-medium text-slate-500 mb-6 sm:mb-8 flex items-center flex-wrap gap-2">
+            <Link href="/" className="hover:text-orange-600 transition-colors flex items-center gap-1">
+              <Home className="w-4 h-4" />
+              <span>Главная</span>
+            </Link>
+            <ChevronRight className="w-4 h-4 text-slate-400" />
             {product.category_id && (
               <>
                 <Link href={`/categories/${product.category_id}`} className="hover:text-orange-600 transition-colors">
                   {renderValue(adaptedProduct.category)}
                 </Link>
-                <span>/</span>
+                <ChevronRight className="w-4 h-4 text-slate-400" />
               </>
             )}
-            <span className="text-gray-700">{adaptedProduct.title}</span>
+            <span className="text-slate-800">{adaptedProduct.title}</span>
           </nav>
 
-          <div className="grid lg:grid-cols-2 gap-8 mb-12">
-            <div>
-              <ProductSlidesShow
-                className="hidden md:block rounded-xl border border-gray-100 overflow-hidden"
-                images={adaptedProduct.images}
-                title={adaptedProduct.title}
-              />
-              <ProductMobileSlidesShow
-                className="block md:hidden rounded-xl border border-gray-100 overflow-hidden"
-                images={adaptedProduct.images}
-                title={adaptedProduct.title}
-              />
+          <div className="grid lg:grid-cols-12 gap-8 sm:gap-10 mb-4 sm:mb-12 items-start">
+            {/* Left Column: Images */}
+            <div className="lg:col-span-6 xl:col-span-5">
+              <div className="sticky top-28">
+                <div className="p-1 rounded-3xl">
+                  <ProductSlidesShow
+                    className="hidden md:block rounded-2xl overflow-hidden"
+                    images={adaptedProduct.images}
+                    title={adaptedProduct.title}
+                  />
+                  <ProductMobileSlidesShow
+                    className="block md:hidden rounded-2xl overflow-hidden"
+                    images={adaptedProduct.images}
+                    title={adaptedProduct.title}
+                  />
+                </div>
+              </div>
             </div>
 
-            <div>
-              <div className="mb-3">
-                <span className="inline-block bg-orange-50 text-orange-700 px-3 py-1.5 rounded-lg text-sm font-medium border border-orange-100">
-                  Артикул: {adaptedProduct.articul}
-                </span>
-              </div>
-
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 tracking-tight">
+            {/* Right Column: Info */}
+            <div className="lg:col-span-6 xl:col-span-7 flex flex-col pt-2 lg:pl-4">
+              {/* Title */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-2">
                 {adaptedProduct.title}
               </h1>
 
-              <div className="flex items-baseline gap-3 mb-6">
-                <div className="text-4xl font-bold text-orange-600">
-                  {adaptedProduct.price.toLocaleString('ru-RU')} ₸
+              {/* Brand and Rating */}
+              <div className="flex flex-wrap items-center gap-2 mb-6 text-sm">
+                <span className="text-slate-500">
+                  Бренд <span className="font-semibold text-indigo-600">{renderValue(adaptedProduct.brand)}</span>
+                </span>
+                <div className="flex items-center gap-0.5 ml-2 text-amber-400">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} className={`w-4 h-4 ${star <= (adaptedProduct.rating || 0) ? 'fill-current' : 'text-slate-200 fill-current'}`} />
+                  ))}
                 </div>
-                <div className="text-sm text-gray-500">за {renderValue(adaptedProduct.unit)}</div>
               </div>
 
-              <div className="mb-8">
-                <AddToCart product={adaptedProduct} />
+              {/* Price Block */}
+              <div className="flex items-center gap-5 mb-6">
+                <div className="bg-orange-50/80 text-orange-600 px-5 py-2.5 rounded-2xl text-4xl font-extrabold font-mono tracking-tighter w-fit">
+                  {adaptedProduct.price.toLocaleString('ru-RU')}
+                  <span className="text-2xl ml-1 font-sans font-semibold">₸</span>
+                </div>
+                <div className="flex flex-col text-sm justify-center">
+                  <span className="text-slate-400 text-xs">Цена за {renderValue(adaptedProduct.unit)}</span>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="bg-white p-4 rounded-xl border border-gray-100">
-                  <div className="text-sm text-gray-500 mb-1">Бренд</div>
-                  <div className="font-medium text-gray-900">{renderValue(adaptedProduct.brand)}</div>
-                </div>
-                <div className="bg-white p-4 rounded-xl border border-gray-100">
-                  <div className="text-sm text-gray-500 mb-1">Категория</div>
-                  <div className="font-medium text-gray-900">{renderValue(adaptedProduct.category)}</div>
-                </div>
-                <div className="bg-white p-4 rounded-xl border border-gray-100">
-                  <div className="text-sm text-gray-500 mb-1">Единица</div>
-                  <div className="font-medium text-gray-900">{renderValue(adaptedProduct.unit)}</div>
-                </div>
-                <div className="bg-white p-4 rounded-xl border border-gray-100">
-                  <div className="text-sm text-gray-500 mb-1">Рейтинг</div>
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <svg key={star} className={`w-4 h-4 ${star <= (adaptedProduct.rating || 0) ? 'text-orange-400' : 'text-gray-200'}`}
-                        fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
+              {/* Description */}
+              <div className="text-slate-500 text-[15px] leading-relaxed mb-6">
+                {adaptedProduct.description || 'Описание товара отсутствует.'}
+              </div>
+
+              <hr className="border-slate-200 mb-6" />
+
+              {/* Specs / Features (Square Icons) */}
+              <div className="grid grid-cols-2 md:grid-cols-4 sm:flex sm:flex-wrap items-center gap-2 sm:gap-3 mb-6">
+                {adaptedProduct.article !== 'N/A' && (
+                  <div className="flex flex-col items-center justify-center border border-slate-200 rounded-xl sm:rounded-2xl w-full sm:w-[88px] h-16 sm:h-[88px] bg-white hover:border-slate-300 transition-colors">
+                    <Hash className="w-5 h-5 sm:w-6 sm:h-6 text-slate-500 mb-0.5 sm:mb-1.5" strokeWidth={1.5} />
+                    <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 tracking-wide uppercase">Артикул</span>
+                    <span className="text-[9px] sm:text-[10px] text-slate-400 line-clamp-1 px-1">{adaptedProduct.article}</span>
                   </div>
+                )}
+                <div className="flex flex-col items-center justify-center border border-slate-200 rounded-xl sm:rounded-2xl w-full sm:w-[88px] h-16 sm:h-[88px] bg-white hover:border-slate-300 transition-colors">
+                  <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6 text-slate-500 mb-0.5 sm:mb-1.5" strokeWidth={1.5} />
+                  <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 tracking-wide uppercase text-center leading-tight line-clamp-1 px-1">Категория</span>
+                  <span className="text-[9px] sm:text-[10px] text-slate-400 line-clamp-1 px-1">{renderValue(adaptedProduct.category)}</span>
                 </div>
+                <div className="flex flex-col items-center justify-center border border-slate-200 rounded-xl sm:rounded-2xl w-full sm:w-[88px] h-16 sm:h-[88px] bg-white hover:border-slate-300 transition-colors">
+                  <Scale className="w-5 h-5 sm:w-6 sm:h-6 text-slate-500 mb-0.5 sm:mb-1.5" strokeWidth={1.5} />
+                  <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 tracking-wide uppercase text-center leading-tight line-clamp-1 px-1">Единица</span>
+                  <span className="text-[9px] sm:text-[10px] text-slate-400 line-clamp-1 px-1">{renderValue(adaptedProduct.unit)}</span>
+                </div>
+                <div className="flex flex-col items-center justify-center border border-slate-200 rounded-xl sm:rounded-2xl w-full sm:w-[88px] h-16 sm:h-[88px] bg-white hover:border-slate-300 transition-colors">
+                  <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-slate-500 mb-0.5 sm:mb-1.5" strokeWidth={1.5} />
+                  <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 tracking-wide uppercase text-center leading-tight line-clamp-1 px-1">Бренд</span>
+                  <span className="text-[9px] sm:text-[10px] text-slate-400 line-clamp-1 px-1 truncate w-full text-center">{renderValue(adaptedProduct.brand)}</span>
+                </div>
+              </div>
+
+              <hr className="border-slate-200 mb-8" />
+
+              {/* Actions */}
+              <div className="w-full xl:w-2/3">
+                <AddToCart product={adaptedProduct} />
               </div>
             </div>
           </div>
-
-          {adaptedProduct.description && (
-            <div className="bg-white p-6 rounded-xl border border-gray-100">
-              <h2 className="text-xl font-bold mb-4 text-gray-900">Описание</h2>
-              <p className="text-gray-700 leading-relaxed whitespace-pre-line text-base">
-                {adaptedProduct.description}
-              </p>
-            </div>
-          )}
         </div>
       </div>
     );
