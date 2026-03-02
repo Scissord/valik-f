@@ -5,11 +5,6 @@ import { usePathname } from 'next/navigation';
 import type { ChatMessage, Chat } from '@/lib/legacy';
 import { getChats, getChatHistory, sendMessage, deleteChat as deleteChatAPI } from '@/lib/legacy';
 
-const GREETING_MESSAGE: ChatMessage = {
-  text: 'Здравствуйте! Чем я могу вам помочь сегодня?',
-  isUser: false,
-  id: 'initial-greeting'
-};
 
 interface AIAssistantContextType {
   isOpen: boolean;
@@ -33,7 +28,7 @@ const AIAssistantContext = createContext<AIAssistantContextType | undefined>(und
 
 export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([GREETING_MESSAGE]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +46,7 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
       const history = await getChatHistory(chatId);
       // Показываем приветственное сообщение только если чат пустой
       if (history.length === 0) {
-        setMessages([GREETING_MESSAGE]);
+        setMessages([]);
       } else {
         setMessages(history);
       }
@@ -61,7 +56,7 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Ошибка при загрузке истории чата:', error);
       setError('Не удалось загрузить историю чата');
-      setMessages([GREETING_MESSAGE]);
+      setMessages([]);
     } finally {
       setIsLoading(false);
     }
@@ -69,18 +64,18 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
 
   const loadChats = useCallback(async (shouldAutoLoadChat = true) => {
     const isCreatingNewChatMarker = localStorage.getItem('ai-assistant-creating-new-chat') === 'true';
-    
+
     try {
       const fetchedChats = await getChats();
       setChats(fetchedChats);
-      
+
       // Автоматически загружаем чат только если это разрешено, нет текущего чата и не создается новый чат
       if (shouldAutoLoadChat && !currentChatId && !isCreatingNewChatMarker && fetchedChats.length > 0) {
         const savedChatId = localStorage.getItem('ai-assistant-current-chat');
-        const chatToLoad = savedChatId && fetchedChats.find(chat => chat.id === savedChatId) 
-          ? savedChatId 
+        const chatToLoad = savedChatId && fetchedChats.find(chat => chat.id === savedChatId)
+          ? savedChatId
           : fetchedChats[0].id; // Берем последний чат если сохраненный не найден
-        
+
         await loadChatHistory(chatToLoad);
       }
     } catch (error) {
@@ -93,7 +88,7 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const isAuthPage = pathname?.startsWith('/auth');
     const isCreatingNewChatMarker = localStorage.getItem('ai-assistant-creating-new-chat') === 'true';
-    
+
     if (!isAuthPage && !isCreatingNewChatMarker) {
       loadChats(true); // Только при первой загрузке разрешаем автозагрузку чата
     }
@@ -106,14 +101,14 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
   const createNewChat = useCallback(() => {
     // Устанавливаем специальный маркер в localStorage, чтобы предотвратить автозагрузку
     localStorage.setItem('ai-assistant-creating-new-chat', 'true');
-    
+
     setCurrentChatId(null);
-    setMessages([GREETING_MESSAGE]);
+    setMessages([]);
     setError(null); // Очищаем ошибки при создании нового чата
-    
+
     // Удаляем сохраненный ID чата из localStorage
     localStorage.removeItem('ai-assistant-current-chat');
-    
+
     // Убираем маркер через небольшую задержку
     setTimeout(() => {
       localStorage.removeItem('ai-assistant-creating-new-chat');
@@ -127,7 +122,7 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
       if (success) {
         // Обновляем список чатов
         await loadChats(false);
-        
+
         // Если удаляем текущий чат, создаем новый
         if (currentChatId === chatId) {
           createNewChat();
@@ -143,26 +138,22 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
 
   const handleSendMessage = useCallback(async (message: string) => {
     if (!message.trim()) return;
-    
+
     // Добавляем сообщение пользователя
-    const userMessage: ChatMessage = { 
-      text: message, 
-      isUser: true, 
+    const userMessage: ChatMessage = {
+      text: message,
+      isUser: true,
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString()
     };
-    
-    setMessages(prev => {
-      // Убираем приветственное сообщение при первом сообщении пользователя
-      const filteredMessages = prev.filter(msg => msg.id !== 'initial-greeting');
-      return [...filteredMessages, userMessage];
-    });
-    
+
+    setMessages(prev => [...prev, userMessage]);
+
     setIsLoading(true);
-    
+
     try {
       const responseMessage = await sendMessage({ message, chatId: currentChatId });
-      
+
       if (responseMessage) {
         // Если получили новый chatId, обновляем текущий чат
         if (responseMessage.chatId && responseMessage.chatId !== currentChatId) {
@@ -170,13 +161,13 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
           // Сохраняем новый ID чата в localStorage
           localStorage.setItem('ai-assistant-current-chat', responseMessage.chatId);
         }
-        
+
         // Добавляем ответ ассистента
         setMessages(prev => [...prev, {
           ...responseMessage,
           timestamp: new Date().toISOString()
         }]);
-        
+
         // Обновляем список чатов для отображения нового/обновленного чата
         // Делаем это асинхронно, чтобы не блокировать UI
         // Передаем false, чтобы не загружать автоматически другой чат
@@ -200,17 +191,17 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
   }, [currentChatId, loadChats]);
 
   return (
-    <AIAssistantContext.Provider 
-      value={{ 
-        isOpen, 
-        messages, 
+    <AIAssistantContext.Provider
+      value={{
+        isOpen,
+        messages,
         chats,
         currentChatId,
         isLoading,
         error,
-        openAssistant, 
-        closeAssistant, 
-        toggleAssistant, 
+        openAssistant,
+        closeAssistant,
+        toggleAssistant,
         sendMessage: handleSendMessage,
         loadChats,
         loadChatHistory,

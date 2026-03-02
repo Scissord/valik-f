@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { geistMono, geistSans } from "../config/fonts";
+import { geistMono, geistSans, titleFont } from "../config/fonts";
 import "./globals.css";
 import { Provider } from "@/components";
 
@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${titleFont.variable} antialiased`}
       >
         <Provider>{children}</Provider>
       </body>
