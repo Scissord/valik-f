@@ -42,14 +42,23 @@ export interface Brand {
 }
 
 export interface User {
-    id: string;
-    email: string;
-    full_name: string;
-    phone?: string;
-    role: 'user' | 'admin';
-    birth_date?: number | string | null;
-    gender?: 'male' | 'female' | '';
-    address?: string;
+    id: string | number;
+    name: string;
+    phone: string;
+    avatar?: string | null;
+    chatId?: string | null;
+    email?: string | null;
+    is_active?: boolean;
+    is_staff?: boolean;
+    last_login?: string | null;
+}
+
+export interface TokenResponse {
+    id: string | number;
+    phone: string;
+    name: string;
+    access: string;
+    refresh: string;
 }
 
 export interface CartItem extends Product {
@@ -121,19 +130,8 @@ export interface ServerChat {
     messages: ServerMessage[];
 }
 
-export interface UserLogin {
-    login: string;
-    password: string;
-}
+// Registration/Login types are now handled in their respective components via Zod or inline interfaces.
 
-export interface UserRegister {
-    email: string;
-    password: string;
-    full_name: string;
-    login: string;
-    phone?: string;
-    gender?: string;
-}
 
 export type GoodCategory = Category;
 

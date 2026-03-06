@@ -37,6 +37,8 @@ export const useUserStore = create<State>()(
       },
       logout: () => {
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("buyerId");
         set({ user: null })
       },
     }),

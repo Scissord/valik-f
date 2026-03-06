@@ -1,32 +1,32 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from "axios";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 // Вспомогательные функции для работы с токенами и сессией
 // В будущем их можно вынести в отдельный модуль (например, src/services/auth.ts)
 
 export const getAccessTokenFromStore = (): string | null => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("accessToken");
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("accessToken");
 };
 
 const getRefreshTokenFromStore = (): string | null => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("refreshToken");
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("refreshToken");
 };
 
 export const saveTokensToStore = (accessToken: string, refreshToken?: string) => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem("token", accessToken);
-    if (refreshToken) {
-        localStorage.setItem("refreshToken", refreshToken);
-    }
+  if (typeof window === "undefined") return;
+  localStorage.setItem("accessToken", accessToken);
+  if (refreshToken) {
+    localStorage.setItem("refreshToken", refreshToken);
+  }
 };
 
 export const logoutUser = () => {
-    if (typeof window === "undefined") return;
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("token");
+  localStorage.removeItem("refreshToken");
 };
 
 
@@ -86,7 +86,7 @@ api.interceptors.response.use(
         })
           .then(token => {
             if (originalRequest.headers) {
-                originalRequest.headers['Authorization'] = 'Bearer ' + token;
+              originalRequest.headers['Authorization'] = 'Bearer ' + token;
             }
             return api(originalRequest);
           })
@@ -107,23 +107,23 @@ api.interceptors.response.use(
       try {
         // Используем чистый axios для запроса на обновление, чтобы избежать цикла перехватчиков
         const { data } = await axios.post(
-          `${baseURL}/auth/refresh`, // Убедитесь, что эндпоинт верный
-          { refreshToken },
+          `${baseURL}/buyer/token/refresh/`,
+          { refresh: refreshToken },
           { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
         );
 
-        const newAccessToken = data.accessToken;
-        const newRefreshToken = data.refreshToken;
+        const newAccessToken = data.access;
+        const newRefreshToken = data.refresh;
 
         saveTokensToStore(newAccessToken, newRefreshToken);
-        
+
         if (originalRequest.headers) {
-            originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
         }
         api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-        
+
         processQueue(null, newAccessToken);
-        
+
         // Повторяем исходный запрос с новым токеном
         return api(originalRequest);
       } catch (refreshError) {

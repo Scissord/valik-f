@@ -5,8 +5,13 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { login, UserLogin } from "@/lib/legacy";
+import { login } from "@/lib/legacy";
 import { useUserStore } from "@/lib/legacy";
+
+interface LoginInput {
+  phone: string;
+  password: string;
+}
 
 interface LoginFormProps {
   idPrefix?: string;
@@ -28,7 +33,7 @@ export const LoginForm = ({ idPrefix = "" }: LoginFormProps) => {
     }
   }, [user, router]);
 
-  const onSubmit = async (data: UserLogin) => {
+  const onSubmit = async (data: LoginInput) => {
     setResponseErrors([]);
     const { user, accessToken, errors } = await login(data);
     if (user && accessToken) {
@@ -47,7 +52,7 @@ export const LoginForm = ({ idPrefix = "" }: LoginFormProps) => {
     register,
     formState: { errors, isValid },
     reset,
-  } = useForm<UserLogin>({ mode: "onChange" });
+  } = useForm<LoginInput>({ mode: "onChange" });
 
   return (
     <form
@@ -57,21 +62,25 @@ export const LoginForm = ({ idPrefix = "" }: LoginFormProps) => {
       <div className="space-y-5">
         <div className="relative">
           <input
-            id={makeId(idPrefix, "login")}
+            id={makeId(idPrefix, "phone")}
             type="text"
+            inputMode="numeric"
             placeholder=" "
             className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
-            {...register("login", { required: "Укажите ваш логин" })}
+            {...register("phone", {
+              required: "Укажите номер телефона",
+              validate: (v) => /^\d{10,15}$/.test(v) || "Номер должен содержать от 10 до 15 цифр",
+            })}
           />
           <label
-            htmlFor={makeId(idPrefix, "login")}
+            htmlFor={makeId(idPrefix, "phone")}
             className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
           >
-            Логин
+            Номер телефона
           </label>
         </div>
-        {errors.login && (
-          <p className="text-sm text-red-500">{errors.login.message}</p>
+        {errors.phone && (
+          <p className="text-sm text-red-500">{errors.phone.message}</p>
         )}
 
         <div className="relative">

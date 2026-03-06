@@ -1,26 +1,36 @@
 import api from "../axios";
-import type { UserRegister } from "@/lib/legacy";
+
+interface RegisterInput {
+  phone: string;
+  password: string;
+  name: string;
+}
 
 interface RegisterResult {
   success: boolean;
-  user?: any;
-  accessToken?: string;
+  user?: { id: string | number; phone: string; name: string; chatId?: string };
   errors?: { msg: string }[];
 }
 
-export const registerUser = async (data: UserRegister): Promise<RegisterResult> => {
+export const registerUser = async (data: RegisterInput): Promise<RegisterResult> => {
   try {
-    const response = await api.post('/auth/registration', data);
+    const response = await api.post('/buyer/register/', data);
 
     return {
       success: true,
-      user: response.data.user,
-      accessToken: response.data.accessToken,
+      user: response.data,
     };
   } catch (error: any) {
-    return {
-      success: false,
-      errors: error.response?.data?.errors || [{ msg: "Сетевая ошибка или ошибка сервера" }],
-    };
+    const errData = error.response?.data;
+    let errors: { msg: string }[] = [{ msg: "Сетевая ошибка или ошибка сервера" }];
+
+    if (errData) {
+      // Django возвращает ошибки в виде объекта {field: [msg, ...]}
+      errors = Object.values(errData)
+        .flat()
+        .map((m: any) => ({ msg: String(m) }));
+    }
+
+    return { success: false, errors };
   }
-}; 
+};

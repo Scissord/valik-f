@@ -140,9 +140,9 @@ export default function AIHomePage() {
                     </Link>
                     {user ? (
                         <div className="flex items-center gap-2 p-1 pl-3 pr-1 bg-zinc-50 border border-zinc-100 rounded-full">
-                            <span className="text-xs font-medium text-zinc-600">{user.full_name?.split(' ')[0]}</span>
+                            <span className="text-xs font-medium text-zinc-600">{user.name?.split(' ')[0]}</span>
                             <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold">
-                                {user.full_name?.[0].toUpperCase()}
+                                {user.name?.[0].toUpperCase()}
                             </div>
                         </div>
                     ) : (

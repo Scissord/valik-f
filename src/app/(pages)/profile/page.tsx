@@ -4,7 +4,6 @@ import { ChangeEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IoChevronDownOutline,
   IoLogOutOutline,
   IoPersonOutline,
   IoSaveOutline,
@@ -14,12 +13,8 @@ import { OrderHistory } from "@/components";
 import { useUserStore, UserAPI, User } from "@/lib/legacy";
 
 type FormState = {
-  email: string;
-  full_name: string;
+  name: string;
   phone: string;
-  birth_date: string;
-  gender: "male" | "female" | "";
-  address: string;
 };
 
 type StatusMessage = {
@@ -27,21 +22,9 @@ type StatusMessage = {
   text: string;
 };
 
-const genderOptions: Array<{ value: FormState["gender"]; label: string }> = [
-  { value: "", label: "Не указан" },
-  { value: "male", label: "Мужской" },
-  { value: "female", label: "Женский" },
-];
-
 const buildFormState = (user: User | null): FormState => ({
-  email: user?.email ?? "",
-  full_name: user?.full_name ?? "",
+  name: user?.name ?? "",
   phone: user?.phone ?? "",
-  birth_date: user?.birth_date
-    ? new Date(user.birth_date).toISOString().split("T")[0]
-    : "",
-  gender: (user?.gender as FormState["gender"]) ?? "",
-  address: user?.address ?? "",
 });
 
 export default function ProfilePage() {
@@ -101,14 +84,7 @@ export default function ProfilePage() {
     setStatusMessage(null);
 
     try {
-      const payload = {
-        ...formData,
-        birth_date: formData.birth_date
-          ? new Date(formData.birth_date).getTime()
-          : null,
-      };
-
-      await UserAPI.update(user.id, payload);
+      await UserAPI.updateProfile(user.id, formData);
       await getProfile();
 
       setStatusMessage({ type: "success", text: "Изменения сохранены" });
@@ -205,25 +181,13 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-2">ФИО</label>
+                    <label className="block text-sm font-medium text-gray-500 mb-2">Имя</label>
                     <input
                       type="text"
-                      name="full_name"
-                      value={formData.full_name}
+                      name="name"
+                      value={formData.name}
                       onChange={handleInputChange}
-                      placeholder="Введите ФИО"
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-2">Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      placeholder="example@mail.ru"
+                      placeholder="Введите ваше имя"
                       className={inputClass}
                     />
                   </div>
@@ -235,50 +199,8 @@ export default function ProfilePage() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      placeholder="+7 900 000-00-00"
+                      placeholder="7XXXXXXXXXX"
                       className={inputClass}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-2">Дата рождения</label>
-                    <input
-                      type="date"
-                      name="birth_date"
-                      value={formData.birth_date}
-                      onChange={handleInputChange}
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-2">Пол</label>
-                    <div className="relative">
-                      <select
-                        name="gender"
-                        value={formData.gender}
-                        onChange={handleInputChange}
-                        className={`${inputClass} appearance-none pr-10`}
-                      >
-                        {genderOptions.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                      <IoChevronDownOutline className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                    </div>
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-500 mb-2">Адрес доставки</label>
-                    <textarea
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      placeholder="Город, улица, дом, квартира"
-                      rows={2}
-                      className={`${inputClass} resize-none`}
                     />
                   </div>
                 </div>
