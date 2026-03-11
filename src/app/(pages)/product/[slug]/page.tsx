@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProduct, Product } from "@/lib/legacy";
-import { ChevronRight, Home, Hash, Star, LayoutGrid, Tag, Scale } from "lucide-react";
+import { ChevronRight, Home, Hash, Star, LayoutGrid, Tag, Ruler, Weight } from "lucide-react";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -65,6 +65,10 @@ export default async function ProductPage({ params }: Props) {
       title: product.title || 'Без названия',
       id: product.id || 0,
       price: Number(product.price) || 0,
+      length: product.length || null,
+      width: product.width || null,
+      height: product.height || null,
+      weight: product.weight || null,
     };
 
     const renderValue = (value: string | any) => {
@@ -166,7 +170,7 @@ export default async function ProductPage({ params }: Props) {
                   <span className="text-[9px] sm:text-[10px] text-slate-400 line-clamp-1 px-1">{renderValue(adaptedProduct.category)}</span>
                 </div>
                 <div className="flex flex-col items-center justify-center border border-slate-200 rounded-xl sm:rounded-2xl w-full sm:w-[88px] h-16 sm:h-[88px] bg-white hover:border-slate-300 transition-colors">
-                  <Scale className="w-5 h-5 sm:w-6 sm:h-6 text-slate-500 mb-0.5 sm:mb-1.5" strokeWidth={1.5} />
+                  <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-slate-500 mb-0.5 sm:mb-1.5" strokeWidth={1.5} />
                   <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 tracking-wide uppercase text-center leading-tight line-clamp-1 px-1">Единица</span>
                   <span className="text-[9px] sm:text-[10px] text-slate-400 line-clamp-1 px-1">{renderValue(adaptedProduct.unit)}</span>
                 </div>
@@ -175,6 +179,22 @@ export default async function ProductPage({ params }: Props) {
                   <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 tracking-wide uppercase text-center leading-tight line-clamp-1 px-1">Бренд</span>
                   <span className="text-[9px] sm:text-[10px] text-slate-400 line-clamp-1 px-1 truncate w-full text-center">{renderValue(adaptedProduct.brand)}</span>
                 </div>
+                {adaptedProduct.weight && (
+                  <div className="flex flex-col items-center justify-center border border-slate-200 rounded-xl sm:rounded-2xl w-full sm:w-[88px] h-16 sm:h-[88px] bg-white hover:border-slate-300 transition-colors">
+                    <Weight className="w-5 h-5 sm:w-6 sm:h-6 text-slate-500 mb-0.5 sm:mb-1.5" strokeWidth={1.5} />
+                    <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 tracking-wide uppercase text-center leading-tight line-clamp-1 px-1">Вес</span>
+                    <span className="text-[9px] sm:text-[10px] text-slate-400 line-clamp-1 px-1">{adaptedProduct.weight} кг</span>
+                  </div>
+                )}
+                {(adaptedProduct.length || adaptedProduct.width || adaptedProduct.height) && (
+                  <div className="flex flex-col items-center justify-center border border-slate-200 rounded-xl sm:rounded-2xl w-[184px] sm:w-[184px] h-16 sm:h-[88px] bg-white hover:border-slate-300 transition-colors col-span-2 md:col-span-2 sm:flex-grow-0">
+                    <Ruler className="w-5 h-5 sm:w-6 sm:h-6 text-slate-500 mb-0.5 sm:mb-1.5" strokeWidth={1.5} />
+                    <span className="text-[10px] sm:text-[11px] font-semibold text-slate-700 tracking-wide uppercase text-center leading-tight line-clamp-1 px-1">Размеры (Д×Ш×В)</span>
+                    <span className="text-[9px] sm:text-[10px] text-slate-400 line-clamp-1 px-1">
+                      {adaptedProduct.length || 0} × {adaptedProduct.width || 0} × {adaptedProduct.height || 0} см
+                    </span>
+                  </div>
+                )}
               </div>
 
               <hr className="border-slate-200 mb-8" />

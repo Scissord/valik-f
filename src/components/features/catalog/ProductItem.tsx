@@ -1,6 +1,6 @@
 "use client";
 import { ProductImage } from "@/components";
-import { Product, CartItem } from "@/lib/legacy";
+import { Product, CartItem, currencyFormat } from "@/lib/legacy";
 import Link from "next/link";
 import React, { useState, memo, useEffect } from "react";
 import { IoCartOutline } from "react-icons/io5";
@@ -89,10 +89,7 @@ export const ProductItem = memo(({ product }: Props) => {
           <div className="flex flex-col">
             <span className="text-xs text-gray-500">Цена</span>
             <div className="text-lg font-semibold text-gray-900">
-              {typeof product.price === "number"
-                ? product.price.toLocaleString("ru-RU")
-                : "0"}{" "}
-              ₸
+              {currencyFormat(product.price)}
             </div>
           </div>
 

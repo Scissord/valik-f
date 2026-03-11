@@ -14,7 +14,7 @@ export const getProduct = async ({ id }: Params): Promise<Product | null> => {
   console.log(`[API] Запрос товара с ID: ${id}`);
 
   try {
-    const response = await api.get(`/products/${id}`);
+    const response = await api.get(`/products/${id}/`);
 
     console.log('[API] Товар успешно получен с бэкенда:', {
       id: response.data?.id,

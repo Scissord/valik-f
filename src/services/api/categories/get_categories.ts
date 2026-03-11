@@ -80,7 +80,7 @@ const mockCategories: GoodCategory[] = [
 export const getCategories = async (): Promise<GoodCategory[]> => {
   try {
     console.log('Начинаем запрос категорий с API через axios');
-    const response = await api.get('/categories/tree');
+    const response = await api.get('/product/categories/tree/');
 
     console.log('Категории успешно получены:', response.data);
 

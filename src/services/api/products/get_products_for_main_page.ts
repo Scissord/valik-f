@@ -14,7 +14,7 @@ export const getProductsForMainPage = async ({
   if (isNaN(limit) || limit < 1) limit = 9;
 
   try {
-    const response = await api.get('/products/main', {
+    const response = await api.get('/product/main-products/', {
       params: { limit, page }
     });
 

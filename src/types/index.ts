@@ -3,7 +3,7 @@ export interface Product {
     title: string;
     slug?: string;
     description?: string;
-    price: number;
+    price: number | string;
     images: string[];
     category_id?: number | string;
     brand_id?: number | string;
@@ -13,7 +13,12 @@ export interface Product {
     brand?: Brand | string;
     unit?: string;
     rating?: number;
-    article?: string | null;
+    article?: string | number | null;
+    length?: string | number | null;
+    width?: string | number | null;
+    height?: string | number | null;
+    weight?: string | number | null;
+    depth?: string | number | null;
     inStock?: number;
     quantity?: number; // Для использования в корзине
     created_at?: string | number;

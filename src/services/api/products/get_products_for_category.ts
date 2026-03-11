@@ -24,10 +24,10 @@ export const getProductsForCategory = async ({
   if (isNaN(Number(limit)) || limit < 1) limit = 9;
 
   try {
-    const response = await api.get(`/categories/${category_id}`, {
+    const response = await api.get(`/categories/${category_id}/`, {
       params: { limit, page }
     });
-    
+
     // Проверка на корректность ответа
     const data = response.data;
     return {
@@ -39,7 +39,7 @@ export const getProductsForCategory = async ({
     };
   } catch (error) {
     console.error('[API] Ошибка при загрузке продуктов по категории:', error);
-    
+
     return {
       category: null,
       products: [],

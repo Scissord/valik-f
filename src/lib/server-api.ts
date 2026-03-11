@@ -5,7 +5,7 @@
 
 import type { Product, GoodCategory } from "@/types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 interface ProductsResponse {
     products: Product[];
@@ -22,7 +22,7 @@ export async function fetchProductsForMainPage(
 ): Promise<ProductsResponse> {
     try {
         const response = await fetch(
-            `${API_URL}/products/main?page=${page}&limit=${limit}`,
+            `${API_URL}/product/main-products/?page=${page}&limit=${limit}`,
             {
                 next: { revalidate: 60 }, // Cache for 60 seconds
             }
@@ -44,7 +44,7 @@ export async function fetchProductsForMainPage(
  */
 export async function fetchCategories(): Promise<GoodCategory[]> {
     try {
-        const response = await fetch(`${API_URL}/categories/tree`, {
+        const response = await fetch(`${API_URL}/product/categories/tree/`, {
             next: { revalidate: 300 }, // Cache for 5 minutes
         });
 
