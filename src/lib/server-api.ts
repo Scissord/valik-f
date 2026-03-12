@@ -14,6 +14,26 @@ interface ProductsResponse {
 }
 
 /**
+ * Normalize product data from API
+ */
+function normalizeProduct(product: any): Product {
+    return {
+        ...product,
+        category: typeof product.category === 'object' && product.category !== null
+            ? (product.category.title || product.category.name || 'Не указана')
+            : String(product.category || 'Не указана'),
+        brand: typeof product.brand === 'object' && product.brand !== null
+            ? (product.brand.title || product.brand.name || 'Не указан')
+            : String(product.brand || 'Не указан'),
+        unit: typeof product.unit === 'object' && product.unit !== null
+            ? (product.unit.title || product.unit.name || 'шт')
+            : String(product.unit || 'шт'),
+        price: Number(product.price) || 0,
+        images: Array.isArray(product.images) ? product.images : [],
+    };
+}
+
+/**
  * Fetch products for main page (server-side)
  */
 export async function fetchProductsForMainPage(
@@ -32,7 +52,13 @@ export async function fetchProductsForMainPage(
             throw new Error(`API error: ${response.status}`);
         }
 
-        return await response.json();
+        const data = await response.json();
+        
+        // ✅ Нормализуем продукты
+        return {
+            ...data,
+            products: (data.products || []).map(normalizeProduct),
+        };
     } catch (error) {
         console.error("[Server API] Error fetching products:", error);
         return { products: [], total: 0, totalPages: 0 };

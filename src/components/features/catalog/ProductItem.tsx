@@ -89,7 +89,7 @@ export const ProductItem = memo(({ product }: Props) => {
           <div className="flex flex-col">
             <span className="text-xs text-gray-500">Цена</span>
             <div className="text-lg font-semibold text-gray-900">
-              {currencyFormat(product.price)}
+              {currencyFormat(Number(product.price) || 0)}
             </div>
           </div>
 
@@ -130,20 +130,26 @@ export const ProductItem = memo(({ product }: Props) => {
               <div className="flex justify-between">
                 <span>Категория:</span>
                 <span className="font-medium">
-                  {typeof product.category === 'object' ? product.category.title : product.category}
+                  {typeof product.category === 'object' && product.category !== null
+                    ? (product.category as any).title || (product.category as any).name || 'Не указана'
+                    : String(product.category)}
                 </span>
               </div>
             )}
             {product.unit && (
               <div className="flex justify-between">
                 <span>Единица:</span>
-                <span className="font-medium">{product.unit}</span>
+                <span className="font-medium">
+                  {typeof product.unit === 'object' && product.unit !== null
+                    ? (product.unit as any).title || (product.unit as any).name || 'шт'
+                    : String(product.unit)}
+                </span>
               </div>
             )}
             {product.article && (
               <div className="flex justify-between">
                 <span>Артикул:</span>
-                <span className="font-mono">{product.article}</span>
+                <span className="font-mono">{String(product.article)}</span>
               </div>
             )}
           </div>
