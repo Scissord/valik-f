@@ -248,7 +248,8 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                             fill
                             sizes="160px"
                             priority
-                            unoptimized
+                            unoptimized={false} // ✅ ИСПРАВЛЕНО: включена оптимизация
+                            quality={75} // ✅ ДОБАВЛЕНО
                             className="absolute inset-0 w-full h-full object-cover transition duration-200 group-hover:brightness-90"
                           />
                           <div className="absolute inset-x-0 top-0 px-2.5 pt-2 pb-4">

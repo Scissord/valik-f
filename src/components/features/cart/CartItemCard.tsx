@@ -132,11 +132,11 @@ export const CartItemCard = ({ product, updateProductQuantity, deleteProduct }: 
                             {/* Price */}
                             <div className="text-right">
                                 <div className="text-sm font-semibold text-gray-900">
-                                    {currencyFormat(product.price * product.quantity)}
+                                    {currencyFormat((Number(product.price) || 0) * product.quantity)}
                                 </div>
                                 {product.quantity > 1 && (
                                     <div className="text-xs text-gray-500">
-                                        {currencyFormat(product.price)} / шт
+                                        {currencyFormat(Number(product.price) || 0)} / шт
                                     </div>
                                 )}
                             </div>

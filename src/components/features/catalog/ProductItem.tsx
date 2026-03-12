@@ -154,3 +154,13 @@ export const ProductItem = memo(({ product }: Props) => {
 });
 
 ProductItem.displayName = "ProductItem";
+
+// ✅ ДОБАВЛЕНО: Функция сравнения для оптимизации memo
+export const MemoizedProductItem = memo(ProductItem, (prevProps, nextProps) => {
+  return (
+    prevProps.product.id === nextProps.product.id &&
+    prevProps.product.price === nextProps.product.price &&
+    prevProps.product.title === nextProps.product.title &&
+    prevProps.product.images?.[0] === nextProps.product.images?.[0]
+  );
+});

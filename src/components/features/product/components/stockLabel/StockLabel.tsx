@@ -7,20 +7,24 @@ interface Props {
   slug: string;
 }
 
-export const StockLabel = ({ slug: _slug }: Props) => {
-  const [stock, _setStock] = useState<number>(0);
-  const [isLoading, _setLoading] = useState<boolean>(true);
+export const StockLabel = ({ slug }: Props) => {
+  const [stock, setStock] = useState<number>(0);
+  const [isLoading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    getStockActual();
-  });
+    const getStockActual = async () => {
+      try {
+        // const inStock = await getStockBySlug(slug);
+        // setStock(inStock);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching stock:', error);
+        setLoading(false);
+      }
+    };
 
-  const getStockActual = async () => {
-    // const inStock = await getStockBySlug(slug);
-    // setStock(inStock);
-    // setLoading(false);
-    // return inStock;
-  };
+    getStockActual();
+  }, [slug]); // ✅ ИСПРАВЛЕНО: добавлен массив зависимостей
 
   if (stock < 1 && !isLoading) {
     return (

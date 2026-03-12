@@ -71,8 +71,12 @@ export const useAnimatedPlaceholder = (options: UseAnimatedPlaceholderOptions = 
             state.timeoutId = setTimeout(type, 1000);
         }
 
+        // ✅ ИСПРАВЛЕНО: Очистка таймера при размонтировании
         return () => {
-            if (state.timeoutId) clearTimeout(state.timeoutId);
+            if (state.timeoutId) {
+                clearTimeout(state.timeoutId);
+                state.timeoutId = undefined;
+            }
         };
     }, [isActive, defaultPlaceholder]);
 

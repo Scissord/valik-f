@@ -92,7 +92,8 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
     if (!isAuthPage && !isCreatingNewChatMarker) {
       loadChats(true); // Только при первой загрузке разрешаем автозагрузку чата
     }
-  }, [pathname, loadChats]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]); // ✅ ИСПРАВЛЕНО: убран loadChats из зависимостей
 
   const openAssistant = () => setIsOpen(true);
   const closeAssistant = () => setIsOpen(false);

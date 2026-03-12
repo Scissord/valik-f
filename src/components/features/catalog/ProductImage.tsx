@@ -38,8 +38,10 @@ export const ProductImage = ({
       height={height}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      unoptimized={true}
+      unoptimized={false} // ✅ ИСПРАВЛЕНО: включена оптимизация
       priority={priority}
+      quality={75} // ✅ ДОБАВЛЕНО: оптимальное качество
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // ✅ ДОБАВЛЕНО
       onError={(e) => {
         const target = e.target as HTMLImageElement;
         target.onerror = null;

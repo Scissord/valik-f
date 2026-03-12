@@ -27,6 +27,7 @@ export const useSearch = (options: UseSearchOptions = {}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
+    const abortControllerRef = useRef<AbortController | null>(null); // ✅ ДОБАВЛЕНО
 
     // Выполнение поискового запроса
     const performSearch = useCallback(async (query: string) => {
@@ -36,9 +37,19 @@ export const useSearch = (options: UseSearchOptions = {}) => {
             return;
         }
 
+        // ✅ ДОБАВЛЕНО: Отменяем предыдущий запрос
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+
+        abortControllerRef.current = new AbortController();
         setIsLoading(true);
+        
         try {
-            const response = await api.get(`${baseURL}/search?q=${encodeURIComponent(query)}`);
+            const response = await api.get(
+                `${baseURL}/search?q=${encodeURIComponent(query)}`,
+                { signal: abortControllerRef.current.signal } // ✅ ДОБАВЛЕНО
+            );
             const data = response.data;
 
             // Обработка и преобразование результатов
@@ -102,7 +113,11 @@ export const useSearch = (options: UseSearchOptions = {}) => {
             }
 
             setResults(processedResults);
-        } catch (error) {
+        } catch (error: any) {
+            // ✅ ДОБАВЛЕНО: Игнорируем отмененные запросы
+            if (error.name === 'CanceledError' || error.code === 'ERR_CANCELED') {
+                return;
+            }
             console.error("[SEARCH] Ошибка при поиске:", error);
             setResults([]);
         } finally {
@@ -125,6 +140,10 @@ export const useSearch = (options: UseSearchOptions = {}) => {
         return () => {
             if (debounceRef.current) {
                 clearTimeout(debounceRef.current);
+            }
+            // ✅ ДОБАВЛЕНО: Отменяем запрос при размонтировании
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
             }
         };
     }, [searchQuery, debounceMs, minQueryLength, performSearch]);

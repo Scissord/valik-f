@@ -22,12 +22,13 @@ export const Header = () => {
   const [loaded, setLoaded] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const handleScroll = useCallback(() => {
-    const debounced = debounce(() => {
+  // ✅ ИСПРАВЛЕНО: Используем useCallback для debounce
+  const handleScroll = useCallback(
+    debounce(() => {
       setIsScrolled(window.scrollY > 10);
-    }, 50);
-    debounced();
-  }, []);
+    }, 50),
+    []
+  );
 
   useEffect(() => {
     setLoaded(true);

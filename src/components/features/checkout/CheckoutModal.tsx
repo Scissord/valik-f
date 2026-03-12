@@ -22,7 +22,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
   const { cart, clearCart, updateProductQuantity } = useCartStore();
   const { user } = useUserStore();
 
-  const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalAmount = cart.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0);
   const totalItems = cart.reduce((count, item) => count + item.quantity, 0);
 
   const handleOrderSubmit = async () => {

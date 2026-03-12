@@ -33,6 +33,7 @@ export const logoutUser = () => {
 const api = axios.create({
   baseURL,
   withCredentials: true, // Разрешаем отправку кук с каждым запросом
+  timeout: 30000, // ✅ ДОБАВЛЕНО: 30 секунд таймаут
   headers: {
     "Content-Type": "application/json",
   },
