@@ -126,26 +126,6 @@ export const ProductItem = memo(({ product }: Props) => {
 
         <div className="mt-1">
           <div className="space-y-1 text-xs text-gray-500">
-            {product.category && (
-              <div className="flex justify-between">
-                <span>Категория:</span>
-                <span className="font-medium">
-                  {typeof product.category === 'object' && product.category !== null
-                    ? (product.category as any).title || (product.category as any).name || 'Не указана'
-                    : String(product.category)}
-                </span>
-              </div>
-            )}
-            {product.unit && (
-              <div className="flex justify-between">
-                <span>Единица:</span>
-                <span className="font-medium">
-                  {typeof product.unit === 'object' && product.unit !== null
-                    ? (product.unit as any).title || (product.unit as any).name || 'шт'
-                    : String(product.unit)}
-                </span>
-              </div>
-            )}
             {product.article && (
               <div className="flex justify-between">
                 <span>Артикул:</span>

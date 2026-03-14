@@ -17,6 +17,10 @@ interface ProductsResponse {
  * Normalize product data from API
  */
 function normalizeProduct(product: any): Product {
+    const images = Array.isArray(product.images) && product.images.length > 0 
+        ? product.images 
+        : product.image ? [product.image] : [];
+
     return {
         ...product,
         category: typeof product.category === 'object' && product.category !== null
@@ -29,7 +33,7 @@ function normalizeProduct(product: any): Product {
             ? (product.unit.title || product.unit.name || 'шт')
             : String(product.unit || 'шт'),
         price: Number(product.price) || 0,
-        images: Array.isArray(product.images) ? product.images : [],
+        images: images,
     };
 }
 
