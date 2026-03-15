@@ -2,7 +2,7 @@
 
 import { useCartStore, useUserStore } from "@/lib/legacy";
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { ShoppingCart, User, MessageCircle } from "lucide-react";
 import Logo from "./logo";
 import Search from "./search";
@@ -22,19 +22,15 @@ export const Header = () => {
   const [loaded, setLoaded] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // ✅ ИСПРАВЛЕНО: Используем useCallback для debounce
-  const handleScroll = useCallback(
-    debounce(() => {
-      setIsScrolled(window.scrollY > 10);
-    }, 50),
-    []
-  );
-
   useEffect(() => {
     setLoaded(true);
+    const handleScroll = debounce(() => {
+      setIsScrolled(window.scrollY > 10);
+    }, 50);
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+  }, []);
 
   return (
     <header

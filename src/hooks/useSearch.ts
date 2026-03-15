@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 
 export interface SearchResult {
     id: string;
-    title: string;
+    name: string;
     type: 'product' | 'category' | 'brand';
     price?: number;
     slug?: string;
@@ -70,7 +70,7 @@ export const useSearch = (options: UseSearchOptions = {}) => {
                     }
 
                     if (item.category) {
-                        category = typeof item.category === 'object' ? item.category.title : item.category;
+                        category = typeof item.category === 'object' ? item.category.name : item.category;
                     }
                 }
 
@@ -90,7 +90,7 @@ export const useSearch = (options: UseSearchOptions = {}) => {
 
                     processedResults.push({
                         id: item.id,
-                        title: item.title,
+                        name: item.name,
                         type: type,
                         price: item.price,
                         slug: item.id,

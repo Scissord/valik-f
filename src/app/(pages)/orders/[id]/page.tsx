@@ -41,13 +41,13 @@ export default async function OrderPerIdPage(
                     width: "100px",
                     height: "100px",
                   }}
-                  alt={product.product.title}
+                  alt={product.product.name}
                   className="mr-5 rodunded-none"
                 />
 
                 <div>
                   <p>
-                    {product.size} - {product.product.title}
+                    {product.size} - {product.product.name}
                   </p>
                   <p>
                     {currencyFormat(product.price)} x {product.quantity}

@@ -210,7 +210,7 @@ export const SideBar = () => {
     const hasChildren = category.children && category.children.length > 0;
     const currentCategoryId = getCurrentCategoryId();
     const isActive = currentCategoryId === String(category.id);
-    const icon = getCategoryIcon(category.title);
+    const icon = getCategoryIcon(category.name);
 
     const paddingClasses = ["px-3", "pl-6 pr-3", "pl-9 pr-3", "pl-12 pr-3"];
     const paddingClass = paddingClasses[level] || "pl-14 pr-3";
@@ -247,7 +247,7 @@ export const SideBar = () => {
                 ${isActive ? "text-orange-600" : "text-gray-700 group-hover:text-gray-900"}
               `}
             >
-              {category.title}
+              {category.name}
             </span>
           </Link>
 
@@ -256,8 +256,8 @@ export const SideBar = () => {
               type="button"
               aria-label={
                 isExpanded
-                  ? `Collapse category ${category.title}`
-                  : `Expand category ${category.title}`
+                  ? `Collapse category ${category.name}`
+                  : `Expand category ${category.name}`
               }
               onClick={(event) => {
                 event.preventDefault();
@@ -295,7 +295,7 @@ export const SideBar = () => {
   }
 
   return (
-    <aside className="hidden md:flex md:flex-col md:fixed md:top-0 md:left-0 md:h-screen md:w-60 md:bg-white md:border-r md:border-gray-200 md:z-30 pt-20 pb-6 overflow-y-auto scrollbar-thin">
+    <aside className="hidden md:flex md:flex-col md:sticky md:top-20 md:h-[calc(100vh-80px)] md:w-60 md:bg-white md:border-r md:border-gray-200 md:z-10 pb-6 overflow-y-auto scrollbar-thin">
       <div className="px-4 pt-8">
         {loading ? (
           <p className="py-4 text-center text-sm text-gray-500">

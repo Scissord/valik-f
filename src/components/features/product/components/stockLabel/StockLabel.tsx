@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const StockLabel = ({ slug }: Props) => {
-  const [stock, setStock] = useState<number>(0);
+  const [stock] = useState<number>(0);
   const [isLoading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

@@ -43,13 +43,13 @@ export default function ShopLayout({
   return (
     <>
       {!isAuthPage && !isNotFoundPage && <Header />}
-      {shouldShowSidebar && <SideBar />}
-      <div className={shouldShowSidebar ? "md:pl-60" : ""}>
-        <main
-          className={`lg:min-h-screen bg-white ${mainPaddingClass}`}
-        >
-          {children}
-        </main>
+      <div className="flex flex-col min-h-screen">
+        <div className="flex flex-1 min-h-0">
+          {shouldShowSidebar && <SideBar />}
+          <main className={`flex-1 bg-white min-w-0 ${mainPaddingClass}`}>
+            {children}
+          </main>
+        </div>
         {!isAuthPage && !isNotFoundPage && <Footer />}
       </div>
     </>

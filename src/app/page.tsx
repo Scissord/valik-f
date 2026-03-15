@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IoSend, IoCalculatorOutline, IoSearchOutline, IoDocumentTextOutline, IoBulbOutline } from 'react-icons/io5';
-import { HiBars3BottomLeft, HiOutlineShoppingBag, HiXMark, HiPlus, HiOutlineTrash } from 'react-icons/hi2';
+import { IoCalculatorOutline, IoSearchOutline, IoDocumentTextOutline } from 'react-icons/io5';
+import { HiOutlineShoppingBag, HiXMark, HiPlus, HiOutlineTrash } from 'react-icons/hi2';
 import { Plus, ArrowUpRight, PanelLeft, Hand } from 'lucide-react';
 import Link from 'next/link';
 import { useAIAssistant } from '@/components/features/ai-assistant/ai-context';

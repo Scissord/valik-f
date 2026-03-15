@@ -65,7 +65,7 @@ export const ProductItem = memo(({ product }: Props) => {
         <div className="relative aspect-square overflow-hidden bg-gray-50">
           <ProductImage
             url={displayImage}
-            title={product.title}
+            name={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             width={300}
             height={300}
@@ -81,7 +81,7 @@ export const ProductItem = memo(({ product }: Props) => {
           className="block mb-2.5"
         >
           <h3 className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-orange-600 transition-colors">
-            {product.title}
+            {product.name || 'Без названия'}
           </h3>
         </Link>
 
@@ -126,7 +126,7 @@ export const ProductItem = memo(({ product }: Props) => {
 
         <div className="mt-1">
           <div className="space-y-1 text-xs text-gray-500">
-            {product.article && (
+            {(product.article !== undefined && product.article !== null) && (
               <div className="flex justify-between">
                 <span>Артикул:</span>
                 <span className="font-mono">{String(product.article)}</span>
@@ -146,7 +146,7 @@ export const MemoizedProductItem = memo(ProductItem, (prevProps, nextProps) => {
   return (
     prevProps.product.id === nextProps.product.id &&
     prevProps.product.price === nextProps.product.price &&
-    prevProps.product.title === nextProps.product.title &&
+    prevProps.product.name === nextProps.product.name &&
     prevProps.product.images?.[0] === nextProps.product.images?.[0]
   );
 });

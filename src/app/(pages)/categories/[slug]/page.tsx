@@ -44,16 +44,16 @@ export default async function ProductPage({
     const parentCategory = categories.find(cat => cat.id === category.parent_id);
     if (parentCategory) {
       breadcrumbItems.push({
-        label: parentCategory.title,
+        label: parentCategory.name,
         href: `/categories/${parentCategory.id}`
       });
     }
   }
 
   // Добавляем текущую категорию как активную
-  if (category?.title) {
+  if (category?.name) {
     breadcrumbItems.push({
-      label: category.title,
+      label: category.name,
       isActive: true
     });
   }
@@ -65,8 +65,8 @@ export default async function ProductPage({
       <Breadcrumbs items={breadcrumbItems} className="mb-4" />
 
       {/* Минималистичный заголовок категории */}
-      {category?.title && (
-        <h1 className="text-xl font-medium text-gray-900 mb-4">{category.title}</h1>
+      {category?.name && (
+        <h1 className="text-xl font-medium text-gray-900 mb-4">{category.name}</h1>
       )}
 
       {/* Простые чипсы подкатегорий */}
@@ -78,7 +78,7 @@ export default async function ProductPage({
               href={`/categories/${child.id}`}
               className="px-3 py-1.5 bg-gray-100 text-gray-800 text-xs rounded-full hover:bg-orange-100 transition-colors"
             >
-              {child.title}
+              {child.name}
             </Link>
           ))}
         </div>

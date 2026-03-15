@@ -80,7 +80,7 @@ export const SearchResults = ({
                             <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-gray-100">
                                 <Image
                                     src={result.image}
-                                    alt={result.title}
+                                    alt={result.name}
                                     fill
                                     sizes="40px"
                                     className="object-cover"
@@ -89,7 +89,7 @@ export const SearchResults = ({
                             </div>
                         )}
                         <div>
-                            <div className="font-medium text-gray-800">{result.title}</div>
+                            <div className="font-medium text-gray-800">{result.name}</div>
                             <div className="text-xs text-gray-500 mt-1">
                                 {getTypeLabel(result)}
                             </div>

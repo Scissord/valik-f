@@ -124,15 +124,15 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
                 <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 relative">
                   <Image
                     src={item.product?.images?.[0] || "/imgs/placeholder.png"}
-                    alt={item.product?.title || "Товар"}
+                    alt={item.product?.name || "Товар"}
                     fill
                     className="object-cover"
                   />
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-gray-800">{item.product?.title}</p>
+                  <p className="font-medium text-gray-800">{item.product?.name}</p>
                   <p className="text-sm text-gray-500 line-clamp-2">
-                    {item.product?.title}
+                    {item.product?.name}
                   </p>
                   <div className="flex justify-between items-center mt-2">
                     <p className="text-sm text-gray-700">

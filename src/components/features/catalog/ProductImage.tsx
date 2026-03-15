@@ -3,7 +3,7 @@ import Image from "next/image";
 
 interface Props {
   url?: string;
-  title: string;
+  name: string;
   className?: React.StyleHTMLAttributes<HTMLImageElement>["className"];
   width: number;
   height: number;
@@ -14,7 +14,7 @@ interface Props {
 //"rounded w-20 h-20 object-cover"
 export const ProductImage = ({
   url,
-  title,
+  name,
   className,
   width,
   height,
@@ -33,7 +33,7 @@ export const ProductImage = ({
     <Image
       className={className}
       src={localSrc}
-      alt={title}
+      alt={name}
       width={width}
       height={height}
       onMouseEnter={onMouseEnter}

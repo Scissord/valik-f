@@ -74,7 +74,7 @@ export const MobileCategoriesPage = () => {
   };
 
   const renderCategoryCard = (category: GoodCategory) => {
-    const icon = getCategoryIcon(category.title);
+    const icon = getCategoryIcon(category.name);
     
     return (
       <Link 
@@ -85,7 +85,7 @@ export const MobileCategoriesPage = () => {
         <div className="text-gray-600 mb-3 transition-colors duration-300 group-hover:text-yellow-500">
           {icon}
         </div>
-        <h3 className="font-semibold text-sm text-gray-800 leading-tight">{category.title}</h3>
+        <h3 className="font-semibold text-sm text-gray-800 leading-tight">{category.name}</h3>
       </Link>
     );
   };

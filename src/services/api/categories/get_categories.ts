@@ -5,7 +5,7 @@ import type { GoodCategory } from "@/lib/legacy";
 const mockCategories: GoodCategory[] = [
   {
     id: "1",
-    title: "Инструменты",
+    name: "Инструменты",
     slug: "instruments",
     parent_id: null,
     children: [],
@@ -13,11 +13,10 @@ const mockCategories: GoodCategory[] = [
     created_at: "2024-01-01T00:00:00.000Z",
     updated_at: "2024-01-01T00:00:00.000Z",
     deleted_at: null,
-
   },
   {
     id: "2",
-    title: "Строительные материалы",
+    name: "Строительные материалы",
     slug: "building-materials",
     parent_id: null,
     children: [],
@@ -25,11 +24,10 @@ const mockCategories: GoodCategory[] = [
     created_at: "2024-01-01T00:00:00.000Z",
     updated_at: "2024-01-01T00:00:00.000Z",
     deleted_at: null,
-
   },
   {
     id: "3",
-    title: "Отделочные материалы",
+    name: "Отделочные материалы",
     slug: "finishing-materials",
     parent_id: null,
     children: [],
@@ -37,11 +35,10 @@ const mockCategories: GoodCategory[] = [
     created_at: "2024-01-01T00:00:00.000Z",
     updated_at: "2024-01-01T00:00:00.000Z",
     deleted_at: null,
-
   },
   {
     id: "4",
-    title: "Сантехника",
+    name: "Сантехника",
     slug: "plumbing",
     parent_id: null,
     children: [],
@@ -49,11 +46,10 @@ const mockCategories: GoodCategory[] = [
     created_at: "2024-01-01T00:00:00.000Z",
     updated_at: "2024-01-01T00:00:00.000Z",
     deleted_at: null,
-
   },
   {
     id: "5",
-    title: "Электрика и освещение",
+    name: "Электрика и освещение",
     slug: "electrical",
     parent_id: null,
     children: [],
@@ -61,11 +57,10 @@ const mockCategories: GoodCategory[] = [
     created_at: "2024-01-01T00:00:00.000Z",
     updated_at: "2024-01-01T00:00:00.000Z",
     deleted_at: null,
-
   },
   {
     id: "6",
-    title: "Крепёжные изделия",
+    name: "Крепёжные изделия",
     slug: "fasteners",
     parent_id: null,
     children: [],
@@ -73,7 +68,6 @@ const mockCategories: GoodCategory[] = [
     created_at: "2024-01-01T00:00:00.000Z",
     updated_at: "2024-01-01T00:00:00.000Z",
     deleted_at: null,
-
   }
 ];
 
@@ -88,7 +82,7 @@ export const getCategories = async (): Promise<GoodCategory[]> => {
     if (response.data && Array.isArray(response.data)) {
       // Фильтруем категории, у которых есть id и title
       const validCategories = response.data.filter(category =>
-        category && category.id && category.title
+        category && category.id && category.name
       );
 
       if (validCategories.length > 0) {

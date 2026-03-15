@@ -6,11 +6,11 @@ import { IoExpand, IoClose } from "react-icons/io5";
 
 interface Props {
   images: string[];
-  title: string;
+  name: string;
   className?: string;
 }
 
-export const ProductSlidesShow = ({ images, title, className }: Props) => {
+export const ProductSlidesShow = ({ images, name, className }: Props) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -53,7 +53,7 @@ export const ProductSlidesShow = ({ images, title, className }: Props) => {
                       url={image}
                       width={80}
                       height={80}
-                      title={title}
+                      name={name}
                     />
                   </div>
                 );
@@ -74,7 +74,7 @@ export const ProductSlidesShow = ({ images, title, className }: Props) => {
                   url={images[currentImageIndex]}
                   width={1200}
                   height={900}
-                  title={title}
+                  name={name}
                   priority={true}
                 />
                 <div
@@ -151,7 +151,7 @@ export const ProductSlidesShow = ({ images, title, className }: Props) => {
                 url={images[currentImageIndex]}
                 width={1920}
                 height={1080}
-                title={title}
+                name={name}
               />
             </div>
 

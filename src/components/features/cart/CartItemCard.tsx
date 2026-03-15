@@ -73,7 +73,7 @@ export const CartItemCard = ({ product, updateProductQuantity, deleteProduct }: 
                                 src={product.images?.[0] || "/imgs/placeholder.png"}
                                 width={80}
                                 height={80}
-                                alt={product.title}
+                                alt={product.name}
                                 className="object-contain"
                             />
                         </div>
@@ -85,7 +85,7 @@ export const CartItemCard = ({ product, updateProductQuantity, deleteProduct }: 
                             href={`/product/${product.id}`}
                             className="text-sm font-medium text-gray-900 hover:text-orange-500 transition-colors line-clamp-2"
                         >
-                            {product.title}
+                            {product.name}
                         </Link>
 
                         <div className="mt-2 flex items-center justify-between">

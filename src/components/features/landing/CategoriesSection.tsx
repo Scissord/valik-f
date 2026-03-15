@@ -26,7 +26,7 @@ interface CategoriesSectionProps {
 }
 
 const getCategoryImage = (category: GoodCategory) => {
-  const title = category.title.toLowerCase();
+  const title = category.name.toLowerCase();
 
   if (title.includes("инструменты")) return "/category/instrumenty.jpg";
   if (title.includes("мебель")) return "/category/mebel.jpg";
@@ -43,7 +43,7 @@ const getCategoryImage = (category: GoodCategory) => {
 };
 
 const getCategoryIcon = (category: GoodCategory): IconType => {
-  const title = category.title.toLowerCase();
+  const title = category.name.toLowerCase();
 
   if (title.includes("инструменты")) return IoHammerOutline;
   if (title.includes("мебель")) return IoHomeOutline;
@@ -58,6 +58,7 @@ const getCategoryIcon = (category: GoodCategory): IconType => {
 
   return IoBriefcaseOutline;
 };
+
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -171,7 +172,7 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                             <Icon className="w-7 h-7 text-orange-500" />
                           </div>
                           <span className="mt-2 text-[11px] leading-tight text-gray-800">
-                            {category.title}
+                            {category.name}
                           </span>
                         </Link>
                       );
@@ -244,7 +245,7 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                         <div className="relative w-full pt-[90%]">
                           <Image
                             src={getCategoryImage(category)}
-                            alt={category.title}
+                            alt={category.name}
                             fill
                             sizes="160px"
                             priority
@@ -254,7 +255,7 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                           />
                           <div className="absolute inset-x-0 top-0 px-2.5 pt-2 pb-4">
                             <h3 className="font-semibold text-sm text-left text-gray-900 leading-snug">
-                              {category.title}
+                              {category.name}
                             </h3>
                           </div>
                         </div>

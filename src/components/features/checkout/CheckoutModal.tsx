@@ -153,14 +153,14 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                       <div className="w-12 h-12 bg-white rounded-lg overflow-hidden flex-shrink-0">
                         <Image
                           src={item.images?.[0] || "/imgs/placeholder.png"}
-                          alt={item.title}
+                          alt={item.name}
                           width={48}
                           height={48}
                           className="w-full h-full object-contain"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{item.title}</p>
+                        <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
                         <p className="text-sm text-gray-500">{currencyFormat(item.price)}</p>
                       </div>
                       <div className="flex items-center bg-white rounded-lg border border-gray-200">

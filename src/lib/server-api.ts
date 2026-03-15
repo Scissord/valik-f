@@ -24,13 +24,13 @@ function normalizeProduct(product: any): Product {
     return {
         ...product,
         category: typeof product.category === 'object' && product.category !== null
-            ? (product.category.title || product.category.name || 'Не указана')
+            ? (product.category.name || 'Не указана')
             : String(product.category || 'Не указана'),
         brand: typeof product.brand === 'object' && product.brand !== null
-            ? (product.brand.title || product.brand.name || 'Не указан')
+            ? (product.brand.name || 'Не указан')
             : String(product.brand || 'Не указан'),
         unit: typeof product.unit === 'object' && product.unit !== null
-            ? (product.unit.title || product.unit.name || 'шт')
+            ? (product.unit.name || 'шт')
             : String(product.unit || 'шт'),
         price: Number(product.price) || 0,
         images: images,
@@ -86,7 +86,7 @@ export async function fetchCategories(): Promise<GoodCategory[]> {
 
         if (data && Array.isArray(data)) {
             return data.filter(
-                (category: GoodCategory) => category && category.id && category.title
+                (category: GoodCategory) => category && category.id && category.name
             );
         }
 

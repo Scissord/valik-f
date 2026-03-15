@@ -13,13 +13,13 @@ import { IoExpand, IoClose } from "react-icons/io5";
 
 interface Props {
   images: string[];
-  title: string;
+  name: string;
   className?: string;
 }
 
 export const ProductMobileSlidesShow = ({
   images,
-  title,
+  name,
   className,
 }: Props) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -69,7 +69,7 @@ export const ProductMobileSlidesShow = ({
                   url={image}
                   width={800}
                   height={600}
-                  title={title}
+                  name={name}
                   priority={index === 0}
                 />
                 <div
@@ -146,7 +146,7 @@ export const ProductMobileSlidesShow = ({
                 url={images[currentImageIndex]}
                 width={1920}
                 height={1080}
-                title={title}
+                name={name}
               />
             </div>
 

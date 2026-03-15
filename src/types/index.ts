@@ -1,6 +1,6 @@
 export interface Product {
     id: string | number;
-    title: string;
+    name: string;
     slug?: string;
     description?: string;
     price: number | string;
@@ -28,7 +28,7 @@ export interface Product {
 
 export interface Category {
     id: string | number;
-    title: string;
+    name: string;
     slug: string;
     image?: string;
     parent_id?: string | number | null;
@@ -41,7 +41,7 @@ export interface Category {
 
 export interface Brand {
     id: string | number;
-    title: string;
+    name: string;
     slug: string;
     image?: string;
 }

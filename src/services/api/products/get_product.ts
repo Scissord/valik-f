@@ -18,7 +18,7 @@ export const getProduct = async ({ id }: Params): Promise<Product | null> => {
 
     console.log('[API] Товар успешно получен с бэкенда:', {
       id: response.data?.id,
-      title: response.data?.title,
+      name: response.data?.name,
       price: response.data?.price,
       category: response.data?.category,
       brand: response.data?.brand,

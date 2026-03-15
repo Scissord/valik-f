@@ -19,10 +19,10 @@ export async function generateMetadata(
   try {
     const product = await getProduct({ id: slug });
     return {
-      title: product?.title ?? "Product not found",
+      title: product?.name ?? "Product not found",
       description: product?.description ?? "",
       openGraph: {
-        title: product?.title ?? "Product not found",
+        title: product?.name ?? "Product not found",
         description: product?.description ?? "",
         images: product?.images?.[0] ? [product.images[0]] : [],
       },
@@ -49,9 +49,9 @@ export default async function ProductPage({ params }: Props) {
       ...product,
       slug: slug,
       images: product.images && product.images.length > 0 ? product.images : ['/imgs/placeholder.png'],
-      brand: typeof product.brand === 'object' && product.brand !== null ? (product.brand as any).title : String(product.brand || 'Не указан'),
-      category: typeof product.category === 'object' && product.category !== null ? (product.category as any).title : String(product.category || 'Не указана'),
-      unit: typeof product.unit === 'object' && product.unit !== null ? (product.unit as any).title : String(product.unit || 'шт'),
+      brand: typeof product.brand === 'object' && product.brand !== null ? (product.brand as any).name : String(product.brand || 'Не указан'),
+      category: typeof product.category === 'object' && product.category !== null ? (product.category as any).name : String(product.category || 'Не указана'),
+      unit: typeof product.unit === 'object' && product.unit !== null ? (product.unit as any).name : String(product.unit || 'шт'),
       article: product.article || 'N/A',
       rating: product.rating || 0,
       brand_id: product.brand_id || 0,
@@ -62,7 +62,7 @@ export default async function ProductPage({ params }: Props) {
       category_id: product.category_id || 0,
       quantity: product.quantity || 0,
       description: product.description || '',
-      title: product.title || 'Без названия',
+      name: product.name || 'Без названия',
       id: product.id || 0,
       price: Number(product.price) || 0,
       length: product.length || null,
@@ -72,8 +72,8 @@ export default async function ProductPage({ params }: Props) {
     };
 
     const renderValue = (value: string | any) => {
-      if (typeof value === 'object' && value !== null && 'title' in value) {
-        return value.title;
+      if (typeof value === 'object' && value !== null && 'name' in value) {
+        return value.name;
       }
       return value;
     };
@@ -96,7 +96,7 @@ export default async function ProductPage({ params }: Props) {
                 <ChevronRight className="w-4 h-4 text-slate-400" />
               </>
             )}
-            <span className="text-slate-800">{adaptedProduct.title}</span>
+            <span className="text-slate-800">{adaptedProduct.name}</span>
           </nav>
 
           <div className="grid lg:grid-cols-12 gap-8 sm:gap-10 mb-4 sm:mb-12 items-start">
@@ -107,12 +107,12 @@ export default async function ProductPage({ params }: Props) {
                   <ProductSlidesShow
                     className="hidden md:block rounded-2xl overflow-hidden"
                     images={adaptedProduct.images}
-                    title={adaptedProduct.title}
+                    name={adaptedProduct.name}
                   />
                   <ProductMobileSlidesShow
                     className="block md:hidden rounded-2xl overflow-hidden"
                     images={adaptedProduct.images}
-                    title={adaptedProduct.title}
+                    name={adaptedProduct.name}
                   />
                 </div>
               </div>
@@ -122,7 +122,7 @@ export default async function ProductPage({ params }: Props) {
             <div className="lg:col-span-6 xl:col-span-7 flex flex-col pt-2 lg:pl-4">
               {/* Title */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-2">
-                {adaptedProduct.title}
+                {adaptedProduct.name}
               </h1>
 
               {/* Brand and Rating */}

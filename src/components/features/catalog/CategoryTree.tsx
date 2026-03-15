@@ -153,7 +153,7 @@ export const CategoryTree = ({ categories }: Props) => {
         const isExpanded = expandedCategories.includes(String(category.id));
         const hasChildren = category.children && category.children.length > 0;
         const isActive = currentCategoryId === String(category.id);
-        const icon = getCategoryIcon(category.title);
+        const icon = getCategoryIcon(category.name);
 
         return (
             <div key={category.id} className="w-full">
@@ -193,7 +193,7 @@ export const CategoryTree = ({ categories }: Props) => {
                 ${level > 0 ? "text-sm" : "text-base"}
               `}
                         >
-                            {category.title}
+                            {category.name}
                         </span>
                     </Link>
 
