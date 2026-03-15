@@ -3,7 +3,7 @@
 import { checkOrderStatus, IOrder } from "@/lib/legacy";
 import { useState } from "react";
 import { IoChevronDownOutline, IoChevronUpOutline, IoRefreshOutline } from "react-icons/io5";
-import Image from "next/image";
+import { ProductImage } from "@/components";
 
 interface OrderItemProps {
   order: IOrder;
@@ -122,10 +122,11 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
             {order.items.map((item) => (
               <div key={item.id} className="flex items-center space-x-4 bg-white p-3 rounded-lg">
                 <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 relative">
-                  <Image
-                    src={item.product?.images?.[0] || "/imgs/placeholder.png"}
-                    alt={item.product?.name || "Товар"}
-                    fill
+                  <ProductImage
+                    url={item.product?.images?.[0]}
+                    name={item.product?.name || "Товар"}
+                    width={80}
+                    height={80}
                     className="object-cover"
                   />
                 </div>

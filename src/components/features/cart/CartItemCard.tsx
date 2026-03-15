@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useRef } from 'react';
 import { IoAddOutline, IoRemoveOutline, IoTrashOutline } from 'react-icons/io5';
 import { CartItem, currencyFormat } from '@/lib/legacy';
+import { ProductImage } from '@/components';
 
 interface CartItemCardProps {
     product: CartItem;
@@ -69,11 +70,11 @@ export const CartItemCard = ({ product, updateProductQuantity, deleteProduct }: 
                     {/* Image */}
                     <Link href={`/product/${product.id}`} className="flex-shrink-0">
                         <div className="w-20 h-20 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center">
-                            <Image
-                                src={product.images?.[0] || "/imgs/placeholder.png"}
+                            <ProductImage
+                                url={product.images?.[0]}
                                 width={80}
                                 height={80}
-                                alt={product.name}
+                                name={product.name}
                                 className="object-contain"
                             />
                         </div>

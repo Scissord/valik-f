@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { IoCloseOutline, IoCheckmarkCircle, IoWarningOutline, IoRemoveOutline, IoAddOutline } from 'react-icons/io5';
 import { FaTelegram } from 'react-icons/fa';
 import { useCartStore, useUserStore, createOrder, currencyFormat, CartItem } from '@/lib/legacy';
+import { ProductImage } from '@/components';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -150,10 +151,10 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                 <div className="space-y-3 max-h-52 overflow-y-auto">
                   {cart.map((item: CartItem) => (
                     <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                      <div className="w-12 h-12 bg-white rounded-lg overflow-hidden flex-shrink-0">
-                        <Image
-                          src={item.images?.[0] || "/imgs/placeholder.png"}
-                          alt={item.name}
+                      <div className="w-12 h-12 bg-white rounded-lg overflow-hidden flex-shrink-0 relative">
+                        <ProductImage
+                          url={item.images?.[0]}
+                          name={item.name}
                           width={48}
                           height={48}
                           className="w-full h-full object-contain"
