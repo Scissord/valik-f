@@ -9,7 +9,7 @@ import { login } from "@/lib/legacy";
 import { useUserStore } from "@/lib/legacy";
 
 interface LoginInput {
-  phone: string;
+  email: string;
   password: string;
 }
 
@@ -62,25 +62,27 @@ export const LoginForm = ({ idPrefix = "" }: LoginFormProps) => {
       <div className="space-y-5">
         <div className="relative">
           <input
-            id={makeId(idPrefix, "phone")}
-            type="text"
-            inputMode="numeric"
+            id={makeId(idPrefix, "email")}
+            type="email"
             placeholder=" "
             className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
-            {...register("phone", {
-              required: "Укажите номер телефона",
-              validate: (v) => /^\d{10,15}$/.test(v) || "Номер должен содержать от 10 до 15 цифр",
+            {...register("email", {
+              required: "Укажите email",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Введите корректный email"
+              }
             })}
           />
           <label
-            htmlFor={makeId(idPrefix, "phone")}
+            htmlFor={makeId(idPrefix, "email")}
             className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
           >
-            Номер телефона
+            Email
           </label>
         </div>
-        {errors.phone && (
-          <p className="text-sm text-red-500">{errors.phone.message}</p>
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email.message}</p>
         )}
 
         <div className="relative">

@@ -25,8 +25,9 @@ export const saveTokensToStore = (accessToken: string, refreshToken?: string) =>
 
 export const logoutUser = () => {
   if (typeof window === "undefined") return;
-  localStorage.removeItem("token");
+  localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
+  localStorage.removeItem("buyerId");
 };
 
 
@@ -45,6 +46,9 @@ api.interceptors.request.use(
     const token = getAccessTokenFromStore();
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
+      console.log("Request with token:", config.url, "Token:", token.substring(0, 20) + "...");
+    } else {
+      console.warn("No token found for request:", config.url);
     }
     return config;
   },

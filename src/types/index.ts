@@ -62,6 +62,7 @@ export interface TokenResponse {
     id: string | number;
     phone: string;
     name: string;
+    email: string;
     access: string;
     refresh: string;
 }

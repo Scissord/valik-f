@@ -3,7 +3,7 @@ import { saveTokensToStore } from "../axios";
 import type { User, TokenResponse } from "@/lib/legacy";
 
 interface LoginInput {
-  phone: string;
+  email: string;
   password: string;
 }
 
@@ -16,7 +16,7 @@ interface LoginResult {
 export const login = async (data: LoginInput): Promise<LoginResult> => {
   try {
     const response = await api.post<TokenResponse>('/buyer/login/', data);
-    const { access, refresh, id, phone, name } = response.data;
+    const { access, refresh, id, phone, name, email } = response.data;
 
     saveTokensToStore(access, refresh);
     if (typeof window !== "undefined") {
@@ -24,7 +24,7 @@ export const login = async (data: LoginInput): Promise<LoginResult> => {
     }
 
     return {
-      user: { id, phone, name },
+      user: { id, phone, name, email },
       accessToken: access,
       errors: null,
     };

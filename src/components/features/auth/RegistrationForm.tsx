@@ -14,6 +14,7 @@ const registerSchema = z.object({
     .min(10, { message: 'Введите корректный номер телефона (от 10 цифр)' })
     .max(15, { message: 'Номер не должен превышать 15 цифр' })
     .regex(/^\d{10,15}$/, { message: 'Номер должен содержать только от 10 до 15 цифр' }),
+  email: z.string().email({ message: 'Введите корректный email' }),
   password: z.string().min(8, { message: 'Пароль должен содержать минимум 8 символов' }).refine(s => !s.includes(' '), 'Пароль не должен содержать пробелы'),
 });
 
@@ -116,8 +117,24 @@ export const RegistrationForm = ({ idPrefix = "" }: RegistrationFormProps) => {
             <p className="text-sm text-red-500">{errors.name.message}</p>
           )}
 
-
-
+          <div className="relative">
+            <input
+              id={makeId(idPrefix, "email")}
+              type="email"
+              placeholder=" "
+              className="peer w-full rounded-2xl border border-gray-200 bg-transparent px-4 pt-6 pb-2 text-base text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-0"
+              {...register("email")}
+            />
+            <label
+              htmlFor={makeId(idPrefix, "email")}
+              className="pointer-events-none absolute left-4 top-2 text-xs text-gray-500 transition-all duration-150 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-gray-900"
+            >
+              Email
+            </label>
+          </div>
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email.message}</p>
+          )}
 
           <div className="relative">
             <input

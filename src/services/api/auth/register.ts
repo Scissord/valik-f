@@ -4,6 +4,7 @@ interface RegisterInput {
   phone: string;
   password: string;
   name: string;
+  email: string;
 }
 
 interface RegisterResult {
