@@ -46,9 +46,9 @@ export async function fetchProductsForMainPage(
 ): Promise<ProductsResponse> {
     try {
         const response = await fetch(
-            `${API_URL}/product/main-products/?page=${page}&limit=${limit}`,
+            `${API_URL}/product/opt-products/?page=${page}&limit=${limit}`,
             {
-                next: { revalidate: 60 }, // Cache for 60 seconds
+                next: { revalidate: 60 },
             }
         );
 
@@ -57,11 +57,14 @@ export async function fetchProductsForMainPage(
         }
 
         const data = await response.json();
+        const productsArray = Array.isArray(data) ? data : (data.results || data.products || []);
+        const total = typeof data.count === 'number' ? data.count : (data.total || productsArray.length);
+        const totalPages = data.totalPages || Math.ceil(total / limit) || 1;
         
-        // ✅ Нормализуем продукты
         return {
-            ...data,
-            products: (data.products || []).map(normalizeProduct),
+            products: productsArray.map(normalizeProduct),
+            total,
+            totalPages,
         };
     } catch (error) {
         console.error("[Server API] Error fetching products:", error);

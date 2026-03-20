@@ -80,7 +80,7 @@ export default async function ProductPage({ params }: Props) {
 
     return (
       <div className="min-h-[100dvh] bg-slate-50 pt-24 pb-4 sm:pb-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8 pb-4 sm:pb-8">
+        <div className="mx-auto max-w-[1536px] px-4 sm:px-6 lg:px-4 pt-4 sm:pt-8 pb-4 sm:pb-8">
           {/* Breadcrumbs */}
           <nav className="text-sm font-medium text-slate-500 mb-6 sm:mb-8 flex items-center flex-wrap gap-2">
             <Link href="/" className="hover:text-orange-600 transition-colors flex items-center gap-1">

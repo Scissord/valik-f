@@ -120,7 +120,7 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
 
   return (
     <section className="pt-4 sm:pt-10 pb-4 sm:pb-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1536px] px-4 sm:px-6 lg:px-4">
         <motion.div
           variants={containerVariants}
           initial="hidden"

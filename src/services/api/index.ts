@@ -17,6 +17,10 @@ export * from "./buyer/logout";
 export * from "./buyer/updateProfile";
 export * from "./buyer/changePassword";
 export * from "./buyer/resetPassword";
+export * from "./cart/add_to_cart";
+export * from "./cart/get_cart";
+export * from "./cart/update_quantity";
+export * from "./cart/remove_from_cart";
 
 import { getProduct } from "./products/get_product";
 import { getProductsForCategory } from "./products/get_products_for_category";
@@ -29,6 +33,11 @@ import { logout } from "./buyer/logout";
 import { updateProfile } from "./buyer/updateProfile";
 import { changePassword } from "./buyer/changePassword";
 import { resetPassword } from "./buyer/resetPassword";
+
+import { addToCart } from "./cart/add_to_cart";
+import { getCart } from "./cart/get_cart";
+import { updateQuantity } from "./cart/update_quantity";
+import { removeFromCart } from "./cart/remove_from_cart";
 
 export const UserAPI = {
     login,
@@ -48,4 +57,11 @@ export const ProductAPI = {
 
 export const CategoriesAPI = {
     getCategories,
+};
+
+export const CartAPI = {
+    addToCart,
+    getCart,
+    updateQuantity,
+    removeFromCart,
 };

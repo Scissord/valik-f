@@ -1,24 +1,63 @@
 import type { CartItem } from "@/lib/legacy";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { CartAPI } from "../../api";
+
+export interface ExtendedCartItem extends CartItem {
+  cartItemId?: number;
+}
 
 interface State {
-  cart: CartItem[];
-  addProductToCart: (product: CartItem) => void;
+  cart: ExtendedCartItem[];
+  addProductToCart: (product: ExtendedCartItem) => Promise<void>;
+  updateProductQuantity: (product: ExtendedCartItem, quantity: number) => Promise<void>;
+  deleteProduct: (product: ExtendedCartItem) => Promise<void>;
+  clearCart: () => void;
   getTotalItems: () => number;
   getSummaryInformation: () => {
     total: number;
     count: number;
   };
-  updateProductQuantity: (product: CartItem, quantity: number) => void;
-  deleteProduct: (product: CartItem) => void;
-  clearCart: () => void;
+  fetchCart: () => Promise<void>;
 }
+
+const getBuyerId = (): number | null => {
+  try {
+    const userStr = localStorage.getItem("user-storage");
+    if (!userStr) return null;
+    const userState = JSON.parse(userStr);
+    return userState?.state?.user?.buyer_id || null;
+  } catch (e) {
+    return null;
+  }
+};
 
 export const useCartStore = create<State>()(
   persist(
     (set, get) => ({
       cart: [],
+
+      fetchCart: async () => {
+        const buyerId = getBuyerId();
+        if (!buyerId) return;
+        try {
+          const response = await CartAPI.getCart(buyerId);
+          if (response && Array.isArray(response)) {
+            const remoteCart: ExtendedCartItem[] = response.map((item: any) => ({
+              ...(item.product_original || item.product || {}),
+              quantity: item.quantity,
+              cartItemId: item.id,
+              added_at: new Date().toISOString().split('T')[0]
+            }));
+            if (remoteCart.length > 0) {
+              set({ cart: remoteCart });
+            }
+          }
+        } catch (e) {
+          console.error("Failed to fetch cart from backend", e);
+        }
+      },
+
       getSummaryInformation: () => {
         const { cart } = get();
         const total = cart.reduce(
@@ -29,35 +68,46 @@ export const useCartStore = create<State>()(
           (total, item) => total + item.quantity,
           0
         );
-        return {
-          total,
-          count,
-        };
+        return { total, count };
       },
 
-      deleteProduct: (product: CartItem) => {
+      deleteProduct: async (product: ExtendedCartItem) => {
         const { cart } = get();
+        set({ cart: cart.filter((item) => item.id !== product.id) });
 
-        const updatedCartItems = cart.filter(
-          (item) => item.id != product.id
-        );
-
-        set({ cart: updatedCartItems });
+        const buyerId = getBuyerId();
+        if (buyerId && product.cartItemId) {
+          try {
+            await CartAPI.removeFromCart(Number(product.cartItemId));
+          } catch (e) {
+            console.error("Failed to delete product from backend cart", e);
+          }
+        }
       },
 
-      updateProductQuantity: (product: CartItem, quantity: number) => {
+      updateProductQuantity: async (product: ExtendedCartItem, quantity: number) => {
         const { cart } = get();
-
-        const updatedCartItems = cart
-          .map((item) => {
+        set({
+          cart: cart.map((item) => {
             if (item.id === product.id) {
-              return { ...item, quantity: quantity };
+              return { ...item, quantity };
             }
             return item;
-          })
-          .filter((item) => item.quantity > 0);
+          }).filter((item) => item.quantity > 0)
+        });
 
-        set({ cart: updatedCartItems });
+        const buyerId = getBuyerId();
+        if (buyerId && product.cartItemId) {
+          try {
+            if (quantity > 0) {
+              await CartAPI.updateQuantity(Number(product.cartItemId), { quantity });
+            } else {
+              await CartAPI.removeFromCart(Number(product.cartItemId));
+            }
+          } catch (e) {
+            console.error("Failed to update product quantity on backend", e);
+          }
+        }
       },
 
       getTotalItems: () => {
@@ -69,37 +119,57 @@ export const useCartStore = create<State>()(
         set({ cart: [] });
       },
 
-      addProductToCart: (product: CartItem) => {
+      addProductToCart: async (product: ExtendedCartItem) => {
         const { cart } = get();
-        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-
-        // Ищем товар в корзине по ID, артикулу и сегодняшней дате
-        const productInCart = cart.find(
-          (item) => item.id === product.id && item.article === product.article && item.added_at === today
+        const today = new Date().toISOString().split('T')[0];
+        
+        let existingItem = cart.find(
+          (item) => item.id === product.id && item.article === product.article
         );
 
-        if (productInCart) {
-          // Если такой товар, добавленный сегодня, уже есть, обновляем его количество
-          const updatedCart = cart.map((item) => {
-            if (item.id === product.id && item.article === product.article && item.added_at === today) {
-              return { ...item, quantity: item.quantity + (product.quantity || 1) };
-            }
-            return item;
+        if (existingItem) {
+          set({
+            cart: cart.map((item) => {
+              if (item.id === product.id) {
+                return { ...item, quantity: item.quantity + (product.quantity || 1) };
+              }
+              return item;
+            })
           });
-          set({ cart: updatedCart });
+          const buyerId = getBuyerId();
+          if (buyerId && existingItem.cartItemId) {
+              try {
+                  await CartAPI.updateQuantity(Number(existingItem.cartItemId), { quantity: existingItem.quantity + (product.quantity || 1) });
+              } catch(e) {}
+          }
         } else {
-          // Если товара нет или он был добавлен в другой день, добавляем его как новый
-          const newProduct = {
-            ...product,
-            quantity: product.quantity || 1,
-            added_at: today,
-          };
+          const newProduct = { ...product, quantity: product.quantity || 1, added_at: today };
           set({ cart: [...cart, newProduct] });
+          
+          const buyerId = getBuyerId();
+          if (buyerId) {
+             try {
+                const res = await CartAPI.addToCart({
+                  buyer: buyerId,
+                  product_original: Number(product.id),
+                  quantity: newProduct.quantity
+                });
+                if (res && res.id) {
+                    set({
+                        cart: get().cart.map(i => i.id === product.id ? { ...i, cartItemId: res.id } : i)
+                    });
+                }
+             } catch(e) {
+                 console.error("Failed to sync add to cart", e);
+             }
+          }
         }
       },
     }),
     {
       name: "shopping-cart",
+      // Remove sync methods from persist to avoid issues, we only want to store the state array
+      partialize: (state) => ({ cart: state.cart }),
     }
   )
 );

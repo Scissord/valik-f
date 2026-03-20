@@ -1,35 +1,17 @@
 import api from "../axios";
-import type { CartItem, IOrder } from "@/lib/legacy";
+import type { IOrder } from "@/lib/legacy";
 
-interface OrderItem {
-  id: number;
-  quantity: number;
-}
-
-interface Params {
-  cart: CartItem[];
+interface CreateOrderParams {
+  buyer: number;
+  sell_product: number[]; // Array of IDs in cart
+  payment_type: number;
   address: string;
-  additional_info?: string;
+  delevery_date: string; // YYYY-MM-DD
 }
 
-export const createOrder = async ({
-  cart,
-  address,
-  additional_info
-}: Params): Promise<IOrder | null> => {
+export const createOrder = async (params: CreateOrderParams): Promise<IOrder | null> => {
   try {
-    // Преобразуем корзину в формат для API
-    const orderItems: OrderItem[] = cart.map(item => ({
-      id: typeof item.id === 'string' ? parseInt(item.id) : item.id,
-      quantity: item.quantity
-    }));
-
-    const response = await api.post('/orders', {
-      cart: orderItems,
-      address,
-      additional_info
-    });
-
+    const response = await api.post('/sell/order/create/', params);
     return response.data;
   } catch (error) {
     console.error('Ошибка при создании заказа:', error);

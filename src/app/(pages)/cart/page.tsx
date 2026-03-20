@@ -40,10 +40,11 @@ export default function CartPage() {
             // ...
 
 
-            const response = await api.get(`/products/${item.id}`);
+            const response = await api.get(`/product/optinfo/${item.id}/`);
             const productData = response.data;
-            if (productData.price !== item.price) {
-              return { ...item, price: productData.price };
+            const actualPrice = Number(productData.price) || 0;
+            if (actualPrice !== Number(item.price)) {
+              return { ...item, price: actualPrice };
             }
             return item;
           } catch (error) {

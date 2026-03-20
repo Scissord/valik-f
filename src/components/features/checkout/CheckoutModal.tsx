@@ -46,20 +46,16 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
     setError(null);
 
     try {
-      const groupedCart = cart.reduce<CartItem[]>((acc, item) => {
-        const existingItem = acc.find(i => i.id === item.id && i.article === item.article);
-        if (existingItem) {
-          existingItem.quantity += item.quantity;
-        } else {
-          acc.push({ ...item });
-        }
-        return acc;
-      }, []);
+      const userId = typeof user.id === 'string' ? parseInt(user.id) : user.id;
+      const sell_products = cart.map(item => (item as any).cartItemId).filter(Boolean) as number[];
+      const today = new Date().toISOString().split('T')[0];
 
       const order = await createOrder({
-        cart: groupedCart,
-        address: address.trim(),
-        additional_info: additionalInfo.trim() || undefined
+        buyer: userId,
+        sell_product: sell_products,
+        payment_type: 1, // Дефолтный тип оплаты
+        address: `${address.trim()}${additionalInfo.trim() ? ` (Комментарий: ${additionalInfo.trim()})` : ''}`,
+        delevery_date: today,
       });
 
       if (order) {

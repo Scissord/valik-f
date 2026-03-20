@@ -37,7 +37,7 @@ export const Header = () => {
       className={`fixed top-0 left-0 w-full z-40 bg-white transition-all duration-300 ${isScrolled ? "shadow-sm" : "shadow-none"
         }`}
     >
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="mx-auto px-4 sm:px-6 lg:px-4 max-w-[1536px]">
         <div className="flex items-center justify-between py-3 gap-4">
           {/* Logo */}
           <div className="flex-shrink-0">
