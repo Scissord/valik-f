@@ -11,9 +11,18 @@ export const getOrders = async (): Promise<IOrder[]> => {
     }
 
     console.log("Fetching orders for buyer:", buyerId);
-    const { data } = await api.get<IOrder[]>(`/sell/orders/buyer/${buyerId}/`);
+    const { data } = await api.get<{ results: IOrder[] } | IOrder[]>(`/sell/orders/buyer/${buyerId}/`);
     console.log("Orders fetched successfully:", data);
-    return data;
+    
+    // Обрабатываем оба формата: с пагинацией и без
+    if (data && typeof data === 'object' && 'results' in data) {
+      return data.results || [];
+    } else if (Array.isArray(data)) {
+      return data;
+    }
+    
+    console.warn("Unexpected response format:", data);
+    return [];
   } catch (error: any) {
     console.error("Failed to fetch orders:", error);
     console.error("Error response:", error.response?.data);

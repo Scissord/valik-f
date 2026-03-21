@@ -45,8 +45,6 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
 
   const getStatusText = (status: number) => {
     switch (status) {
-      case 0:
-        return "Создан";
       case 1:
         return "Принят";
       case 2:
@@ -59,23 +57,29 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
         return "Частичный возврат";
       case 6:
         return "Полный возврат";
+      case 0:
       default:
-        return "Неизвестен";
+        return "Создан";
     }
   };
 
   const getStatusColor = (status: number) => {
     switch (status) {
-      case 0:
-        return "bg-yellow-100 text-yellow-800";
       case 1:
         return "bg-blue-100 text-blue-800";
       case 2:
         return "bg-purple-100 text-purple-800";
       case 3:
         return "bg-green-100 text-green-800";
+      case 4:
+        return "bg-red-100 text-red-800";
+      case 5:
+        return "bg-orange-100 text-orange-800";
+      case 6:
+        return "bg-red-100 text-red-800";
+      case 0:
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-yellow-100 text-yellow-800";
     }
   };
 
@@ -119,7 +123,7 @@ export const OrderItem = ({ order: initialOrder }: OrderItemProps) => {
       {isExpanded && (
         <div className="p-4 bg-gray-50 border-t border-gray-100">
           <div className="space-y-4">
-            {order.items.map((item) => (
+            {(order.items || []).map((item) => (
               <div key={item.id} className="flex items-center space-x-4 bg-white p-3 rounded-lg">
                 <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 relative">
                   <ProductImage

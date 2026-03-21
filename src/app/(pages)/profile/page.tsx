@@ -102,8 +102,8 @@ export default function ProfilePage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="bg-white min-h-screen pt-24 pb-4 lg:pb-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[60vh]">
+      <div className="bg-white min-h-screen pt-24 pb-12 lg:pb-20">
+        <div className="mx-auto px-4 sm:px-6 lg:px-4 max-w-[1536px] flex items-center justify-center min-h-[60vh]">
           <div className="animate-pulse flex flex-col items-center gap-4">
             <div className="w-12 h-12 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
             <p className="text-gray-500">Загрузка профиля...</p>
@@ -116,8 +116,8 @@ export default function ProfilePage() {
   // Not logged in state
   if (!user) {
     return (
-      <div className="bg-white min-h-screen pt-24 pb-4 lg:pb-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[60vh]">
+      <div className="bg-white min-h-screen pt-24 pb-12 lg:pb-20">
+        <div className="mx-auto px-4 sm:px-6 lg:px-4 max-w-[1536px] flex items-center justify-center min-h-[60vh]">
           <div className="bg-white rounded-xl border border-gray-100 p-8 text-center max-w-md w-full">
             <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <IoPersonOutline className="w-8 h-8 text-orange-500" />
@@ -144,17 +144,14 @@ export default function ProfilePage() {
   const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-orange-500 transition-colors";
 
   return (
-    <div className="bg-white min-h-screen pt-24 pb-4 lg:pb-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-white min-h-screen pt-24 pb-12 lg:pb-20">
+      <div className="mx-auto px-4 sm:px-6 lg:px-4 max-w-[1536px]">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Личный кабинет</h1>
-            <p className="text-sm text-gray-500 mt-1">{user.email}</p>
-          </div>
+          <h1 className="text-2xl font-bold text-gray-900">Личный кабинет</h1>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500 hover:text-red-500 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
           >
             <IoLogOutOutline className="w-5 h-5" />
             <span className="hidden sm:inline">Выйти</span>
@@ -165,7 +162,7 @@ export default function ProfilePage() {
           {/* Left column - Profile form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl border border-gray-100 p-5">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Личные данные</h2>
+              <h2 className="text-[18px] font-semibold text-gray-900 mb-4">Личные данные</h2>
 
               {statusMessage && (
                 <div
@@ -179,6 +176,16 @@ export default function ProfilePage() {
               )}
 
               <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-2">Email</label>
+                  <input
+                    type="email"
+                    value={user.email}
+                    disabled
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none bg-gray-50 text-gray-500 cursor-not-allowed"
+                  />
+                </div>
+
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="block text-sm font-medium text-gray-500 mb-2">Имя</label>

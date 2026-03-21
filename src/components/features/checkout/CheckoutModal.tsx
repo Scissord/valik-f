@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { IoCloseOutline, IoCheckmarkCircle, IoWarningOutline, IoRemoveOutline, IoAddOutline } from 'react-icons/io5';
 import { FaTelegram } from 'react-icons/fa';
-import { useCartStore, useUserStore, createOrder, currencyFormat, CartItem } from '@/lib/legacy';
+import { useCartStore, useUserStore, createOrder, currencyFormat, CartItem, CartAPI } from '@/lib/legacy';
 import { ProductImage } from '@/components';
 
 interface CheckoutModalProps {
@@ -47,15 +47,71 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
 
     try {
       const userId = typeof user.id === 'string' ? parseInt(user.id) : user.id;
-      const sell_products = cart.map(item => (item as any).cartItemId).filter(Boolean) as number[];
+      
+      console.log('Cart items:', cart);
+      
+      // Проверяем и создаем SellProduct для товаров без cartItemId
+      const sellProductIds: number[] = [];
+      
+      for (const item of cart) {
+        let sellProductId = (item as any).cartItemId;
+        
+        if (!sellProductId) {
+          // Создаем SellProduct на бэкенде
+          console.log('Creating SellProduct for item:', item.id);
+          try {
+            const res = await CartAPI.addToCart({
+              buyer: userId,
+              product_original: Number(item.id),
+              quantity: item.quantity
+            });
+            if (res && res.id) {
+              sellProductId = res.id;
+              console.log('Created SellProduct with ID:', sellProductId);
+            }
+          } catch (e) {
+            console.error('Failed to create SellProduct:', e);
+            setError(`Не удалось добавить товар "${item.name}" в заказ`);
+            setIsLoading(false);
+            return;
+          }
+        }
+        
+        if (sellProductId) {
+          sellProductIds.push(Number(sellProductId));
+        }
+      }
+      
+      console.log('Sell products IDs:', sellProductIds);
+      
+      if (sellProductIds.length === 0) {
+        setError('Не удалось подготовить товары для заказа');
+        setIsLoading(false);
+        return;
+      }
+      
       const today = new Date().toISOString().split('T')[0];
+
+      console.log('Creating order with data:', {
+        buyer: userId,
+        sell_product: sellProductIds,
+        payment_type: 1,
+        delevery_date: today,
+        address: address.trim(),
+        additional_info: additionalInfo.trim() || '',
+        shop: null,
+        firm: null,
+      });
 
       const order = await createOrder({
         buyer: userId,
-        sell_product: sell_products,
-        payment_type: 1, // Дефолтный тип оплаты
-        address: `${address.trim()}${additionalInfo.trim() ? ` (Комментарий: ${additionalInfo.trim()})` : ''}`,
+        sell_product: sellProductIds,
+        payment_type: 1,
         delevery_date: today,
+        address: address.trim(),
+        additional_info: additionalInfo.trim() || '',
+        shop: null,
+        firm: null,
       });
 
       if (order) {
@@ -68,7 +124,34 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
       }
     } catch (err: any) {
       console.error('Ошибка при создании заказа:', err);
-      setError(err.response?.data?.message || 'Произошла ошибка при оформлении заказа');
+      
+      // Обработка разных типов ошибок
+      let errorMessage = 'Произошла ошибка при оформлении заказа';
+      
+      if (err.response?.data) {
+        const data = err.response.data;
+        
+        // Если есть детальное сообщение
+        if (data.detail) {
+          errorMessage = data.detail;
+        }
+        // Если есть ошибки валидации полей
+        else if (typeof data === 'object') {
+          const errors = Object.entries(data)
+            .map(([field, messages]) => {
+              if (Array.isArray(messages)) {
+                return messages.join(', ');
+              }
+              return String(messages);
+            })
+            .join('. ');
+          errorMessage = errors || errorMessage;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -119,14 +202,14 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                 <IoCheckmarkCircle className="w-10 h-10 text-green-500" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Заказ оформлен!
+                Заказ успешно создан!
               </h3>
               <p className="text-gray-500 mb-4">
-                Мы свяжемся с вами в ближайшее время
+                Перейдите в Telegram для дальнейших действий
               </p>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full">
                 <FaTelegram className="w-5 h-5 text-blue-500" />
-                <span className="text-sm text-blue-600">Уведомление отправлено</span>
+                <span className="text-sm text-blue-600">Уведомление отправлено в Telegram</span>
               </div>
             </div>
           ) : (
@@ -189,7 +272,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="Адрес доставки *"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none text-sm"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none resize-none text-sm"
                     rows={2}
                     required
                   />
@@ -197,7 +280,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                     value={additionalInfo}
                     onChange={(e) => setAdditionalInfo(e.target.value)}
                     placeholder="Комментарий к заказу (необязательно)"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none text-sm"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none resize-none text-sm"
                     rows={2}
                   />
                 </div>

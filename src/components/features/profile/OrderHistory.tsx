@@ -14,7 +14,33 @@ export const OrderHistory = () => {
     const fetchOrders = async () => {
       try {
         const data = await getOrders();
-        setOrders(data);
+        
+        // Адаптируем данные: преобразуем структуру API в формат компонента
+        const adaptedOrders = data.map((order: any) => ({
+          id: order.id,
+          user_id: order.buyer?.id || '',
+          status: order.order_status || 0,
+          total: parseFloat(order.total_amount || '0'),
+          created_at: order.created_at,
+          address: order.address || '',
+          phone: order.buyer?.phone || '',
+          full_name: order.buyer?.name || '',
+          additional_info: order.additional_info || '',
+          items: (order.sell_product || []).map((sellProduct: any) => ({
+            id: sellProduct.id,
+            product_id: sellProduct.product_original?.id || sellProduct.id,
+            quantity: sellProduct.quantity || 1,
+            price: parseFloat(sellProduct.product_original?.price || '0'),
+            total: (sellProduct.quantity || 1) * parseFloat(sellProduct.product_original?.price || '0'),
+            product: sellProduct.product_original ? {
+              ...sellProduct.product_original,
+              images: sellProduct.product_original.images || 
+                      (sellProduct.product_original.image ? [sellProduct.product_original.image] : [])
+            } : null
+          }))
+        }));
+        
+        setOrders(adaptedOrders);
       } catch {
         setError("Не удалось загрузить заказы.");
       }
@@ -38,7 +64,7 @@ export const OrderHistory = () => {
   return (
     <div>
       <div className="flex items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">История заказов</h2>
+        <h2 className="text-[18px] font-semibold text-gray-800">История заказов</h2>
       </div>
       
       {orders.length === 0 ? (

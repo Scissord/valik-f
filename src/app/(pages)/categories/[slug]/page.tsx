@@ -60,7 +60,7 @@ export default async function ProductPage({
 
   return (
     <div className="min-h-screen bg-white pt-20 pb-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mx-auto px-4 sm:px-6 lg:px-4 max-w-[1536px] py-6">
       {/* Хлебные крошки */}
       <Breadcrumbs items={breadcrumbItems} className="mb-4" />
 

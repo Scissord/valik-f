@@ -37,9 +37,6 @@ export default function CartPage() {
       const updatedCart = await Promise.all(
         cart.map(async (item) => {
           try {
-            // ...
-
-
             const response = await api.get(`/product/optinfo/${item.id}/`);
             const productData = response.data;
             const actualPrice = Number(productData.price) || 0;
@@ -54,12 +51,20 @@ export default function CartPage() {
         })
       );
 
-      updatedCart.forEach(item => {
-        const originalItem = cart.find(cartItem => cartItem.id === item.id);
-        if (originalItem && item.price !== originalItem.price) {
-          updateProductQuantity(item, item.quantity);
-        }
-      });
+      // Проверяем есть ли изменения в ценах
+      const hasChanges = updatedCart.some((item, index) => 
+        item.price !== cart[index].price
+      );
+
+      // Обновляем только если есть реальные изменения
+      if (hasChanges) {
+        updatedCart.forEach(item => {
+          const originalItem = cart.find(cartItem => cartItem.id === item.id);
+          if (originalItem && item.price !== originalItem.price) {
+            updateProductQuantity(item, item.quantity);
+          }
+        });
+      }
     } catch (error) {
       console.error('Ошибка при обновлении цен:', error);
     } finally {
@@ -76,16 +81,17 @@ export default function CartPage() {
   }, []);
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && !isUpdatingPrices) {
       updatePricesFromBackend();
     }
-  }, [loaded, updatePricesFromBackend]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded]); // Запускаем только один раз когда loaded становится true
 
   // Loading state
   if (!loaded) {
     return (
-      <div className="bg-white min-h-screen pt-24 pb-20">
-        <div className="mx-auto max-w-3xl px-4 py-16 flex justify-center items-center min-h-[60vh]">
+      <div className="bg-white min-h-screen pt-24 pb-12 lg:pb-20">
+        <div className="mx-auto px-4 sm:px-6 lg:px-4 max-w-[1536px] py-16 flex justify-center items-center min-h-[60vh]">
           <div className="animate-pulse flex flex-col items-center gap-4">
             <div className="w-12 h-12 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
             <p className="text-gray-500">Загрузка корзины...</p>
@@ -101,8 +107,8 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-white min-h-screen pt-24 pb-4 lg:pb-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-white min-h-screen pt-24 pb-12 lg:pb-20">
+      <div className="mx-auto px-4 sm:px-6 lg:px-4 max-w-[1536px]">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Корзина</h1>
