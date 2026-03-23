@@ -180,7 +180,7 @@ export default function ProfilePage() {
                   <label className="block text-sm font-medium text-gray-500 mb-2">Email</label>
                   <input
                     type="email"
-                    value={user.email}
+                    value={user.email || ''}
                     disabled
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none bg-gray-50 text-gray-500 cursor-not-allowed"
                   />
