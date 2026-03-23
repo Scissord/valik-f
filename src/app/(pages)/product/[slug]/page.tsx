@@ -50,7 +50,7 @@ export default async function ProductPage({ params }: Props) {
       slug: slug,
       images: product.images && product.images.length > 0 ? product.images : ['/imgs/placeholder.png'],
       brand: typeof product.brand === 'object' && product.brand !== null ? (product.brand as any).name : String(product.brand || 'Не указан'),
-      category: typeof product.category === 'object' && product.category !== null ? (product.category as any).name : String(product.category || 'Не указана'),
+      category: typeof product.category === 'object' && product.category !== null ? ((product.category as any).title || (product.category as any).name) : String(product.category || 'Не указана'),
       unit: typeof product.unit === 'object' && product.unit !== null ? (product.unit as any).name : String(product.unit || 'шт'),
       article: product.article || 'N/A',
       rating: product.rating || 0,
