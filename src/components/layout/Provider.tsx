@@ -1,5 +1,5 @@
 "use client";
-import { AIAssistantProvider } from "../features/ai-assistant";
+import { AIAssistantProvider, AIAssistant } from "../features/ai-assistant";
 import MobileNavbar from "../mobile/navbar";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -32,6 +32,7 @@ export const Provider = ({ children }: Props) => {
     <AIAssistantProvider>
       {children}
       {shouldShowMobileNavbar && <MobileNavbar />}
+      <AIAssistant />
     </AIAssistantProvider>
   );
 };

@@ -2,9 +2,21 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
-import type { ChatMessage, Chat } from '@/lib/legacy';
-import { getChats, getChatHistory, sendMessage, deleteChat as deleteChatAPI } from '@/lib/legacy';
+import type { ChatMessage } from '@/lib/legacy';
+import { useWebSocket } from '@/hooks/useWebSocket';
+import { useUserStore } from '@/lib/legacy';
 
+// WebSocket URL из переменных окружения (фиксированный для тестирования)
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'wss://swaggger.imai.run/ws/web_test/chat/7823690/web_test';
+
+export interface Chat {
+  id: string;
+  title: string;
+  lastMessage?: string;
+  lastTimestamp?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 interface AIAssistantContextType {
   isOpen: boolean;
@@ -12,6 +24,7 @@ interface AIAssistantContextType {
   chats: Chat[];
   currentChatId: string | null;
   isLoading: boolean;
+  isConnected: boolean;
   error: string | null;
   openAssistant: () => void;
   closeAssistant: () => void;
@@ -35,110 +48,214 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
 
   const pathname = usePathname();
+  const user = useUserStore((state) => state.user);
 
   const clearError = useCallback(() => {
     setError(null);
   }, []);
 
-  const loadChatHistory = useCallback(async (chatId: string) => {
-    setIsLoading(true);
-    try {
-      const history = await getChatHistory(chatId);
-      // Показываем приветственное сообщение только если чат пустой
-      if (history.length === 0) {
-        setMessages([]);
-      } else {
-        setMessages(history);
-      }
-      setCurrentChatId(chatId);
-      // Сохраняем ID текущего чата в localStorage
-      localStorage.setItem('ai-assistant-current-chat', chatId);
-    } catch (error) {
-      console.error('Ошибка при загрузке истории чата:', error);
-      setError('Не удалось загрузить историю чата');
-      setMessages([]);
-    } finally {
-      setIsLoading(false);
+  // WebSocket обработчик сообщений
+  const handleWebSocketMessage = useCallback((data: any) => {
+    console.log('📨 WebSocket message received:', data);
+    
+    // Очищаем таймаут если он был установлен
+    if ((window as any).__wsMessageTimeout) {
+      clearTimeout((window as any).__wsMessageTimeout);
+      (window as any).__wsMessageTimeout = null;
     }
+    
+    // Сбрасываем isLoading при любом ответе
+    setIsLoading(false);
+    
+    // Проверяем разные форматы ответа
+    if (data.type === 'message' && data.message) {
+      // Формат: { type: 'message', message: '...' }
+      const assistantMessage: ChatMessage = {
+        text: data.message,
+        isUser: false,
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => {
+        const updatedMessages = [...prev, assistantMessage];
+        if (currentChatId) {
+          localStorage.setItem(`ai-assistant-messages-${currentChatId}`, JSON.stringify(updatedMessages));
+        }
+        return updatedMessages;
+      });
+    } else if (data.message && !data.type) {
+      // Формат: { message: '...' }
+      const assistantMessage: ChatMessage = {
+        text: data.message,
+        isUser: false,
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => {
+        const updatedMessages = [...prev, assistantMessage];
+        if (currentChatId) {
+          localStorage.setItem(`ai-assistant-messages-${currentChatId}`, JSON.stringify(updatedMessages));
+        }
+        return updatedMessages;
+      });
+    } else if (data.text) {
+      // Формат: { text: '...' }
+      const assistantMessage: ChatMessage = {
+        text: data.text,
+        isUser: false,
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => {
+        const updatedMessages = [...prev, assistantMessage];
+        if (currentChatId) {
+          localStorage.setItem(`ai-assistant-messages-${currentChatId}`, JSON.stringify(updatedMessages));
+        }
+        return updatedMessages;
+      });
+    } else if (typeof data === 'string') {
+      // Формат: просто строка
+      const assistantMessage: ChatMessage = {
+        text: data,
+        isUser: false,
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => {
+        const updatedMessages = [...prev, assistantMessage];
+        if (currentChatId) {
+          localStorage.setItem(`ai-assistant-messages-${currentChatId}`, JSON.stringify(updatedMessages));
+        }
+        return updatedMessages;
+      });
+    } else if (data.type === 'error') {
+      // Формат ошибки
+      setError(data.message || 'Произошла ошибка');
+    } else {
+      // Неизвестный формат
+      console.warn('⚠️ Unknown message format:', data);
+      setError('Получен ответ в неожиданном формате');
+    }
+  }, [currentChatId]);
+
+  // Инициализация WebSocket
+  const { sendMessage: wsSendMessage, isConnected } = useWebSocket(
+    isOpen ? WS_URL : null,
+    {
+      onMessage: handleWebSocketMessage,
+      onOpen: () => {
+        console.log('WebSocket connection established');
+        setError(null);
+      },
+      onClose: () => {
+        console.log('WebSocket connection closed');
+      },
+      onError: (error) => {
+        console.error('WebSocket error:', error);
+        setError('Ошибка подключения к серверу');
+      }
+    }
+  );
+
+  const loadChatHistory = useCallback(async (chatId: string) => {
+    // Загружаем историю сообщений из localStorage
+    const savedMessagesStr = localStorage.getItem(`ai-assistant-messages-${chatId}`);
+    if (savedMessagesStr) {
+      try {
+        const savedMessages = JSON.parse(savedMessagesStr);
+        setMessages(savedMessages);
+      } catch (e) {
+        console.error('Error parsing saved messages:', e);
+        setMessages([]);
+      }
+    } else {
+      setMessages([]);
+    }
+    
+    setCurrentChatId(chatId);
+    localStorage.setItem('ai-assistant-current-chat', chatId);
   }, []);
 
   const loadChats = useCallback(async (shouldAutoLoadChat = true) => {
-    const isCreatingNewChatMarker = localStorage.getItem('ai-assistant-creating-new-chat') === 'true';
-
-    try {
-      const fetchedChats = await getChats();
-      setChats(fetchedChats);
-
-      // Автоматически загружаем чат только если это разрешено, нет текущего чата и не создается новый чат
-      if (shouldAutoLoadChat && !currentChatId && !isCreatingNewChatMarker && fetchedChats.length > 0) {
-        const savedChatId = localStorage.getItem('ai-assistant-current-chat');
-        const chatToLoad = savedChatId && fetchedChats.find(chat => chat.id === savedChatId)
-          ? savedChatId
-          : fetchedChats[0].id; // Берем последний чат если сохраненный не найден
-
-        await loadChatHistory(chatToLoad);
+    // Для тестирования используем один фиксированный чат
+    const defaultChat: Chat = {
+      id: '7823690',
+      title: 'Чат с ассистентом',
+      lastMessage: '',
+      lastTimestamp: new Date().toISOString()
+    };
+    
+    setChats([defaultChat]);
+    
+    if (shouldAutoLoadChat && !currentChatId) {
+      setCurrentChatId(defaultChat.id);
+      // Загружаем историю сообщений
+      const savedMessagesStr = localStorage.getItem(`ai-assistant-messages-${defaultChat.id}`);
+      if (savedMessagesStr) {
+        try {
+          const savedMessages = JSON.parse(savedMessagesStr);
+          setMessages(savedMessages);
+        } catch (e) {
+          console.error('Error parsing saved messages:', e);
+        }
       }
-    } catch (error) {
-      console.error('Ошибка при загрузке чатов:', error);
-      setError('Не удалось загрузить список чатов');
-      setChats([]);
     }
-  }, [currentChatId, loadChatHistory]);
+  }, [currentChatId]);
 
   useEffect(() => {
     const isAuthPage = pathname?.startsWith('/auth');
-    const isCreatingNewChatMarker = localStorage.getItem('ai-assistant-creating-new-chat') === 'true';
 
-    if (!isAuthPage && !isCreatingNewChatMarker) {
-      loadChats(true); // Только при первой загрузке разрешаем автозагрузку чата
+    if (!isAuthPage && isOpen) {
+      loadChats(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]); // ✅ ИСПРАВЛЕНО: убран loadChats из зависимостей
+  }, [pathname, isOpen]);
+
+  // Загружаем историю сообщений при смене чата
+  useEffect(() => {
+    if (currentChatId) {
+      const savedMessagesStr = localStorage.getItem(`ai-assistant-messages-${currentChatId}`);
+      if (savedMessagesStr) {
+        try {
+          const savedMessages = JSON.parse(savedMessagesStr);
+          setMessages(savedMessages);
+        } catch (e) {
+          console.error('Error parsing saved messages:', e);
+          setMessages([]);
+        }
+      } else {
+        setMessages([]);
+      }
+    }
+  }, [currentChatId]);
 
   const openAssistant = () => setIsOpen(true);
   const closeAssistant = () => setIsOpen(false);
   const toggleAssistant = () => setIsOpen(prev => !prev);
 
   const createNewChat = useCallback(() => {
-    // Устанавливаем специальный маркер в localStorage, чтобы предотвратить автозагрузку
-    localStorage.setItem('ai-assistant-creating-new-chat', 'true');
-
-    setCurrentChatId(null);
+    // Для тестирования просто очищаем сообщения
     setMessages([]);
-    setError(null); // Очищаем ошибки при создании нового чата
-
-    // Удаляем сохраненный ID чата из localStorage
-    localStorage.removeItem('ai-assistant-current-chat');
-
-    // Убираем маркер через небольшую задержку
-    setTimeout(() => {
-      localStorage.removeItem('ai-assistant-creating-new-chat');
-    }, 1000);
+    setError(null);
   }, []);
 
   const deleteChat = useCallback(async (chatId: string) => {
-    setIsLoading(true);
-    try {
-      const success = await deleteChatAPI(chatId);
-      if (success) {
-        // Обновляем список чатов
-        await loadChats(false);
-
-        // Если удаляем текущий чат, создаем новый
-        if (currentChatId === chatId) {
-          createNewChat();
-        }
-      }
-    } catch (error) {
-      console.error('Ошибка при удалении чата:', error);
-      setError('Не удалось удалить чат');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [currentChatId, loadChats, createNewChat]);
+    // Для тестирования просто очищаем сообщения
+    setMessages([]);
+    localStorage.removeItem(`ai-assistant-messages-${chatId}`);
+  }, []);
 
   const handleSendMessage = useCallback(async (message: string) => {
     if (!message.trim()) return;
+
+    if (!isConnected) {
+      setError('Нет подключения к серверу. Попробуйте позже.');
+      return;
+    }
 
     // Добавляем сообщение пользователя
     const userMessage: ChatMessage = {
@@ -148,37 +265,63 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
       timestamp: new Date().toISOString()
     };
 
-    setMessages(prev => [...prev, userMessage]);
-
+    setMessages(prev => {
+      const updatedMessages = [...prev, userMessage];
+      // Сохраняем историю сообщений в localStorage
+      if (currentChatId) {
+        localStorage.setItem(`ai-assistant-messages-${currentChatId}`, JSON.stringify(updatedMessages));
+      }
+      return updatedMessages;
+    });
     setIsLoading(true);
+    setError(null);
+
+    // Таймаут для автоматического сброса isLoading (30 секунд)
+    const timeoutId = setTimeout(() => {
+      console.warn('⏱️ Response timeout - no answer received');
+      setIsLoading(false);
+      setError('Превышено время ожидания ответа. Попробуйте еще раз.');
+    }, 30000);
 
     try {
-      const responseMessage = await sendMessage({ message, chatId: currentChatId });
+      // Пробуем разные форматы отправки
+      console.log('📤 Sending message (format 1):', { type: 'message', message });
+      
+      // Формат 1: { type: 'message', message: '...' }
+      let sent = wsSendMessage({
+        type: 'message',
+        message: message
+      });
 
-      if (responseMessage) {
-        // Если получили новый chatId, обновляем текущий чат
-        if (responseMessage.chatId && responseMessage.chatId !== currentChatId) {
-          setCurrentChatId(responseMessage.chatId);
-          // Сохраняем новый ID чата в localStorage
-          localStorage.setItem('ai-assistant-current-chat', responseMessage.chatId);
+      if (!sent) {
+        clearTimeout(timeoutId);
+        
+        // Формат 2: просто { message: '...' }
+        console.log('📤 Trying format 2:', { message });
+        sent = wsSendMessage({
+          message: message
+        });
+        
+        if (!sent) {
+          // Формат 3: просто строка
+          console.log('📤 Trying format 3 (plain string):', message);
+          sent = wsSendMessage(message);
+          
+          if (!sent) {
+            throw new Error('Не удалось отправить сообщение');
+          }
         }
-
-        // Добавляем ответ ассистента
-        setMessages(prev => [...prev, {
-          ...responseMessage,
-          timestamp: new Date().toISOString()
-        }]);
-
-        // Обновляем список чатов для отображения нового/обновленного чата
-        // Делаем это асинхронно, чтобы не блокировать UI
-        // Передаем false, чтобы не загружать автоматически другой чат
-        setTimeout(() => {
-          loadChats(false);
-        }, 100);
       }
+      
+      // Сохраняем timeoutId для возможной отмены при получении ответа
+      (window as any).__wsMessageTimeout = timeoutId;
+      
     } catch (error) {
-      console.error('Ошибка при отправке сообщения:', error);
+      clearTimeout(timeoutId);
+      console.error('❌ Ошибка при отправке сообщения:', error);
       setError('Не удалось отправить сообщение');
+      setIsLoading(false);
+      
       // Добавляем сообщение об ошибке
       setMessages(prev => [...prev, {
         text: 'Произошла ошибка при отправке сообщения. Попробуйте еще раз.',
@@ -186,10 +329,8 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
         id: crypto.randomUUID(),
         timestamp: new Date().toISOString()
       }]);
-    } finally {
-      setIsLoading(false);
     }
-  }, [currentChatId, loadChats]);
+  }, [isConnected, wsSendMessage, currentChatId]);
 
   return (
     <AIAssistantContext.Provider
@@ -199,6 +340,7 @@ export const AIAssistantProvider = ({ children }: { children: ReactNode }) => {
         chats,
         currentChatId,
         isLoading,
+        isConnected,
         error,
         openAssistant,
         closeAssistant,
