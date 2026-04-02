@@ -1,23 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { motion, Variants } from "framer-motion";
 import {
   IoChevronBackOutline,
   IoChevronForwardOutline,
   IoAppsOutline,
-  IoCarOutline,
   IoConstructOutline,
-  IoHomeOutline,
   IoHammerOutline,
   IoBriefcaseOutline,
   IoBuildOutline,
-  IoCartOutline,
-  IoShirtOutline,
+  IoFlashOutline,
+  IoWaterOutline,
+  IoFlameOutline,
+  IoColorPaletteOutline,
+  IoBulbOutline,
+  IoGridOutline,
 } from "react-icons/io5";
 import type { IconType } from "react-icons";
 import { GoodCategory } from "@/lib/legacy";
+import {
+  MdWallpaper,
+  MdOutlineLayers,
+  MdRoofing,
+  MdOutlineWindow,
+  MdOutlineDoorFront,
+  MdOutlineAir,
+} from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 
 interface CategoriesSectionProps {
@@ -25,36 +34,26 @@ interface CategoriesSectionProps {
   isLoadingCategories: boolean;
 }
 
-const getCategoryImage = (category: GoodCategory) => {
-  const title = category.name.toLowerCase();
-
-  if (title.includes("инструменты")) return "/category/instrumenty.jpg";
-  if (title.includes("мебель")) return "/category/mebel.jpg";
-  if (title.includes("сантехника")) return "/category/santehnika.jpg";
-  if (title.includes("сад")) return "/category/sad.jpg";
-  if (title.includes("оборудование")) return "/category/oborudovanie.jpg";
-  if (title.includes("авто")) return "/category/auto.jpg";
-  if (title.includes("электро")) return "/category/elektrotovary.jpg";
-  if (title.includes("строительные материалы")) return "/category/stroitelnye-materialy.jpg";
-  if (title.includes("крепёж")) return "/category/krepezh.jpg";
-  if (title.includes("бытовая техника")) return "/category/bytovaya-tehnika.jpg";
-
-  return "/category/mebel.jpg";
-};
 
 const getCategoryIcon = (category: GoodCategory): IconType => {
   const title = category.name.toLowerCase();
 
-  if (title.includes("инструменты")) return IoHammerOutline;
-  if (title.includes("мебель")) return IoHomeOutline;
-  if (title.includes("сантехника")) return IoBuildOutline;
-  if (title.includes("сад")) return IoConstructOutline;
-  if (title.includes("оборудование")) return IoConstructOutline;
-  if (title.includes("авто")) return IoCarOutline;
-  if (title.includes("электро")) return IoCartOutline;
-  if (title.includes("строительные материалы")) return IoConstructOutline;
-  if (title.includes("крепёж")) return IoHammerOutline;
-  if (title.includes("бытовая техника")) return IoShirtOutline;
+  if (title.includes("электро") || title.includes("электрик")) return IoFlashOutline;
+  if (title.includes("светотехник") || title.includes("освещени")) return IoBulbOutline;
+  if (title.includes("водоснабж")) return IoWaterOutline;
+  if (title.includes("отоплени")) return IoFlameOutline;
+  if (title.includes("вентиляц")) return MdOutlineAir;
+  if (title.includes("кровельн")) return MdRoofing;
+  if (title.includes("окна") || title.includes("окно")) return MdOutlineWindow;
+  if (title.includes("двери") || title.includes("дверь") || title.includes("фурнитур")) return MdOutlineDoorFront;
+  if (title.includes("лаки") || title.includes("краски") || title.includes("краска") || title.includes("клей")) return IoColorPaletteOutline;
+  if (title.includes("плитк") || title.includes("кафель")) return IoGridOutline;
+  if (title.includes("покрытия для пола")) return MdOutlineLayers;
+  if (title.includes("отделочн")) return MdOutlineLayers;
+  if (title.includes("обои")) return MdWallpaper;
+  if (title.includes("сантехник")) return IoBuildOutline;
+  if (title.includes("строительн") || title.includes("цемент") || title.includes("бетон")) return IoConstructOutline;
+  if (title.includes("инструменты") || title.includes("крепёж")) return IoHammerOutline;
 
   return IoBriefcaseOutline;
 };
@@ -65,9 +64,14 @@ const containerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.06,
     },
   },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
 };
 
 export const CategoriesSection = ({ categories, isLoadingCategories }: CategoriesSectionProps) => {
@@ -139,12 +143,12 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                 {/* All categories item */}
                 <Link
                   href="/categories"
-                  className="flex-none w-20 flex flex-col items-center text-center"
+                  className="flex-none w-20 flex flex-col items-center text-center group"
                 >
-                  <div className="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-                    <IoAppsOutline className="w-7 h-7 text-orange-500" />
+                  <div className="w-14 h-14 flex items-center justify-center">
+                    <IoAppsOutline className="w-8 h-8 text-gray-400 group-hover:text-orange-500 transition-colors" />
                   </div>
-                  <span className="mt-2 text-[11px] leading-tight text-gray-800">
+                  <span className="mt-1 text-[11px] leading-tight text-gray-600 group-hover:text-gray-900 line-clamp-2 h-7 flex items-center justify-center px-1">
                     Все категории
                   </span>
                 </Link>
@@ -160,18 +164,18 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                     </div>
                   ))
                   : categories.length > 0
-                    ? [...categories].reverse().map((category) => {
+                    ? [...categories].map((category) => {
                       const Icon = getCategoryIcon(category);
                       return (
                         <Link
                           key={category.id}
                           href={`/categories/${category.id}`}
-                          className="flex-none w-20 flex flex-col items-center text-center"
+                          className="flex-none w-20 flex flex-col items-center text-center group"
                         >
-                          <div className="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-sm">
-                            <Icon className="w-7 h-7 text-orange-500" />
+                          <div className="w-14 h-14 flex items-center justify-center">
+                            <Icon className="w-8 h-8 text-gray-400 group-hover:text-orange-500 transition-colors" />
                           </div>
-                          <span className="mt-2 text-[11px] leading-tight text-gray-800">
+                          <span className="mt-1 text-[11px] leading-tight text-gray-600 group-hover:text-gray-900 line-clamp-2 h-7 flex items-center justify-center px-1">
                             {category.name}
                           </span>
                         </Link>
@@ -228,40 +232,33 @@ export const CategoriesSection = ({ categories, isLoadingCategories }: Categorie
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
               >
                 {isLoadingCategories ? (
-                  Array.from({ length: 6 }).map((_, index) => (
+                  Array.from({ length: 8 }).map((_, index) => (
                     <div
                       key={index}
-                      className="flex-none w-40 sm:w-44 lg:w-48 aspect-[4/5] bg-gray-100 rounded-xl animate-pulse"
+                      className="flex-none w-36 sm:w-40 lg:w-44 h-[168px] bg-gray-100 rounded-2xl animate-pulse"
                     />
                   ))
                 ) : categories.length > 0 ? (
-                  [...categories].reverse().map((category) => (
-                    <Link
-                      key={category.id}
-                      href={`/categories/${category.id}`}
-                      className="flex-none w-40 sm:w-44 lg:w-48 snap-start group block"
-                    >
-                      <div className="bg-[#f4f5f7] rounded-xl transition-all duration-200 h-full overflow-hidden shadow-none">
-                        <div className="relative w-full pt-[90%]">
-                          <Image
-                            src={getCategoryImage(category)}
-                            alt={category.name}
-                            fill
-                            sizes="160px"
-                            priority
-                            unoptimized={false} // ✅ ИСПРАВЛЕНО: включена оптимизация
-                            quality={75} // ✅ ДОБАВЛЕНО
-                            className="absolute inset-0 w-full h-full object-cover transition duration-200 group-hover:brightness-90"
-                          />
-                          <div className="absolute inset-x-0 top-0 px-2.5 pt-2 pb-4">
-                            <h3 className="font-semibold text-sm text-left text-gray-900 leading-snug">
+                  [...categories].map((category) => {
+                    const Icon = getCategoryIcon(category);
+                    return (
+                      <motion.div key={category.id} variants={cardVariants} className="flex-none w-36 sm:w-40 lg:w-44 snap-start">
+                        <Link
+                          href={`/categories/${category.id}`}
+                          className="group block h-full"
+                        >
+                          <div className="bg-white rounded-2xl border border-gray-100 group-hover:border-gray-200 group-hover:shadow-md transition-all duration-200 flex flex-col items-center justify-center gap-3 h-[168px] px-3">
+                            <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center shrink-0">
+                              <Icon className="w-7 h-7 text-orange-400 group-hover:text-orange-500 transition-colors duration-200" />
+                            </div>
+                            <h3 className="font-medium text-[13px] text-center text-gray-600 group-hover:text-gray-900 leading-snug line-clamp-2 w-full transition-colors duration-200">
                               {category.name}
                             </h3>
                           </div>
-                        </div>
-                      </div>
-                    </Link>
-                  ))
+                        </Link>
+                      </motion.div>
+                    );
+                  })
                 ) : (
                   <div className="w-full py-12 text-center text-gray-500 bg-gray-50 rounded-2xl">
                     Категории не найдены
