@@ -206,6 +206,24 @@ body {
   background-color: #f97316;
 }
 
+/* Кастомный скроллбар для сайдбара категорий */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #fb923c;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #f97316;
+}
+
 /* Скрыть скроллбар, но оставить прокрутку */
 .no-scrollbar {
   -ms-overflow-style: none;

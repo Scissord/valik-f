@@ -6,6 +6,20 @@ interface PaginationOptions {
   limit?: number;
 }
 
+const normalizeProduct = (product: any): Product => {
+  const images = Array.isArray(product.images) && product.images.length > 0
+    ? product.images
+    : product.image
+      ? [product.image]
+      : [];
+
+  return {
+    ...product,
+    price: Number(product.price) || 0,
+    images,
+  } as Product;
+};
+
 export const getProductsForMainPage = async ({
   page = 1,
   limit = 9,
@@ -20,10 +34,7 @@ export const getProductsForMainPage = async ({
 
     const data = response.data;
     const products = Array.isArray(data) ? data : (data.results || data.products || []);
-    const normalizedProducts = products.map((p: any) => ({
-      ...p,
-      price: Number(p.price) || 0
-    }));
+    const normalizedProducts = products.map((p: any) => normalizeProduct(p));
     const total = typeof data.count === 'number' ? data.count : (data.total || products.length);
     const totalPages = data.totalPages || Math.ceil(total / limit) || 1;
 

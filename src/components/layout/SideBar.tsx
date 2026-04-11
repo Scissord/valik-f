@@ -5,30 +5,27 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getCategories, GoodCategory } from "@/lib/legacy";
-
 import {
-  IoCarOutline,
   IoChevronDownOutline,
+  IoFlashOutline,
+  IoBulbOutline,
+  IoWaterOutline,
+  IoFlameOutline,
+  IoColorPaletteOutline,
+  IoGridOutline,
+  IoBriefcaseOutline,
+  IoBuildOutline,
+  IoHammerOutline,
   IoConstructOutline,
-  IoHomeOutline,
 } from "react-icons/io5";
-import { FaPaintRoller, FaTools, FaTractor } from "react-icons/fa";
-import { GiBrickWall, GiHeatHaze, GiWoodBeam } from "react-icons/gi";
+import type { IconType } from "react-icons";
 import {
-  MdAgriculture,
-  MdChair,
-  MdElectricalServices,
-  MdHandyman,
-  MdHardware,
-  MdHomeRepairService,
-  MdHvac,
-  MdMicrowave,
-  MdOutlineDoorFront,
-  MdOutlineFormatPaint,
-  MdOutlineLayers,
-  MdOutlineWater,
-  MdStyle,
   MdWallpaper,
+  MdOutlineLayers,
+  MdOutlineDoorFront,
+  MdOutlineAir,
+  MdRoofing,
+  MdOutlineWindow,
 } from "react-icons/md";
 
 export const SideBar = () => {
@@ -100,106 +97,27 @@ export const SideBar = () => {
     );
   };
 
-  const getCategoryIcon = (categoryTitle: string) => {
-    const iconMatchers: Array<{ keywords: string[]; icon: ReactNode }> = [
-      {
-        keywords: ["обои", "wall", "wallpaper", "decor"],
-        icon: <MdWallpaper className="h-4 w-4" />,
-      },
-      {
-        keywords: ["сантехника", "водоснабжение", "канализац", "water", "plumb", "pipe"],
-        icon: <MdOutlineWater className="h-4 w-4" />,
-      },
-      {
-        keywords: ["покрыти", "кафель", "плитк", "панел", "layer", "sheet", "floor"],
-        icon: <MdOutlineLayers className="h-4 w-4" />,
-      },
-      {
-        keywords: ["двер", "door"],
-        icon: <MdOutlineDoorFront className="h-4 w-4" />,
-      },
-      {
-        keywords: ["мебел", "chair", "furniture"],
-        icon: <MdChair className="h-4 w-4" />,
-      },
-      {
-        keywords: ["лак", "краск", "клей", "paint", "отделк"],
-        icon: <MdOutlineFormatPaint className="h-4 w-4" />,
-      },
-      {
-        keywords: ["инструмент", "tool", "instrument"],
-        icon: <FaTools className="h-4 w-4" />,
-      },
-      {
-        keywords: ["сад", "огород", "агро", "seed", "farm"],
-        icon: <MdAgriculture className="h-4 w-4" />,
-      },
-      {
-        keywords: ["отоплен", "вентиляц", "климат", "hvac", "climate", "vent"],
-        icon: <MdHvac className="h-4 w-4" />,
-      },
-      {
-        keywords: ["оборудован", "сервис", "service", "repair"],
-        icon: <MdHomeRepairService className="h-4 w-4" />,
-      },
-      {
-        keywords: ["декор", "стиль", "style", "design"],
-        icon: <MdStyle className="h-4 w-4" />,
-      },
-      {
-        keywords: ["бытов", "кухон", "appliance", "kitchen"],
-        icon: <MdMicrowave className="h-4 w-4" />,
-      },
-      {
-        keywords: ["крепеж", "крепёж", "hardware", "fastener"],
-        icon: <MdHardware className="h-4 w-4" />,
-      },
-      {
-        keywords: ["строитель", "кирпич", "бетон", "brick", "block"],
-        icon: <GiBrickWall className="h-4 w-4" />,
-      },
-      {
-        keywords: ["электро", "кабель", "electric", "wire"],
-        icon: <MdElectricalServices className="h-4 w-4" />,
-      },
-      {
-        keywords: ["авто", "автомоб", "auto", "car"],
-        icon: <IoCarOutline className="h-4 w-4" />,
-      },
-      {
-        keywords: ["ручной", "hand", "craft", "handyman"],
-        icon: <MdHandyman className="h-4 w-4" />,
-      },
-      {
-        keywords: ["отделк", "маляр", "roller"],
-        icon: <FaPaintRoller className="h-4 w-4" />,
-      },
-      {
-        keywords: ["дерев", "wood", "beam"],
-        icon: <GiWoodBeam className="h-4 w-4" />,
-      },
-      {
-        keywords: ["тепл", "heat", "thermal"],
-        icon: <GiHeatHaze className="h-4 w-4" />,
-      },
-      {
-        keywords: ["трактор", "техник", "tractor", "field"],
-        icon: <FaTractor className="h-4 w-4" />,
-      },
-      {
-        keywords: ["дом", "home", "housing"],
-        icon: <IoHomeOutline className="h-4 w-4" />,
-      },
-    ];
+  const getCategoryIcon = (categoryTitle: string): IconType => {
+    const title = categoryTitle.toLowerCase();
 
-    const normalizedTitle = categoryTitle.toLowerCase();
-    for (const { keywords, icon } of iconMatchers) {
-      if (keywords.some((term) => normalizedTitle.includes(term))) {
-        return icon;
-      }
-    }
+    if (title.includes("электро") || title.includes("электрик")) return IoFlashOutline;
+    if (title.includes("светотехник") || title.includes("освещени")) return IoBulbOutline;
+    if (title.includes("водоснабж")) return IoWaterOutline;
+    if (title.includes("отоплени")) return IoFlameOutline;
+    if (title.includes("вентиляц")) return MdOutlineAir;
+    if (title.includes("кровельн")) return MdRoofing;
+    if (title.includes("окна") || title.includes("окно")) return MdOutlineWindow;
+    if (title.includes("двери") || title.includes("дверь") || title.includes("фурнитур")) return MdOutlineDoorFront;
+    if (title.includes("лаки") || title.includes("краски") || title.includes("краска") || title.includes("клей")) return IoColorPaletteOutline;
+    if (title.includes("плитк") || title.includes("кафель")) return IoGridOutline;
+    if (title.includes("покрытия для пола")) return MdOutlineLayers;
+    if (title.includes("отделочн")) return MdOutlineLayers;
+    if (title.includes("обои")) return MdWallpaper;
+    if (title.includes("сантехник")) return IoBuildOutline;
+    if (title.includes("строительн") || title.includes("цемент") || title.includes("бетон")) return IoConstructOutline;
+    if (title.includes("инструменты") || title.includes("крепёж")) return IoHammerOutline;
 
-    return <IoConstructOutline className="h-4 w-4" />;
+    return IoBriefcaseOutline;
   };
 
   const renderCategory = (
@@ -210,7 +128,7 @@ export const SideBar = () => {
     const hasChildren = category.children && category.children.length > 0;
     const currentCategoryId = getCurrentCategoryId();
     const isActive = currentCategoryId === String(category.id);
-    const icon = getCategoryIcon(category.name);
+    const Icon = getCategoryIcon(category.name);
 
     const paddingClasses = ["px-3", "pl-6 pr-3", "pl-9 pr-3", "pl-12 pr-3"];
     const paddingClass = paddingClasses[level] || "pl-14 pr-3";
@@ -219,7 +137,7 @@ export const SideBar = () => {
       <div key={category.id} className="w-full">
         <div
           className={`
-            group flex items-center gap-2 py-2 rounded-lg border
+            group flex items-center gap-2 py-3 rounded-lg border
             ${paddingClass}
             ${isActive
               ? "border-orange-200 bg-orange-50 text-orange-600 font-semibold"
@@ -238,7 +156,7 @@ export const SideBar = () => {
                 ${isActive ? "text-orange-500" : ""}
               `}
             >
-              {icon}
+              <Icon className="h-4 w-4" />
             </span>
 
             <span
@@ -295,14 +213,14 @@ export const SideBar = () => {
   }
 
   return (
-    <aside className="hidden md:flex md:flex-col md:sticky md:top-20 md:h-[calc(100vh-80px)] md:w-60 md:bg-white md:border-r md:border-gray-200 md:z-10 pb-6 overflow-y-auto scrollbar-thin">
-      <div className="px-4 pt-8">
+    <aside className="hidden md:flex md:flex-col md:sticky md:top-20 md:h-[calc(100vh-80px)] md:w-64 md:bg-white md:border-r md:border-gray-200 md:z-10 pb-6 overflow-y-auto custom-scrollbar">
+      <div className="px-4 pt-6">
         {loading ? (
           <p className="py-4 text-center text-sm text-gray-500">
             Загрузка категорий...
           </p>
         ) : categories.length > 0 ? (
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {categories.map((category) => renderCategory(category))}
           </div>
         ) : (
