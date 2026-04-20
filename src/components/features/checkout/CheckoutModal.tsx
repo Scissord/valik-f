@@ -48,53 +48,19 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
     try {
       const userId = typeof user.id === 'string' ? parseInt(user.id) : user.id;
       
-      console.log('Cart items:', cart);
-      
-      // Проверяем и создаем SellProduct для товаров без cartItemId
-      const sellProductIds: number[] = [];
-      
-      for (const item of cart) {
-        let sellProductId = (item as any).cartItemId;
-        
-        if (!sellProductId) {
-          // Создаем SellProduct на бэкенде
-          console.log('Creating SellProduct for item:', item.id);
-          try {
-            const res = await CartAPI.addToCart({
-              buyer: userId,
-              product_original: Number(item.id),
-              quantity: item.quantity
-            });
-            if (res && res.id) {
-              sellProductId = res.id;
-              console.log('Created SellProduct with ID:', sellProductId);
-            }
-          } catch (e) {
-            console.error('Failed to create SellProduct:', e);
-            setError(`Не удалось добавить товар "${item.name}" в заказ`);
-            setIsLoading(false);
-            return;
-          }
-        }
-        
-        if (sellProductId) {
-          sellProductIds.push(Number(sellProductId));
-        }
-      }
-      
-      console.log('Sell products IDs:', sellProductIds);
-      
-      if (sellProductIds.length === 0) {
-        setError('Не удалось подготовить товары для заказа');
+      if (cart.length === 0) {
+        setError('Корзина пуста');
         setIsLoading(false);
         return;
       }
       
       const today = new Date().toISOString().split('T')[0];
 
+      const sellProductData = cart.map(item => ({ product_id: Number(item.id) }));
+      
       console.log('Creating order with data:', {
         buyer: userId,
-        sell_product: sellProductIds,
+        sell_product: sellProductData,
         payment_type: 1,
         delevery_date: today,
         address: address.trim(),
@@ -105,7 +71,7 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
 
       const order = await createOrder({
         buyer: userId,
-        sell_product: sellProductIds,
+        sell_product: sellProductData,
         payment_type: 1,
         delevery_date: today,
         address: address.trim(),

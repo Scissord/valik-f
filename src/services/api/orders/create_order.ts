@@ -3,7 +3,7 @@ import type { IOrder } from "@/lib/legacy";
 
 interface CreateOrderParams {
   buyer: number;
-  sell_product: number[];
+  sell_product: { product_id: number }[];
   payment_type: number;
   delevery_date: string;
   address: string;
