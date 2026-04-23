@@ -46,8 +46,6 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
     setError(null);
 
     try {
-      const userId = typeof user.id === 'string' ? parseInt(user.id) : user.id;
-      
       if (cart.length === 0) {
         setError('Корзина пуста');
         setIsLoading(false);
@@ -55,29 +53,17 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
       }
       
       const today = new Date().toISOString().split('T')[0];
-
-      const sellProductData = cart.map(item => ({ product_id: Number(item.id) }));
       
       console.log('Creating order with data:', {
-        buyer: userId,
-        sell_product: sellProductData,
         payment_type: 1,
         delevery_date: today,
         address: address.trim(),
-        additional_info: additionalInfo.trim() || '',
-        shop: null,
-        firm: null,
       });
 
       const order = await createOrder({
-        buyer: userId,
-        sell_product: sellProductData,
         payment_type: 1,
         delevery_date: today,
         address: address.trim(),
-        additional_info: additionalInfo.trim() || '',
-        shop: null,
-        firm: null,
       });
 
       if (order) {

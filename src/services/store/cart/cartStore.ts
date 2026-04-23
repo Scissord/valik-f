@@ -41,7 +41,7 @@ export const useCartStore = create<State>()(
         const buyerId = getBuyerId();
         if (!buyerId) return;
         try {
-          const response = await CartAPI.getCart(buyerId);
+          const response = await CartAPI.getCart();
           if (response && Array.isArray(response)) {
             const remoteCart: ExtendedCartItem[] = response.map((item: any) => ({
               ...(item.product_original || item.product || {}),
