@@ -23,10 +23,19 @@ interface State {
 
 const getBuyerId = (): number | null => {
   try {
-    const userStr = localStorage.getItem("user-storage");
+    const userStr = localStorage.getItem("user") || localStorage.getItem("user-storage");
     if (!userStr) return null;
     const userState = JSON.parse(userStr);
-    return userState?.state?.user?.buyer_id || null;
+    const rawId =
+      userState?.state?.user?.id ??
+      userState?.state?.user?.buyer_id ??
+      userState?.user?.id ??
+      userState?.user?.buyer_id;
+
+    if (rawId === null || rawId === undefined) return null;
+
+    const numericId = Number(rawId);
+    return Number.isNaN(numericId) ? null : numericId;
   } catch (e) {
     return null;
   }

@@ -46,10 +46,30 @@ export const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
     setError(null);
 
     try {
+      const buyerId = Number(user.id);
+      if (Number.isNaN(buyerId)) {
+        setError('Не удалось определить пользователя для оформления заказа');
+        setIsLoading(false);
+        return;
+      }
+
       if (cart.length === 0) {
         setError('Корзина пуста');
         setIsLoading(false);
         return;
+      }
+
+      const unsyncedItems = cart.filter((item: any) => !item.cartItemId);
+      if (unsyncedItems.length > 0) {
+        await Promise.all(
+          unsyncedItems.map((item) =>
+            CartAPI.addToCart({
+              buyer: buyerId,
+              product_original: Number(item.id),
+              quantity: item.quantity,
+            })
+          )
+        );
       }
       
       const today = new Date().toISOString().split('T')[0];
