@@ -8,9 +8,10 @@ import { useCartStore } from "@/lib/legacy";
 
 interface Props {
   product: Product;
+  priority?: boolean;
 }
 
-export const ProductItem = memo(({ product }: Props) => {
+export const ProductItem = memo(({ product, priority = false }: Props) => {
   const getValidImageUrl = (url: string | undefined) => {
     if (!url || url.trim() === '' || url === 'h' || url.length < 3) {
       return "/imgs/placeholder.png";
@@ -71,6 +72,7 @@ export const ProductItem = memo(({ product }: Props) => {
             height={300}
             onMouseEnter={() => setDisplayImage(hoverImage)}
             onMouseLeave={() => setDisplayImage(defaultImage)}
+            priority={priority}
           />
         </div>
       </Link>

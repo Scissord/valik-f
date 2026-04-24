@@ -4,11 +4,12 @@ import "./globals.css";
 import { Provider } from "@/components";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://valik.kz"),
   title: {
     template: "%s | Valik.kz",
-    default: "Valik.kz | Сервис по поиску и закупу строительных материалов и услуг",
+    default: "Valik.kz — стройматериалы и услуги в Казахстане",
   },
-  description: "Valik.kz — сервис по поиску и закупу строительных материалов и услуг. Широкий ассортимент товаров для ремонта и строительства, от фундамента до отделки. Гарантия качества и быстрая доставка.",
+  description: "Valik.kz — маркетплейс строительных материалов и услуг в Казахстане. Широкий ассортимент для ремонта и строительства. Быстрая доставка по всей стране.",
 };
 
 export default function RootLayout({

@@ -14,16 +14,16 @@ const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.12 },
+    transition: { staggerChildren: 0.06 },
   },
 };
 
 const itemVariants: Variants = {
-  hidden: { y: 14, opacity: 0 },
+  hidden: { y: 8, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
-    transition: { duration: 0.45, ease: "easeOut" },
+    transition: { duration: 0.25, ease: "easeOut" },
   },
 };
 
@@ -34,7 +34,8 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
         className="relative pb-6 md:pb-12"
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.05 }}
       >
         {/* Header */}
         <div className="relative z-10">
@@ -60,7 +61,7 @@ export const ProductsSection = ({ products }: ProductsSectionProps) => {
           {/* Grid or loader */}
           <motion.div variants={itemVariants}>
             {products.length > 0 ? (
-              <ProductGrid products={products} />
+              <ProductGrid products={products} priorityCount={4} />
             ) : (
               <div className="text-center py-12 md:py-16">
                 {/* Minimal modern loader */}
